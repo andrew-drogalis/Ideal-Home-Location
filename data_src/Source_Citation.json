@@ -1,0 +1,14 @@
+[
+    {
+        "Data_Source": "EMDAT_1900-2021_NatDis_USA.csv",
+        "Author": "JULIANA NEGRINI DE ARAUJO", 
+        "Date": "March 17, 2021", 
+        "Website": "https://www.kaggle.com/code/jnegrini/eda-natural-disasters/notebook"
+    },
+    {
+        "Data_Source": "USA_Zipcode_3_Digits.csv",
+        "Author": "UNITED STATES POSTAL SERVICE", 
+        "Date": "January 6, 2005", 
+        "Website": "https://pe.usps.com/archive/html/dmmarchive20050106/print/L002.htm"
+    }
+]

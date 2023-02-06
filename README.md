@@ -1,1 +1,1 @@
-# Ideal-Home-Location-Prediction-Model
+# Ideal-Home-Location-Analysis
