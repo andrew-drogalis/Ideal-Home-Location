@@ -9,6 +9,7 @@ states_dict = {
     'Colorado': [],
     'Connecticut': [],
     'Delaware': [],
+    'District of Columbia': [],
     'Florida': [],
     'Georgia': [],
     'Hawaii': [],

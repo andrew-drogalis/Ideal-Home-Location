@@ -11,8 +11,8 @@ class App(customtkinter.CTk):
         super().__init__()
 
         # configure window
-        self.title("CustomTkinter complex_example.py")
-        self.geometry(f"{1100}x{580}")
+        self.title("Ideal Home Location Analysis")
+        self.geometry(f"{1200}x{800}")
 
         # configure grid layout (4x4)
         self.grid_columnconfigure(1, weight=1)
@@ -124,7 +124,7 @@ class App(customtkinter.CTk):
         self.checkbox_1.select()
         self.switch_1.select()
         self.radio_button_3.configure(state="disabled")
-        self.appearance_mode_optionemenu.set("Dark")
+        self.appearance_mode_optionemenu.set("System")
         self.scaling_optionemenu.set("100%")
         self.optionmenu_1.set("CTkOptionmenu")
         self.combobox_1.set("CTkComboBox")
