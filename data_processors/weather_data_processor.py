@@ -1,6 +1,7 @@
 import csv, json, math
 from collections import defaultdict
 from datetime import datetime
+from statistics import mean
 from meteostat import Monthly, Stations, units
 from uszipcode import SearchEngine
 from constants.sunlight_hours import days_in_month, daily_sunlight_hours_contential, daily_sunlight_hours_hawaii, daily_sunlight_hours_alaska
@@ -36,7 +37,7 @@ for zip_prefix in zipcode_prefix_data:
     monthly_sunshine_results = defaultdict(list)
     monthly_airpressure_results = defaultdict(list)
     if zip_prefix_search:
-        # 
+        # Analyze Each City in the Zipcode Prefix
         for city in zip_prefix_search:
             state = city.state
             # 
@@ -166,7 +167,7 @@ for zip_prefix in zipcode_prefix_data:
 
 
 # Save Results Dictionary as JSON File
-with open(f"data_processors/processed_data/Zipcode_Weather_Data.json", 'w') as f:
+with open(f"data_processors/processed_data/Zipcode_Prefix_Weather_Data.json", 'w') as f:
     json.dump(zip_code_weather_data, f)
 
 with open(f"data_processors/processed_data/All_Weather_Data.json", 'w') as f:
