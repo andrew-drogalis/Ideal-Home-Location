@@ -26,14 +26,14 @@ REQUIRES = read_requirements_file("requirements.txt")
 
 # Setup
 setup(
-	name='Ideal-Home-Location-Analysis',
+	name='Ideal-Home-Location-Matcher',
 	version='0.0.1',
 	author='Andrew Drogalis',
-    author_email='andrew.drogalis@gmail.com',
+    author_email='andrew.drogalis2@gmail.com',
     description=" ---- ",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url='https://github.com/andrew-drogalis/',
+    url='https://github.com/andrew-drogalis/Ideal-Home-Location-Matcher',
     python_requires=">=3.6.0",
     packages=find_packages(),
     include_package_data=True,

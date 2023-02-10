@@ -11,7 +11,7 @@ class App(customtkinter.CTk):
         super().__init__()
 
         # Window Title
-        self.title("Ideal Home Location Analysis")
+        self.title("Ideal Home Location Matcher")
 
         # Default Window Size
         self.geometry(f"{1200}x{800}")
@@ -35,7 +35,7 @@ class App(customtkinter.CTk):
 
         # create sidebar frame with widgets
         self.sidebar_frame = customtkinter.CTkFrame(self, width=140, corner_radius=0)
-        self.sidebar_frame.grid(row=0, column=0, rowspan=4, sticky="nsew")
+        self.sidebar_frame.grid(row=0, column=3, rowspan=4, sticky="nsew")
         self.sidebar_frame.grid_rowconfigure(4, weight=1)
         self.logo_label = customtkinter.CTkLabel(self, text="Ideal Home Location Analysis", font=customtkinter.CTkFont(family='Neuton', size=40, weight="normal"))
         self.logo_label.grid(row=0, column=0, columnspan=4, padx=20, pady=(20, 10))
