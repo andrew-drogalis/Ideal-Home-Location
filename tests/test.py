@@ -8,40 +8,55 @@ from uszipcode import SearchEngine
 start_time = datetime(1993, 1, 1)
 end_time = datetime(2023, 1, 1)
 
-search = SearchEngine()
-zip_number = '035'
-result = search.by_prefix(zip_number)
-monthly_temperature_results = defaultdict(list)
-monthly_precipitation_results = defaultdict(list)
-monthly_sunshine_results = defaultdict(list)
-monthly_airpressure_results = defaultdict(list)
-if result:
-    first_city = result[0]
-    state = first_city.state
-    stations = Stations().nearby(first_city.lat, first_city.lng, 100_000).fetch(5).to_dict()
-    station_id = [*stations['name'].keys()][0]
-    data = Monthly(station_id, start_time, end_time).convert(units.imperial).fetch().to_dict()
-    print(state, first_city.lat, first_city.lng, '\n', data, stations)
-    # Select Relevant Data
-    temperature_avg = data['tavg']
-    precipitation_inch = data['prcp']
-    sealevel_airpressure = data['pres'] #hPa
-    sunshine_minutes = data['tsun']
-    # Monthly Keys for 30 years of data
-    datetime_keys = [*temperature_avg.keys()]
-    for key in datetime_keys:
-        temp = temperature_avg[key]
-        rainfall = precipitation_inch[key]
-        sunshine = sunshine_minutes[key]
-        airpressure = sealevel_airpressure[key]
-        if not math.isnan(temp):
-            monthly_temperature_results[key.month].append(temp)
-        if not math.isnan(rainfall):
-            monthly_precipitation_results[key.month].append(rainfall)
-        if not math.isnan(sunshine):
-            monthly_sunshine_results[key.month].append(sunshine)
-        if not math.isnan(airpressure):
-            monthly_airpressure_results[key.month].append(airpressure)
+t = []
+
+t += [5] * 20
+
+t += [1] * 2
+
+print(t)
+# search = SearchEngine()
+# for x in range(970, 1000):
+#     zip_number = f'{x}'
+#     result = search.by_prefix(zip_number)
+#     monthly_temperature_results = defaultdict(list)
+#     monthly_precipitation_results = defaultdict(list)
+#     monthly_sunshine_results = defaultdict(list)
+#     monthly_airpressure_results = defaultdict(list)
+#     if result:
+#         result = iter(result)
+#         for city in result:
+#             state = city.state
+#             latitude = city.lat
+#             longitude = city.lng
+#             if longitude == 0 or latitude == 0:
+#                 next(result, None) # consume next line
+#                 continue # skip this line
+#             stations = Stations().nearby(city.lat, city.lng, 200_000).fetch(5).to_dict()
+#             station_ids = [*stations['name'].keys()]
+#             print(city.major_city, station_ids)
+#             data = Monthly(station_ids[0], start_time, end_time).convert(units.imperial).fetch().to_dict()
+#             # print(state, '\n', data, stations)
+#             # Select Relevant Data
+#             temperature_avg = data['tavg']
+#             precipitation_inch = data['prcp']
+#             sealevel_airpressure = data['pres'] #hPa
+#             sunshine_minutes = data['tsun']
+#             # Monthly Keys for 30 years of data
+#             datetime_keys = [*temperature_avg.keys()]
+#             for key in datetime_keys:
+#                 temp = temperature_avg[key]
+#                 rainfall = precipitation_inch[key]
+#                 sunshine = sunshine_minutes[key]
+#                 airpressure = sealevel_airpressure[key]
+#                 if not math.isnan(temp):
+#                     monthly_temperature_results[key.month].append(temp)
+#                 if not math.isnan(rainfall):
+#                     monthly_precipitation_results[key.month].append(rainfall)
+#                 if not math.isnan(sunshine):
+#                     monthly_sunshine_results[key.month].append(sunshine)
+#                 if not math.isnan(airpressure):
+#                     monthly_airpressure_results[key.month].append(airpressure)
 
 # data = {
 #     "zipcodes": ["90638", "90639", "10020", "85001", "72201", '11530',"11040"],

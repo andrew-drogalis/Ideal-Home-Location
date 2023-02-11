@@ -1,6 +1,6 @@
 import json
 from collections import defaultdict
-from centroid_and_deviation import centroid_and_deviation_calc
+from math_functions.centroid_and_deviation import centroid_and_deviation_calc
 
 """
     Rank the NatDis_USA Data & Store Results in JSON

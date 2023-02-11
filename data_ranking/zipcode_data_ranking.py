@@ -1,9 +1,9 @@
 import json
 from collections import defaultdict
-from centroid_and_deviation import centroid_and_deviation_calc
+from math_functions.centroid_and_deviation import centroid_and_deviation_calc
 
 """
-    Rank the NatDis_USA Data & Store Results in JSON
+    Rank the Zipcode Data & Store Results in JSON
 """
 
 # Import Processed Natural Disaster Data
@@ -44,7 +44,7 @@ all_weather_results.update(sunshine_results)
 
 
 # Save Results Dictionary as JSON File
-with open(f"data_ranking/ranked_data/Weather_Ranked_Data.json", 'w') as f:
+with open(f"data_ranking/ranked_data/Zipcode_Ranked_Data.json", 'w') as f:
     json.dump(all_weather_results, f)
 
 

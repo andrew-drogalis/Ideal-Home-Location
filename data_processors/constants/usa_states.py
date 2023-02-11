@@ -1,4 +1,4 @@
-# United States Dictionary
+# United States 50 States & D.C. Dictionary
 
 states_dict = {
     'Alabama': [],

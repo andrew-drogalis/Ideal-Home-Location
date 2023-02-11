@@ -11,10 +11,9 @@ from constants.sunlight_hours import days_in_month, daily_sunlight_hours_content
 """
 
 # Fetch Data from last 30 Years
+min_exceptable_end_year = 2020
 start_time = datetime(1993, 1, 1)
 end_time = datetime(2023, 1, 1)
-min_exceptable_start_year = 2000
-min_exceptable_end_year = 2020
 
 # Import Raw Zipcode Prefix Data
 with open('./data_src/USA_Zipcode_3_Digits.csv', newline='') as f: 
@@ -38,19 +37,34 @@ for zip_prefix in zipcode_prefix_data:
     monthly_airpressure_results = defaultdict(list)
     if zip_prefix_search:
         # Analyze Each City in the Zipcode Prefix
+        zip_prefix_search = iter(zip_prefix_search)
         for city in zip_prefix_search:
             state = city.state
-            # 
-            stations_nearby = Stations().nearby(city.lat, city.lng, 100_000).fetch(5).to_dict()
-            station_ids = [*stations_nearby['name'].keys()]
-            #
-            for station in station_ids:
-                station_start_year = stations_nearby['monthly_start'][station].year
-                station_end_year = stations_nearby['monthly_end'][station].year
-                if station_start_year < min_exceptable_start_year and station_end_year > min_exceptable_end_year:
-                    station_id = station
+            latitude = city.lat
+            longitude = city.lng
+            if latitude == 0 or longitude == 0:
+                next(zip_prefix_search, None)
+                continue
+            # Fetch List of Nearby Stations
+            radius_in_m = 20_000 # meters
+            while True:
+                stations_nearby = Stations().nearby(latitude, longitude, radius_in_m).fetch(10).to_dict()
+                station_ids = [*stations_nearby['name'].keys()]
+                # Select Station with Maximum Amount of Data
+                station_data_dict = {}
+                for station in station_ids:
+                    station_start_year = stations_nearby['monthly_start'][station].year
+                    station_end_year = stations_nearby['monthly_end'][station].year
+                    station_data_length = station_end_year - station_start_year
+                    if station_end_year >= min_exceptable_end_year:
+                        station_data_dict.update({station:station_data_length})
+                if station_data_dict:
+                    station_id = max(station_data_dict, key = station_data_dict.get)
                     break
-            #
+                else: radius_in_m += 20_000
+                if radius_in_m > 200_000:
+                    raise Exception('Confirm Data Source is online and inputs are valid')
+            # Fetch Data from Nearby Station
             data = Monthly(station_id, start_time, end_time).convert(units.imperial).fetch().to_dict()
             # Select Relevant Data
             temperature_avg = data['tavg']
@@ -72,22 +86,25 @@ for zip_prefix in zipcode_prefix_data:
                     monthly_sunshine_results[key.month].append(sunshine)
                 if not math.isnan(airpressure) and airpressure != 0:
                     monthly_airpressure_results[key.month].append(airpressure)
-        # Monthly Averages
+        # Temperature Monthly Averages
         temperature_normals = {}
         for month, temp_data in monthly_temperature_results.items():
-            average_temp = sum(temp_data) / len(temp_data)
+            average_temp = mean(temp_data)
             temperature_normals.update({month:average_temp})
+        # Precipitation Monthly Averages
         precipitation_normals = {}
         for month, rainfall_data in monthly_precipitation_results.items():
-            average_precipitation = sum(rainfall_data) / len(rainfall_data)
+            average_precipitation = mean(rainfall_data)
             precipitation_normals.update({month:average_precipitation})
+        # Sunshine Monthly Averages 
         sunshine_normals = {}
         for month, sunshine_data in monthly_sunshine_results.items():
-            average_sunshine = sum(sunshine_data) / len(sunshine_data)
+            average_sunshine = mean(sunshine_data)
             sunshine_normals.update({month:average_sunshine})
+        # Air Pressure Monthly Averages
         airpressure_normals = {}
         for month, airpressure_data in monthly_airpressure_results.items():
-            average_airpressure = sum(airpressure_data) / len(airpressure_data)
+            average_airpressure = mean(airpressure_data)
             airpressure_normals.update({month:average_airpressure})
 
         # Temperature Results
@@ -107,6 +124,9 @@ for zip_prefix in zipcode_prefix_data:
         # Precipitation Results
         precipitation_values = [*precipitation_normals.values()]
         total_rainfall = round(sum(precipitation_values), 2)
+
+        if total_rainfall <= 0:
+            raise Exception('Rainfall Data Error; Total Rainfall Inches Less Than or Equal to Zero')
 
         # Sunshine Results            
         sunshine_values = [*sunshine_normals.values()]
@@ -129,10 +149,8 @@ for zip_prefix in zipcode_prefix_data:
                 # Linear Interpolation 
                 percent_of_time_sky_clear = (airpressure - low_pressure) / (high_pressure - low_pressure)
                 # Bound Edge Cases
-                if percent_of_time_sky_clear < 0.2:
-                    percent_of_time_sky_clear = 0.2
-                if percent_of_time_sky_clear > 0.8:
-                    percent_of_time_sky_clear = 0.8
+                percent_of_time_sky_clear = max(0.2, percent_of_time_sky_clear)
+                percent_of_time_sky_clear = min(0.8, percent_of_time_sky_clear)
                 
                 # Minutes of Sunshine
                 if state == 'AK':
@@ -147,8 +165,11 @@ for zip_prefix in zipcode_prefix_data:
             sunshine_values = [*sunshine_normals.values()]
             total_sunshine = round(sum(sunshine_values))
 
+        if total_sunshine <= 0:
+            raise Exception('Sunshine Data Error; Total Sunshine Minutes Less Than or Equal to Zero')
+
         # Update Results Dictionary
-        zip_number_weather_data = {zip_number: 
+        zip_code_weather_data.update({zip_number: 
             {
                 'Average_Temperature': temperature_yearly_avg,
                 'Min_Temperature': temperature_min,
@@ -157,8 +178,8 @@ for zip_prefix in zipcode_prefix_data:
                 'Yearly_Rainfall': total_rainfall,
                 'Yearly_Sunshine': total_sunshine
             }
-        }
-        zip_code_weather_data.update(zip_number_weather_data)
+        })
+      
         all_weather_data['Precipitation_Inches'].append(total_rainfall)
         all_weather_data['Sunshine_Minutes'].append(total_sunshine)
 

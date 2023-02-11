@@ -1,7 +1,9 @@
-import csv, json
+import csv, json, sys, pathlib
 from statistics import mean
 from collections import defaultdict
 from uszipcode import SearchEngine
+sys.path.insert(1, str(pathlib.Path(__file__).parent.parent))
+from data_ranking.math_functions.centroid_and_deviation import k_scaler
 
 """
     Process the Zipcode Data & Store Results in JSON
@@ -23,27 +25,41 @@ for zip_prefix in zipcode_prefix_data:
     zip_prefix_search = search.by_prefix(zip_number)
     # Check if Zipcode Prefix is Valid
     if zip_prefix_search:
-        east_bounds_list = []
-        west_bounds_list = []
-        north_bounds_list = []
-        south_bounds_list = []
-        latitude_list = []
-        longitude_list = []
+        # Local Data Storage
+        coordinates_dict = {
+            'east_bounds': [],
+            'west_bounds': [],
+            'north_bounds': [],
+            'south_bounds': [],
+            'latitude': [],
+            'longitude': []
+        }
+        zip_prefix_search = iter(zip_prefix_search)
         # Analyze Each City in the Zipcode Prefix
         for city in zip_prefix_search:
-            ### City Information
+            ## City Information
             city_name = city.major_city
             common_city_list = city.common_city_list
             state = city.state
-            latitude = float(city.lat)
-            longitude = float(city.lng)
-            # Common City List for Name Lookups
+            latitude = float(city.lat or 0)
+            longitude = float(city.lng or 0)
+            if latitude == 0 or longitude == 0:
+                next(zip_prefix_search, None)
+                continue
+
+            ## Max Coordinates of City Limits
+            bounds_west = float(city.bounds_west or longitude)
+            bounds_east = float(city.bounds_east or longitude)
+            bounds_north = float(city.bounds_north or latitude)
+            bounds_south = float(city.bounds_south or latitude)
+
+            ## Common City List 
             if common_city_list and city_name not in common_city_list:
                 common_city_list += [city_name]
             elif not common_city_list:
                 common_city_list = [city_name]
 
-            ### Demographic Metrics
+            ## Demographic Metrics
             """
                 Not Relevant to the intended use case.
             """
@@ -53,7 +69,7 @@ for zip_prefix in zipcode_prefix_data:
             # population_by_race = city.population_by_race
             # head_of_household_by_age = city.head_of_household_by_age
 
-            ### Family Demographics
+            ## Family Demographics
             # Household Married vs Unmarried
             families_vs_singles = city.families_vs_singles
             if families_vs_singles:
@@ -77,7 +93,7 @@ for zip_prefix in zipcode_prefix_data:
             else:
                 percent_of_with_kids = None
 
-            ### Housing Metrics
+            ## Housing Metrics
             """
                 Home Value Data has a max value of $750,000+. 
             """
@@ -86,6 +102,7 @@ for zip_prefix in zipcode_prefix_data:
             if owner_occupied_home_values and median_home_value:
                 owner_occupied_home_values = owner_occupied_home_values[0]['values']
                 median_home_value = int(median_home_value)
+                # $1 - $24,999 Home Value (Assumption-Average: $12,500)
                 val_1_24k = int(owner_occupied_home_values[0]['y'])
                 val_25k_49k = int(owner_occupied_home_values[1]['y'])
                 val_50k_99k = int(owner_occupied_home_values[2]['y'])
@@ -108,7 +125,7 @@ for zip_prefix in zipcode_prefix_data:
             else:
                 percent_housing_occupancy = None
             
-            ### Rental Metrics
+            ## Rental Metrics
             """
                 Rental Unit Data has a max value of $1,000+ / Month. With no median rental unit data provided, at this time it's not possible to accurately break down the true rental costs.
             """
@@ -118,7 +135,7 @@ for zip_prefix in zipcode_prefix_data:
             # monthly_rent_including_utilities_2_b = city.monthly_rent_including_utilities_2_b
             # monthly_rent_including_utilities_3plus_b = city.monthly_rent_including_utilities_3plus_b
 
-            ### Household Income Metrics
+            ## Household Income Metrics
             """
                 Household Income Data has a max value of $200,000+. 
             """
@@ -127,18 +144,61 @@ for zip_prefix in zipcode_prefix_data:
             if household_income and median_household_income:
                 household_income = household_income[0]['values']
                 median_household_income = int(median_household_income)
+                # $1 - $24,999 Income (Assumption-Average: $12,500)
                 income_less_25k = int(household_income[0]['y'])
+                # $1 - $44,999 Income (Assumption-Average: $12,500)
                 income_25k_45k = int(household_income[1]['y'])
+                # $1 - $25,000 Income (Assumption-Average: $12,500)
                 income_45k_60k = int(household_income[2]['y'])
+                # $1 - $25,000 Income (Assumption-Average: $12,500)
                 income_60k_100k = int(household_income[3]['y'])
+                # $1 - $25,000 Income (Assumption-Average: $12,500)
                 income_100k_149k = int(household_income[4]['y'])
+                # $1 - $25,000 Income (Assumption-Average: $12,500)
                 income_150k_199k = int(household_income[5]['y'])
+                # $1 - $25,000 Income (Assumption-Average: $250,000)
                 income_200k_plus = int(household_income[6]['y'])
+                # Accounting for Extremely Weathly Neighborhoodss
+                icome_200k_plus_average = max(250_000, median_household_income + 50_000)
+                """
+                    This implimentation saves memory, rather than create a 500_000+ length list for certain high population centers
+                """
+                income_persons_distribution_list = [income_less_25k, income_25k_45k, income_45k_60k, income_60k_100k, income_100k_149k, income_150k_199k, income_200k_plus]
+                income_distribution_list = [12_500, 35_000, ]
+                MAD_household_income = [abs(x - median_household_income) for x in income_distibution_list]
+                total_persons = sum(income_persons_distribution_list)
+                middle_number = round(total_persons / 2, 1)
+                if middle_number.is_integer(): 
+                    middle_index = [int(middle_number-1), int(middle_number)]
+                else:
+                    # Subtract 0.5 because index starts at 0
+                    middle_index = [round(middle_number-.5)]
+                
+                income_persons_distribution_list = [x for _, x in sorted(zip(MAD_household_income, income_persons_distribution_list))]
+                persons_count = 0
+                position_list = []
+                for x, group in enumerate(income_persons_distribution_list): 
+                    person_count += group
+                    middle_index_duplicate = []
+                    for item in middle_index:
+                        if person_count >= item:
+                            position_list.append(x)
+                        else:
+                            middle_index_duplicate.append(item)
+                    middle_index = [*middle_index_duplicate]
+                    if not middle_index:
+                        break
+
+                MAD_household_income = sorted(MAD_household_income)
+                MAD_list = []
+                for x in position_list:
+                    MAD_list.append(MAD_household_income[x])
+                MAD_household_income = mean(MAD_list) * k_scaler
             else:
                 median_household_income = None
                 MAD_household_income = None
 
-            ### Household Sources of Income
+            ## Household Sources of Income
             """
                 Could be of used for a more detailed break down of income stream, but overkill for the design intent.
             """
@@ -149,7 +209,7 @@ for zip_prefix in zipcode_prefix_data:
             # household_retirement_income____percent_of_households_receiving_retirement_income = city.household_retirement_income____percent_of_households_receiving_retirement_incom
             # household_retirement_income____average_income_per_household_by_income_source = city.household_retirement_income____average_income_per_household_by_income_source
 
-            ### Job Opportunity Metrics
+            ## Job Opportunity Metrics
             employment_status = city.employment_status
             if employment_status:
                 employment_status = employment_status[0]['values']
@@ -203,7 +263,7 @@ for zip_prefix in zipcode_prefix_data:
             else:
                 average_travel_time_to_work = None
 
-            ### Educational Metrics
+            ## Educational Metrics
             # 
             """
                 Methodology: Each Level of Degree Certification is +1 Point.
@@ -244,7 +304,7 @@ for zip_prefix in zipcode_prefix_data:
             else:
                 percent_enrolled_in_school = None
 
-            ### Population Density
+            ## Population Density
             # Urban or Rural Classification Based on US Census Bureau
             """
                 Reference: https://www2.census.gov/geo/pdfs/reference/GARM/Ch12GARM.pdf
@@ -271,12 +331,6 @@ for zip_prefix in zipcode_prefix_data:
                 population = None
                 land_area = None
 
-            ### Max Coordinates of City Limits
-            bounds_west = float(city.bounds_west or 0.0)
-            bounds_east = float(city.bounds_east or 0.0)
-            bounds_north = float(city.bounds_north or 0.0)
-            bounds_south = float(city.bounds_south or 0.0)
-
             # Store
             city_metric_data[zip_number].append(
                 {
@@ -293,7 +347,7 @@ for zip_prefix in zipcode_prefix_data:
                     'land_area': land_area
                 })
 
-            # 
+            # Each City, Common Cities, & Zipcode combined for Fuzzy Regex Search
             city_str = ''
             for common_city in common_city_list:
                 city_str += f'{common_city}, '
@@ -301,24 +355,24 @@ for zip_prefix in zipcode_prefix_data:
             city_lat_lng_data[state].append({city_str:[latitude, longitude]})
 
             # Save to Bounds List
-            west_bounds_list.append(bounds_west)
-            east_bounds_list.append(bounds_east)
-            north_bounds_list.append(bounds_north)
-            south_bounds_list.append(bounds_south)
-            latitude_list.append(latitude)
-            longitude_list.append(longitude)
+            coordinates_dict['west_bounds'].append(bounds_west)
+            coordinates_dict['east_bounds'].append(bounds_east)
+            coordinates_dict['north_bounds'].append(bounds_north)
+            coordinates_dict['south_bounds'].append(bounds_south)
+            coordinates_dict['latitude'].append(latitude)
+            coordinates_dict['longitude'].append(longitude)
 
-        # Find Averages for Zipcode Prefix Locations
+        ## Find Averages for Zipcode Prefix Locations
 
 
         # Northern & Western Hemisphere for All Locations in the USA 50 States
-        northmost_boundary = max(north_bounds_list)
-        southmost_boundary = min(south_bounds_list)
-        westmost_boundary = max(west_bounds_list)
-        eastmost_boundary = min(east_bounds_list)
+        northmost_boundary = max(coordinates_dict['north_bounds'])
+        southmost_boundary = min(coordinates_dict['south_bounds'])
+        westmost_boundary = max(coordinates_dict['west_bounds'])
+        eastmost_boundary = min(coordinates_dict['east_bounds'])
         # Exact Center of Area not Required - Only used for Relative Proximity
-        average_latitude = mean(latitude_list)
-        average_longitude = mean(longitude_list)
+        average_latitude = mean(coordinates_dict['latitude'])
+        average_longitude = mean(coordinates_dict['longitude'])
 
         # Update Results Dictionary
         zipcode_prefix_metric_data.update({zip_number: 
