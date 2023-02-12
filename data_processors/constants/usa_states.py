@@ -1,4 +1,4 @@
-# United States 50 States & D.C. Dictionary
+# United States 50 States Dictionary
 
 states_dict = {
     'Alabama': [],
@@ -9,7 +9,6 @@ states_dict = {
     'Colorado': [],
     'Connecticut': [],
     'Delaware': [],
-    'District of Columbia': [],
     'Florida': [],
     'Georgia': [],
     'Hawaii': [],

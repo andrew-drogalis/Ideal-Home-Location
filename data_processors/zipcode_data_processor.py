@@ -3,7 +3,7 @@ from statistics import mean
 from collections import defaultdict
 from uszipcode import SearchEngine
 sys.path.insert(1, str(pathlib.Path(__file__).parent.parent))
-from data_ranking.math_functions.centroid_and_deviation import k_scaler
+from data_ranking.math_functions.statistics_analysis import mad_calc
 
 """
     Process the Zipcode Data & Store Results in JSON
@@ -79,9 +79,9 @@ for zip_prefix in zipcode_prefix_data:
                 # Single Guardian + Single + Single With Roommate
                 singles = int(families_vs_singles[1]['y']) + int(families_vs_singles[2]['y']) + int(families_vs_singles[3]['y'])
 
-                percent_of_families = round(families / (families + singles), 4) * 100
+                percent_married = round(families / (families + singles), 4) * 100
             else:
-                percent_of_families = None
+                percent_married = None
             # Households with Children Percentage
             households_with_kids = city.households_with_kids
             if households_with_kids:
@@ -104,26 +104,34 @@ for zip_prefix in zipcode_prefix_data:
                 median_home_value = int(median_home_value)
                 # $1 - $24,999 Home Value (Assumption-Average: $12,500)
                 val_1_24k = int(owner_occupied_home_values[0]['y'])
-                # $25,000 - $44,999 Home Value (Assumption-Average: $35,000)
+                # $25,000 - $49,999 Home Value (Assumption-Average: $37,500)
                 val_25k_49k = int(owner_occupied_home_values[1]['y'])
-                # $25,000 - $44,999 Home Value (Assumption-Average: $35,000)
+                # $50,000 - $99,999 Home Value (Assumption-Average: $75,000)
                 val_50k_99k = int(owner_occupied_home_values[2]['y'])
-                # $25,000 - $44,999 Home Value (Assumption-Average: $35,000)
+                # $100,000 - $149,999 Home Value (Assumption-Average: $125,000)
                 val_100k_149k = int(owner_occupied_home_values[3]['y'])
-                # $25,000 - $44,999 Home Value (Assumption-Average: $35,000)
+                # $150,000 - $199,999 Home Value (Assumption-Average: $175,000)
                 val_150k_199k = int(owner_occupied_home_values[4]['y'])
-                # $25,000 - $44,999 Home Value (Assumption-Average: $35,000)
+                # $200,000 - $399,999 Home Value (Assumption-Average: $300,000)
                 val_200k_399k = int(owner_occupied_home_values[5]['y'])
-                # $25,000 - $4,999 Home Value (Assumption-Average: $35,000)
+                # $400,000 - $749,999 Home Value (Assumption-Average: $575,000)
                 val_400k_749k = int(owner_occupied_home_values[6]['y'])
                 # $750,000+ Home Value (Assumption-Average: $800,000)
                 val_750k_plus = int(owner_occupied_home_values[7]['y'])
                 # Accounting for Extremely Weathly Neighborhoods
-                val_750k_plus_average = max(800_000, median_household_income + 50_000)
+                val_750k_plus_average = max(800_000, median_home_value + 50_000)
+                #
+                num_persons_list = [val_1_24k, val_25k_49k, val_50k_99k, val_100k_149k, val_150k_199k, val_200k_399k, val_400k_749k, val_750k_plus]
+                home_value_list = [12_500, 37_500, 75_000, 125_000, 175_000, 300_000, 575_000, val_750k_plus_average]
+                #
+                home_value_distribution_list = []
+                for x, home_value in enumerate(home_value_list):
+                    home_value_distribution_list += [home_value] * num_persons_list[x]
+                # Median Absolute Deviation
+                mad_home_value = mad_calc(dataset=home_value_distribution_list, median_of_data=median_home_value)
             else:
                 median_home_value = None
-                MAD_home_value = None
-          
+                mad_home_value = None
             #
             housing_unit = city.housing_units
             occupied_housing_units = city.occupied_housing_units
@@ -169,43 +177,18 @@ for zip_prefix in zipcode_prefix_data:
                 income_200k_plus = int(household_income[6]['y'])
                 # Accounting for Extremely Weathly Neighborhoods
                 income_200k_plus_average = max(250_000, median_household_income + 50_000)
-                """
-                    This implimentation saves memory, rather than create a 500_000+ length list for certain high population centers
-                """
-                income_persons_distribution_list = [income_less_25k, income_25k_45k, income_45k_60k, income_60k_100k, income_100k_149k, income_150k_199k, income_200k_plus]
-                income_distribution_list = [12_500, 35_000, 52_500, 80_000, 125_000, 175_000, income_200k_plus_average]
-                MAD_household_income = [abs(x - median_household_income) for x in income_distibution_list]
-                total_persons = sum(income_persons_distribution_list)
-                middle_number = round(total_persons / 2, 1)
-                if middle_number.is_integer(): 
-                    middle_index = [int(middle_number-1), int(middle_number)]
-                else:
-                    # Subtract 0.5 because index starts at 0
-                    middle_index = [round(middle_number-.5)]
-                
-                income_persons_distribution_list = [x for _, x in sorted(zip(MAD_household_income, income_persons_distribution_list))]
-                persons_count = 0
-                position_list = []
-                for x, group in enumerate(income_persons_distribution_list): 
-                    person_count += group
-                    middle_index_duplicate = []
-                    for item in middle_index:
-                        if person_count >= item:
-                            position_list.append(x)
-                        else:
-                            middle_index_duplicate.append(item)
-                    middle_index = [*middle_index_duplicate]
-                    if not middle_index:
-                        break
-
-                MAD_household_income = sorted(MAD_household_income)
-                MAD_list = []
-                for x in position_list:
-                    MAD_list.append(MAD_household_income[x])
-                MAD_household_income = mean(MAD_list) * k_scaler
+  
+                income_persons_list = [income_less_25k, income_25k_45k, income_45k_60k, income_60k_100k, income_100k_149k, income_150k_199k, income_200k_plus]
+                income_list = [12_500, 35_000, 52_500, 80_000, 125_000, 175_000, income_200k_plus_average]
+               
+                income_distribution_list = []
+                for x, income in enumerate(income_list):
+                    income_distribution_list += [income] * income_persons_list[x]
+                # Median Absolute Deviation
+                mad_household_income = mad_calc(dataset=income_distribution_list, median_of_data=median_household_income)
             else:
                 median_household_income = None
-                MAD_household_income = None
+                mad_household_income = None
 
             ## Household Sources of Income
             """
@@ -335,7 +318,7 @@ for zip_prefix in zipcode_prefix_data:
             land_area = city.land_area_in_sqmi
             if population and land_area:
                 population = int(population)
-                land_area = int(land_area)
+                land_area = float(land_area)
             else: 
                 population = None
                 land_area = None
@@ -344,11 +327,18 @@ for zip_prefix in zipcode_prefix_data:
             city_metric_data[zip_number].append(
                 {
                     'city_name': f'{city_name}, {state}',
-                    'percent_of_families': percent_of_families,
-
-
-
-                    'travel_time_to_work': travel_time_to_work_in_minutes,
+                    'percent_married': percent_married,
+                    'percent_with_kids': percent_of_with_kids,
+                    'median_home_value': median_home_value,
+                    'mad_home_value': mad_home_value,
+                    'percent_housing_occupancy': percent_housing_occupancy,
+                    'median_houshold_income': median_household_income,
+                    'mad_household_income': mad_household_income,
+                    'percent_employment': percent_employed,
+                    'percent_using_motor_vehicle': percent_using_car_truck_van,
+                    'percent_using_public_transportation': percent_using_public_trasportation,
+                    'percent_walking_biking': percent_walking_biking_other,
+                    'travel_time_to_work': average_travel_time_to_work,
                     'education_score': overall_education_score,
                     'school_enrollment': percent_enrolled_in_school,
                     'area_classification': area_classification,

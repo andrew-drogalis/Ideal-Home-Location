@@ -4,7 +4,7 @@
 
 # Ideal-Home-Location-Matcher
 
-## Installation
+## Getting Started
 
 The application is currently not released.
 
@@ -17,28 +17,14 @@ To run the project from source run the setup.py to download the required dependa
 
 ## Table of Contents
 
-* [Feautures](#Feautures)
-* [Example Usage](#Example-Usage)
+* [Getting Started](#Getting-Started)
+* [Usage Overview](#Usage-Overview)
 * [Methodology](#Methodology)
 * [Future Improvements](#Future-Improvements)
 * [License](#License)
 * [Contributing](#Contribution)
 
-## Features
-- Determines your Ideal Home Location anywhere in the United States
-- Uses Weather, Natural Disaster, and US Census data to match your preferences with a zipcode and zipcode prefix region.
-
-<!-- 
-- 
-- Stores Database Credentials outside Public Directory
-- Integrated SMTP support – send without a local mail server
-- Send emails with multiple To, CC, BCC, and Reply-to addresses
-- Multipart/alternative emails for mail clients that do not read HTML email
-- Support for UTF-8 content and 8bit, base64, binary, and quoted-printable encodings
-- SMTP authentication with LOGIN, PLAIN, CRAM-MD5, and XOAUTH2 mechanisms over SMTPS and SMTP+STARTTLS transports
-- Validates email addresses automatically --->
-
-## Example Usage
+## Usage Overview
 
 The
 
@@ -48,10 +34,9 @@ The
 The methodology can be found in the [GitHub Wiki](https://github.com/andrew-drogalis/Ideal-Home-Location-Matcher/wiki) Tab. There it provides an in depth explanation of the process behind determining your ideal home location.
 
 
-
 ## Future Improvements
 
----
+* Include FEMA Flood Map Data
 
 ## License
 
