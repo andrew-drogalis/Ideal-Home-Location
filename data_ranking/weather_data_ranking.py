@@ -3,22 +3,22 @@ from collections import defaultdict
 from math_functions.centroid_and_deviation import centroid_and_deviation_calc
 
 """
-    Rank the NatDis_USA Data & Store Results in JSON
+    Rank the Weather Data & Store Results in JSON
 """
 
-# Import Processed Natural Disaster Data
-with open('./data_processors/processed_data/Zipcode_Weather_Data.json', newline='') as f: 
+# Import Processed Weather Data
+with open('./data_processors/processed_data/Zipcode_Prefix_Weather_Data.json', newline='') as f: 
     zipcode_weather_data = json.load(f)
 
 with open('./data_processors/processed_data/All_Weather_Data.json', newline='') as f: 
     all_weather_data = json.load(f)
 
 
-### Analyze ALL National Disaster Data to Determine Relative Severity
+### Analyze ALL Weather Data to Determine Centroid and Deviation
 
 # Init Results Dictionary
 all_weather_results = {}
-# Seperate Data into Individual Lists
+# Separate Data into Individual Lists
 rainfall_list = all_weather_data['Precipitation_Inches']
 sunshine_list = all_weather_data['Sunshine_Minutes']
 
@@ -37,15 +37,40 @@ sunshine_results = centroid_and_deviation_calc(dataset=sunshine_list, name_of_da
 all_weather_results.update(sunshine_results)
 
 
-### Analyze ALL National Disaster Data to Determine Relative Severity
+### Analyze Zipcode Weather Data to Determine Rainfall and Sunshine Ranking on a National Level
 
+"""
+    Key Values:
+        - Well Above Average: Outside 1.5 Deviations from the Centroid
+        - Above Average: Between 1.5 and 0.5 Deviations from the Centroid
+        - Average: Between -0.5 and 0.5 Deviations from the Centroid
+        - Below Average: Between -0.5 and -1.5 Deviations from the Centroid
+        - Well Below Average: Outside -1.5 Deviations from the Centroid
+"""
+# Init Results Dictionary
+zip_code_weather_results = {}
 
+# 
+for zipcode_prefix, weather_data in zipcode_weather_data.items():
+    #
+    rainfall_inches = weather_data['Yearly_Rainfall']
+    sunshine_minutes = weather_data['Yearly_Sunshine']
 
+    #
+    rainfall_centroid = all_weather_results['Centroid_Yearly_Rainfall']
+    rainfall_deviation = all_weather_results['Deviation_Yearly_Rainfall']
+    sunshine_centroid = all_weather_results['Centroid_Yearly_Rainfall']
+    sunshine_deviation = all_weather_results['Deviation_Yearly_Rainfall']
 
+    #
+    rainfall_deviation_ratio = (rainfall_inches - rainfall_centroid) / rainfall_deviation
+    rainfall_rank = 'Well Below Average' if rainfall_deviation_ratio < -1.5 else 'Below Average' if -1.5 <= rainfall_deviation_ratio < -0.5 else 'Average' if -0.5 <= rainfall_deviation_ratio <= 0.5 else 'Above Average' if 0.5 < rainfall_deviation <= 1.5 else 'Well Above Average'
+
+    zip_code_weather_results.update({zipcode_prefix:weather_data})
 
 # Save Results Dictionary as JSON File
 with open(f"data_ranking/ranked_data/Weather_Ranked_Data.json", 'w') as f:
-    json.dump(all_weather_results, f)
+    json.dump(zip_code_weather_results, f)
 
 
 

@@ -104,13 +104,22 @@ for zip_prefix in zipcode_prefix_data:
                 median_home_value = int(median_home_value)
                 # $1 - $24,999 Home Value (Assumption-Average: $12,500)
                 val_1_24k = int(owner_occupied_home_values[0]['y'])
+                # $25,000 - $44,999 Home Value (Assumption-Average: $35,000)
                 val_25k_49k = int(owner_occupied_home_values[1]['y'])
+                # $25,000 - $44,999 Home Value (Assumption-Average: $35,000)
                 val_50k_99k = int(owner_occupied_home_values[2]['y'])
+                # $25,000 - $44,999 Home Value (Assumption-Average: $35,000)
                 val_100k_149k = int(owner_occupied_home_values[3]['y'])
+                # $25,000 - $44,999 Home Value (Assumption-Average: $35,000)
                 val_150k_199k = int(owner_occupied_home_values[4]['y'])
+                # $25,000 - $44,999 Home Value (Assumption-Average: $35,000)
                 val_200k_399k = int(owner_occupied_home_values[5]['y'])
+                # $25,000 - $4,999 Home Value (Assumption-Average: $35,000)
                 val_400k_749k = int(owner_occupied_home_values[6]['y'])
+                # $750,000+ Home Value (Assumption-Average: $800,000)
                 val_750k_plus = int(owner_occupied_home_values[7]['y'])
+                # Accounting for Extremely Weathly Neighborhoods
+                val_750k_plus_average = max(800_000, median_household_income + 50_000)
             else:
                 median_home_value = None
                 MAD_home_value = None
@@ -146,25 +155,25 @@ for zip_prefix in zipcode_prefix_data:
                 median_household_income = int(median_household_income)
                 # $1 - $24,999 Income (Assumption-Average: $12,500)
                 income_less_25k = int(household_income[0]['y'])
-                # $1 - $44,999 Income (Assumption-Average: $12,500)
+                # $25,000 - $44,999 Income (Assumption-Average: $35,000)
                 income_25k_45k = int(household_income[1]['y'])
-                # $1 - $25,000 Income (Assumption-Average: $12,500)
+                # $45,000 - $59,999 Income (Assumption-Average: $52,500)
                 income_45k_60k = int(household_income[2]['y'])
-                # $1 - $25,000 Income (Assumption-Average: $12,500)
+                # $60,000 - $99,999 Income (Assumption-Average: $80,000)
                 income_60k_100k = int(household_income[3]['y'])
-                # $1 - $25,000 Income (Assumption-Average: $12,500)
+                # $100,000 - $149,999 Income (Assumption-Average: $125,000)
                 income_100k_149k = int(household_income[4]['y'])
-                # $1 - $25,000 Income (Assumption-Average: $12,500)
+                # $150,000 - $199,999 Income (Assumption-Average: $175,000)
                 income_150k_199k = int(household_income[5]['y'])
-                # $1 - $25,000 Income (Assumption-Average: $250,000)
+                # $200,000+ Income (Assumption-Average: $250,000)
                 income_200k_plus = int(household_income[6]['y'])
-                # Accounting for Extremely Weathly Neighborhoodss
-                icome_200k_plus_average = max(250_000, median_household_income + 50_000)
+                # Accounting for Extremely Weathly Neighborhoods
+                income_200k_plus_average = max(250_000, median_household_income + 50_000)
                 """
                     This implimentation saves memory, rather than create a 500_000+ length list for certain high population centers
                 """
                 income_persons_distribution_list = [income_less_25k, income_25k_45k, income_45k_60k, income_60k_100k, income_100k_149k, income_150k_199k, income_200k_plus]
-                income_distribution_list = [12_500, 35_000, ]
+                income_distribution_list = [12_500, 35_000, 52_500, 80_000, 125_000, 175_000, income_200k_plus_average]
                 MAD_household_income = [abs(x - median_household_income) for x in income_distibution_list]
                 total_persons = sum(income_persons_distribution_list)
                 middle_number = round(total_persons / 2, 1)
