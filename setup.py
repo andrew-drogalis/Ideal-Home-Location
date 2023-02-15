@@ -1,11 +1,10 @@
-"""
-    Setup file
-
-    License: GNU
-"""
-
 from os import path
 from setuptools import setup, find_packages
+
+"""
+    Setup file
+    License: GNU
+"""
 
 # Content of the README file
 current_path = path.abspath(path.dirname(__file__))
@@ -27,10 +26,10 @@ REQUIRES = read_requirements_file("requirements.txt")
 # Setup
 setup(
 	name='Ideal-Home-Location-Matcher',
-	version='0.0.1',
+	version='0.9.0',
 	author='Andrew Drogalis',
     author_email='andrew.drogalis2@gmail.com',
-    description=" ---- ",
+    description="A collection of weather, natural disaster, and US Census data stored and analyzed to find the optimal living location for each individual's requirements.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url='https://github.com/andrew-drogalis/Ideal-Home-Location-Matcher',

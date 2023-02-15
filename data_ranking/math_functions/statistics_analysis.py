@@ -8,6 +8,7 @@ k_scaler = 1.4826
 """
     Skewness Calcuated using Fisher-Pearson Coefficent w/ Bias
     Values over 1.0 and below -1.0 are considered highly skewed
+    All Data has an N value > 15. The Sample Standard Deviation will be used.
 """
 
 def statistics_calc(dataset: list, name_of_data: str):

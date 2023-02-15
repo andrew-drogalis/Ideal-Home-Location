@@ -1,6 +1,7 @@
 import json
 from collections import defaultdict
 from math_functions.statistics_analysis import statistics_calc
+from math_functions.ranking_functions import rank_value
 
 """
     Rank the Weather Data & Store Results in JSON
@@ -36,15 +37,6 @@ all_weather_results.update(sunshine_results)
 
 ### Analyze Zipcode Weather Data to Determine Rainfall and Sunshine Ranking on a National Level
 
-"""
-    Key Values:
-        - Well Above Average: Outside 2.0 Deviations from the Median
-        - Above Average: Between 2.0 and 1.0 Deviations from the Median
-        - Average: Between 1.0 and -1.0 Deviations from the Median
-        - Below Average: Between -1.0 and -2.0 Deviations from the Median
-        - Well Below Average: Outside -2.0 Deviations from the Median
-"""
-
 zip_code_weather_results = {}
 # 
 for zipcode_prefix, weather_data in zipcode_weather_data.items():
@@ -60,11 +52,11 @@ for zipcode_prefix, weather_data in zipcode_weather_data.items():
     
     # Calculate Precipitation Rank
     rainfall_deviation_ratio = (rainfall_inches - rainfall_median) / rainfall_mad
-    rainfall_rank = 'Well Above Average' if rainfall_deviation_ratio > 2 else 'Above Average' if 2 >= rainfall_deviation_ratio > 1 else 'Average' if 1 >= rainfall_deviation_ratio >= -1 else 'Below Average' if -1 > rainfall_deviation_ratio >= -2 else 'Well Below Average' 
+    rainfall_rank = rank_value(deviation_ratio=rainfall_deviation_ratio)
 
     # Calculate Sunshine Rank
     sunshine_deviation_ratio = (sunshine_minutes - sunshine_median) / sunshine_mad
-    sunshine_rank = 'Well Above Average' if sunshine_deviation_ratio > 2 else 'Above Average' if 2 >= sunshine_deviation_ratio > 1 else 'Average' if 1 >= sunshine_deviation_ratio >= -1 else 'Below Average' if -1 > sunshine_deviation_ratio >= -2 else 'Well Below Average' 
+    sunshine_rank = rank_value(deviation_ratio=sunshine_deviation_ratio)
 
     # Update Weather Data
     weather_data.update({
