@@ -30,7 +30,7 @@ all_weather_data = {
 # Store Weather Data for Each Zipcode Prefix
 for zip_prefix in zipcode_prefix_data:
     zip_number = zip_prefix[0]
-    zip_prefix_search = search.by_prefix(zip_number)
+    zip_prefix_search = search.by_prefix(prefix=zip_number, returns=100)
     monthly_temperature_results = defaultdict(list)
     monthly_precipitation_results = defaultdict(list)
     monthly_sunshine_results = defaultdict(list)
@@ -75,13 +75,13 @@ for zip_prefix in zipcode_prefix_data:
             datetime_keys = [*temperature_avg.keys()]
             for key in datetime_keys:
                 temp = temperature_avg[key]
-                rainfall = precipitation_inch[key]
+                precipitation = precipitation_inch[key]
                 sunshine = sunshine_minutes[key]
                 airpressure = sealevel_airpressure[key]
                 if not math.isnan(temp):
                     monthly_temperature_results[key.month].append(temp)
-                if not math.isnan(rainfall):
-                    monthly_precipitation_results[key.month].append(rainfall)
+                if not math.isnan(precipitation):
+                    monthly_precipitation_results[key.month].append(precipitation)
                 if not math.isnan(sunshine) and sunshine != 0:
                     monthly_sunshine_results[key.month].append(sunshine)
                 if not math.isnan(airpressure) and airpressure != 0:
@@ -93,8 +93,8 @@ for zip_prefix in zipcode_prefix_data:
             temperature_normals.update({month:average_temp})
         # Precipitation Monthly Averages
         precipitation_normals = {}
-        for month, rainfall_data in monthly_precipitation_results.items():
-            average_precipitation = mean(rainfall_data)
+        for month, precipitation_data in monthly_precipitation_results.items():
+            average_precipitation = mean(precipitation_data)
             precipitation_normals.update({month:average_precipitation})
         # Sunshine Monthly Averages 
         sunshine_normals = {}
@@ -123,10 +123,10 @@ for zip_prefix in zipcode_prefix_data:
 
         # Precipitation Results
         precipitation_values = [*precipitation_normals.values()]
-        total_rainfall = round(sum(precipitation_values), 2)
+        total_precipitation = round(sum(precipitation_values), 2)
 
-        if total_rainfall <= 0:
-            raise Exception('Rainfall Data Error; Total Rainfall Inches Less Than or Equal to Zero')
+        if total_precipitation <= 0:
+            raise Exception('Precipitation Data Error; Total Precipitation Inches Less Than or Equal to Zero')
 
         # Sunshine Results            
         sunshine_values = [*sunshine_normals.values()]
@@ -175,12 +175,12 @@ for zip_prefix in zipcode_prefix_data:
                 'Min_Temperature': temperature_min,
                 'Max_Temperature': temperature_max,
                 'Seasons': seasons,
-                'Yearly_Rainfall': total_rainfall,
+                'Yearly_Precipitation': total_precipitation,
                 'Yearly_Sunshine': total_sunshine
             }
         })
       
-        all_weather_data['Precipitation_Inches'].append(total_rainfall)
+        all_weather_data['Precipitation_Inches'].append(total_precipitation)
         all_weather_data['Sunshine_Minutes'].append(total_sunshine)
 
     else:

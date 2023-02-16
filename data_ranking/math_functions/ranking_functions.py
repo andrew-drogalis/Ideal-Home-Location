@@ -19,15 +19,20 @@ def rank_value(deviation_ratio: float):
 
 
 """
-    Frequency / Severity Key Values:
-        - High: Outside 1.0 Deviations from the Centroid
-        - Moderate: Between 1.0 and -1.0 Deviations from the Centroid
-        - Low: Outside 1.0 Deviations from the Centroid
+    Key Values:
+        - High: Outside 2.0 Standard Deviations from the Mean
+        - Moderate: Between 2.0 and 1.0 Standard Deviations from the Mean 
+        - Low: Between 1.0 and 0.0 Standard Deviations from the Mean
+        - No Risk: Less thank 0.0 Standard Deviations from the Mean
 """
 
-
-def rank_extreme_value(deviation_ratio: float):
+def rank_value_skewed(deviation_ratio: float, rank_label='zipcode'):
     #
-    rank = 'Very Good' if deviation_ratio > 2 else 'Good' if 2 >= deviation_ratio > 1 else 'Exceptable' if 1 >= deviation_ratio > 0 else 'Not Exceptable'
+    if rank_label == 'zipcode':
+
+        rank = 'Very Good' if deviation_ratio > 2 else 'Good' if 2 >= deviation_ratio > 1 else 'Exceptable' if 1 >= deviation_ratio > 0 else 'Not Exceptable'
+
+    else:
+        rank = 'High' if deviation_ratio > 2 else 'Moderate' if 2 >= deviation_ratio > 1 else 'Low' if 1 >= deviation_ratio > 0 else 'No Risk'
 
     return rank

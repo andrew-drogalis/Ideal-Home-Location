@@ -1,7 +1,7 @@
 import json
 from collections import defaultdict
 from math_functions.statistics_analysis import statistics_calc
-from math_functions.ranking_functions import rank_value, rank_extreme_value
+from math_functions.ranking_functions import rank_value, rank_value_skewed
 
 """
     Rank the Zipcode Data & Store Results in JSON
@@ -132,14 +132,14 @@ for zipcode_prefix, metrics_data in zipcode_prefix_metrics_data.items():
     public_transportation_stdv = all_zipcode_results['Standard_Deviation_Public_Transportation_Work_Percentage']
 
     public_transportation_deviation_ratio = (public_transportation - public_transportation_mean) / public_transportation_stdv if public_transportation else None
-    public_transportation_rank = rank_extreme_value(deviation_ratio=public_transportation_deviation_ratio) if public_transportation else None
+    public_transportation_rank = rank_value_skewed(deviation_ratio=public_transportation_deviation_ratio) if public_transportation else None
 
     #
     walking_biking_mean = all_zipcode_results['Mean_Walking_Biking_Work_Percentage']
     walking_biking_stdv = all_zipcode_results['Standard_Deviation_Walking_Biking_Work_Percentage']
 
     walking_biking_deviation_ratio = (walking_biking - walking_biking_mean) / walking_biking_stdv if walking_biking else None
-    walking_biking_rank = rank_extreme_value(deviation_ratio=walking_biking_deviation_ratio) if walking_biking else None
+    walking_biking_rank = rank_value_skewed(deviation_ratio=walking_biking_deviation_ratio) if walking_biking else None
 
 
     # Update Zipcode Prefix Data
@@ -157,57 +157,57 @@ for zipcode_prefix, metrics_data in zipcode_prefix_metrics_data.items():
     zipcode_prefix_results.update({zipcode_prefix:metrics_data})
 
 
-    city_metrics_results.update({zipcode_prefix:[]})
+### Analyze Zipcode Prefix Metrics Data to Determine Relative Severity
 
-    for city in city_metrics_data[zipcode_prefix]:
-        
-        married_percent = city['Married_Percentage']
-        families_with_children = city['Families_with_Children']
-        home_occupancy = city['Home_Occupancy']
-        employment_percent = city['Employment_Percentage']
-        school_enrollment = city['School_Enrollment_Percentage']
-        motor_vehicle = city['Motor_Vehicle_Work_Percentage']
-        public_transportation = city['Public_Transportation_Work_Percentage']
-        walking_biking = city['Walking_Biking_Work_Percentage']
+for city, city_metrics in city_metrics_data.items():
+    
+    married_percent = city_metrics['Married_Percentage']
+    families_with_children = city_metrics['Families_with_Children']
+    home_occupancy = city_metrics['Home_Occupancy']
+    employment_percent = city_metrics['Employment_Percentage']
+    school_enrollment = city_metrics['School_Enrollment_Percentage']
+    motor_vehicle = city_metrics['Motor_Vehicle_Work_Percentage']
+    public_transportation = city_metrics['Public_Transportation_Work_Percentage']
+    walking_biking = city_metrics['Walking_Biking_Work_Percentage']
 
-        # 
-        married_percent_deviation_ratio = (married_percent - married_percent_median) / married_percent_mad if married_percent else None
-        married_percent_rank = rank_value(deviation_ratio=married_percent_deviation_ratio) if married_percent else None
+    # 
+    married_percent_deviation_ratio = (married_percent - married_percent_median) / married_percent_mad if married_percent else None
+    married_percent_rank = rank_value(deviation_ratio=married_percent_deviation_ratio) if married_percent else None
 
-        families_with_children_deviation_ratio = (families_with_children - families_with_children_median) / families_with_children_mad if families_with_children else None
-        families_with_children_rank = rank_value(deviation_ratio=families_with_children_deviation_ratio) if families_with_children else None
+    families_with_children_deviation_ratio = (families_with_children - families_with_children_median) / families_with_children_mad if families_with_children else None
+    families_with_children_rank = rank_value(deviation_ratio=families_with_children_deviation_ratio) if families_with_children else None
 
-        home_occupancy_deviation_ratio = (home_occupancy - home_occupancy_median) / home_occupancy_mad if home_occupancy else None
-        home_occupancy_rank = rank_value(deviation_ratio=home_occupancy_deviation_ratio) if home_occupancy else None
+    home_occupancy_deviation_ratio = (home_occupancy - home_occupancy_median) / home_occupancy_mad if home_occupancy else None
+    home_occupancy_rank = rank_value(deviation_ratio=home_occupancy_deviation_ratio) if home_occupancy else None
 
-        employment_percent_deviation_ratio = (employment_percent - employment_percent_median) / employment_percent_mad if employment_percent else None
-        employment_percent_rank = rank_value(deviation_ratio=employment_percent_deviation_ratio) if employment_percent else None
+    employment_percent_deviation_ratio = (employment_percent - employment_percent_median) / employment_percent_mad if employment_percent else None
+    employment_percent_rank = rank_value(deviation_ratio=employment_percent_deviation_ratio) if employment_percent else None
 
-        school_enrollment_deviation_ratio = (school_enrollment - school_enrollment_median) / school_enrollment_mad if school_enrollment else None
-        school_enrollment_rank = rank_value(deviation_ratio=school_enrollment_deviation_ratio) if school_enrollment else None
+    school_enrollment_deviation_ratio = (school_enrollment - school_enrollment_median) / school_enrollment_mad if school_enrollment else None
+    school_enrollment_rank = rank_value(deviation_ratio=school_enrollment_deviation_ratio) if school_enrollment else None
 
-        motor_vehicle_deviation_ratio = (motor_vehicle - motor_vehicle_median) / motor_vehicle_mad if motor_vehicle else None
-        motor_vehicle_rank = rank_value(deviation_ratio=motor_vehicle_deviation_ratio) if motor_vehicle else None
+    motor_vehicle_deviation_ratio = (motor_vehicle - motor_vehicle_median) / motor_vehicle_mad if motor_vehicle else None
+    motor_vehicle_rank = rank_value(deviation_ratio=motor_vehicle_deviation_ratio) if motor_vehicle else None
 
-        public_transportation_deviation_ratio = (public_transportation - public_transportation_mean) / public_transportation_stdv if public_transportation else None
-        public_transportationt_rank = rank_extreme_value(deviation_ratio=public_transportation_deviation_ratio) if public_transportation else None
+    public_transportation_deviation_ratio = (public_transportation - public_transportation_mean) / public_transportation_stdv if public_transportation else None
+    public_transportationt_rank = rank_value_skewed(deviation_ratio=public_transportation_deviation_ratio) if public_transportation else None
 
-        walking_biking_deviation_ratio = (walking_biking - walking_biking_mean) / walking_biking_stdv if walking_biking else None
-        walking_biking_rank = rank_extreme_value(deviation_ratio=walking_biking_deviation_ratio) if walking_biking else None
+    walking_biking_deviation_ratio = (walking_biking - walking_biking_mean) / walking_biking_stdv if walking_biking else None
+    walking_biking_rank = rank_value_skewed(deviation_ratio=walking_biking_deviation_ratio) if walking_biking else None
 
-        # Update Zipcode Data
-        city.update({
-            'Married_Percentage': married_percent_rank,
-            'Families_with_Children': families_with_children_rank,
-            'Home_Occupancy': home_occupancy_rank,
-            'Employment_Percentage': employment_percent_rank,
-            'School_Enrollment_Percentage': school_enrollment_rank,
-            'Motor_Vehicle_Work_Percentage': motor_vehicle_rank,
-            'Public_Transportation_Work_Percentage': public_transportation_rank,
-            'Walking_Biking_Work_Percentage': walking_biking_rank
-        })
+    # Update Zipcode Data
+    city_metrics.update({
+        'Married_Percentage': married_percent_rank,
+        'Families_with_Children': families_with_children_rank,
+        'Home_Occupancy': home_occupancy_rank,
+        'Employment_Percentage': employment_percent_rank,
+        'School_Enrollment_Percentage': school_enrollment_rank,
+        'Motor_Vehicle_Work_Percentage': motor_vehicle_rank,
+        'Public_Transportation_Work_Percentage': public_transportation_rank,
+        'Walking_Biking_Work_Percentage': walking_biking_rank
+    })
 
-        city_metrics_results[zipcode_prefix].append(city)
+    city_metrics_results.update({city:city_metrics})
 
 
 # ---------------------------------------------------------------------------

@@ -34,7 +34,7 @@ all_zipcode_data = {
 # Store Data for Each Zipcode Prefix
 for zip_prefix in zipcode_prefix_data:
     zip_number = zip_prefix[0]
-    zip_prefix_search = search.by_prefix(zip_number)
+    zip_prefix_search = search.by_prefix(prefix=zip_number, returns=100)
     # Check if Zipcode Prefix is Valid
     if zip_prefix_search:
         # Local Data Storage
@@ -74,10 +74,11 @@ for zip_prefix in zipcode_prefix_data:
             bounds_south = float(city.bounds_south or latitude)
 
             ## Common City List 
-            if common_city_list and city_name not in common_city_list:
-                common_city_list += [city_name]
+            if common_city_list and common_city_list[0] != city_name:
+                common_city_list = [city_name] + common_city_list
             elif not common_city_list:
                 common_city_list = [city_name]
+                
 
             ## Demographic Metrics
             """ Not included in this analysis. """
@@ -386,6 +387,7 @@ for zip_prefix in zipcode_prefix_data:
             city_metric_data[zip_number].append(
                 {
                     'City': f'{city_name}, {state}',
+                    'Zipcode': city.zipcode,
                     'Married_Percentage': percent_married,
                     'Families_with_Children': percent_of_with_kids,
                     'Median_Home_Value': median_home_value,
@@ -430,6 +432,7 @@ for zip_prefix in zipcode_prefix_data:
                     city_str += f'{common_city}, '
             city_str += f'{city.zipcode}'
             city_coordinate_data[state].append({city_str:[latitude, longitude]})
+
 
             # Save to Bounds List
             coordinates_dict['West_Bounds'].append(bounds_west)
@@ -553,6 +556,11 @@ for zip_prefix in zipcode_prefix_data:
     else:
         print(f'No USA Cities at {zip_number} Prefix')
 
+# 
+zipcode_metric_data = {}
+for cities_list in [*city_metric_data.values()]:
+    for city in cities_list:
+        zipcode_metric_data.update({city['Zipcode']:city})
 
 # Save Results Dictionary as JSON File
 with open(f"data_processors/processed_data/Zipcode_Prefix_Metrics_Data.json", 'w') as f:
@@ -562,7 +570,7 @@ with open(f"data_processors/processed_data/All_Zipcode_Metrics_Data.json", 'w') 
     json.dump(all_zipcode_data, f)
 
 with open(f"data_processors/processed_data/City_Metrics_Data.json", 'w') as f:
-    json.dump(city_metric_data, f)
+    json.dump(zipcode_metric_data, f)
 
 with open(f"data_ranking/ranked_data/City_Coordinates_Data.json", 'w') as f:
     json.dump(city_coordinate_data, f)

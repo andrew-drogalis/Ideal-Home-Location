@@ -1,8 +1,7 @@
 from runtime import gui
 
 """
-
-
+    Program Main Entry
 """
 
 if __name__ == "__main__":

@@ -6,9 +6,9 @@ from math_functions.ranking_functions import rank_value
 """
     Rank the Weather Data & Store Results in JSON
     
-    Only Rainfall and Sunshine are Ranked on a Nationwide Level
+    Only Precipitation and Sunshine are Ranked on a Nationwide Level
     The Temperature will be user selected.
-    Rational: Users typically know comfortable temperature data as a number, but rainfall and sunshine in terms of qualitative amounts. example: "A lot of rainfall" NOT " 1.4 inches of rainfall"
+    Rational: Users typically know comfortable temperature data as a number, but precipitation and sunshine in terms of qualitative amounts. example: "A lot of precipitation" NOT " 1.4 inches of precipitation"
 """
 
 # Import Processed Weather Data
@@ -23,36 +23,36 @@ with open('./data_processors/processed_data/All_Weather_Data.json', newline='') 
 
 all_weather_results = {}
 # Separate Data into Individual Lists
-rainfall_list = all_weather_data['Precipitation_Inches']
+precipitation_list = all_weather_data['Precipitation_Inches']
 sunshine_list = all_weather_data['Sunshine_Minutes']
 
 # ALL Nationwide Precipitation
-rainfall_results = statistics_calc(dataset=rainfall_list, name_of_data="Yearly_Rainfall")
-all_weather_results.update(rainfall_results)
+precipitation_results = statistics_calc(dataset=precipitation_list, name_of_data="Yearly_Precipitation")
+all_weather_results.update(precipitation_results)
 
 # ALL Nationwide Sunshine
 sunshine_results = statistics_calc(dataset=sunshine_list, name_of_data="Yearly_Sunshine")
 all_weather_results.update(sunshine_results)
 
 
-### Analyze Zipcode Weather Data to Determine Rainfall and Sunshine Ranking on a National Level
+### Analyze Zipcode Weather Data to Determine Precipitation and Sunshine Ranking on a National Level
 
 zip_code_weather_results = {}
 # 
 for zipcode_prefix, weather_data in zipcode_weather_data.items():
     #
-    rainfall_inches = weather_data['Yearly_Rainfall']
+    precipitation_inches = weather_data['Yearly_Precipitation']
     sunshine_minutes = weather_data['Yearly_Sunshine']
 
     # 
-    rainfall_median = all_weather_results['Median_Yearly_Rainfall']
-    rainfall_mad = all_weather_results['MAD_Yearly_Rainfall']
+    precipitation_median = all_weather_results['Median_Yearly_Precipitation']
+    precipitation_mad = all_weather_results['MAD_Yearly_Precipitation']
     sunshine_median = all_weather_results['Median_Yearly_Sunshine']
     sunshine_mad = all_weather_results['MAD_Yearly_Sunshine']
     
     # Calculate Precipitation Rank
-    rainfall_deviation_ratio = (rainfall_inches - rainfall_median) / rainfall_mad
-    rainfall_rank = rank_value(deviation_ratio=rainfall_deviation_ratio)
+    precipitation_deviation_ratio = (precipitation_inches - precipitation_median) / precipitation_mad
+    precipitation_rank = rank_value(deviation_ratio=precipitation_deviation_ratio)
 
     # Calculate Sunshine Rank
     sunshine_deviation_ratio = (sunshine_minutes - sunshine_median) / sunshine_mad
@@ -60,7 +60,7 @@ for zipcode_prefix, weather_data in zipcode_weather_data.items():
 
     # Update Weather Data
     weather_data.update({
-        'Yearly_Rainfall': rainfall_rank,
+        'Yearly_Precipitation': precipitation_rank,
         'Yearly_Sunshine': sunshine_rank
     })
     
