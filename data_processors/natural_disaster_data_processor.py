@@ -55,6 +55,8 @@ for event in natural_disaster_data:
         # Update Disaster Type Dictionary
         disaster_by_type_data[disaster_type].append(relevant_disaster_data)
 
+# District of Columbia 
+states_dict.update({'District of Columbia':states_dict['Maryland']})
 
 # Save Results Dictionary as JSON File
 with open(f"data_processors/processed_data/State_Natural_Disaster_Data.json", 'w') as f:

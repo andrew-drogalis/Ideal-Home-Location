@@ -1,4 +1,4 @@
-# United States DayLight Hours Approximation
+# United States Daylight Hours Approximation
 
 # Based on an Average Latitude of 37.5 degrees N for Contential United States
 daily_sunlight_hours_contential = {

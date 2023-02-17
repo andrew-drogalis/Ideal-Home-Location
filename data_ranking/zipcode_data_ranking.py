@@ -18,7 +18,7 @@ with open('./data_processors/processed_data/All_Zipcode_Metrics_Data.json', newl
 with open('./data_processors/processed_data/Zipcode_Prefix_Metrics_Data.json', newline='') as f: 
     zipcode_prefix_metrics_data = json.load(f)
 
-with open('./data_processors/processed_data/City_Metrics_Data.json', newline='') as f: 
+with open('./data_processors/processed_data/Zipcode_Metrics_Data.json', newline='') as f: 
     city_metrics_data = json.load(f)
 
 
@@ -72,7 +72,7 @@ all_zipcode_results.update(walking_biking_results)
 ### Analyze Zipcode Prefix Metrics Data to Determine Relative Severity
 
 zipcode_prefix_results = {}
-city_metrics_results = {}
+zipcode_metrics_results = {}
 # Seperate Data into Individual Lists
 for zipcode_prefix, metrics_data in zipcode_prefix_metrics_data.items():
     
@@ -207,7 +207,7 @@ for city, city_metrics in city_metrics_data.items():
         'Walking_Biking_Work_Percentage': walking_biking_rank
     })
 
-    city_metrics_results.update({city:city_metrics})
+    zipcode_metrics_results.update({city:city_metrics})
 
 
 # ---------------------------------------------------------------------------
@@ -216,8 +216,8 @@ for city, city_metrics in city_metrics_data.items():
 with open(f"data_ranking/ranked_data/Zipcode_Prefix_Ranked_Data.json", 'w') as f:
     json.dump(zipcode_prefix_results, f)
 
-with open(f"data_ranking/ranked_data/City_Ranked_Data.json", 'w') as f:
-    json.dump(city_metrics_results, f)
+with open(f"data_ranking/ranked_data/Zipcode_Ranked_Data.json", 'w') as f:
+    json.dump(zipcode_metrics_results, f)
 
 
 

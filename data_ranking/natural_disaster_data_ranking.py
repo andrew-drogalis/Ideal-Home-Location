@@ -178,8 +178,7 @@ for state, disaster_events in state_disaster_data.items():
             frequency_rank = rank_value(deviation_ratio=frequency_deviation_ratio)
 
         else:
-            # Data Ommited from Analysis
-            pass
+            print(f'Not Enough Data - {disaster_type} Ommited from Ranking')
 
         state_disaster_results[state].append(
             {

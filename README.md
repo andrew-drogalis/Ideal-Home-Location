@@ -6,14 +6,10 @@
 
 ## Getting Started
 
-The application is currently not released.
+To download the project executable see the latest release. See [Usage Overview](#Usage-Overview) for a step by step walkthrough.
 
-Scheduled release date for v0.9.0 is 2/17/23.
+To run the project from source, download the zip file or clone the repository. Once in the project folder, run the setup.py to download the required dependancies. To initalize the application run the main.py from the project home directory.
 
-<!-- To download the project  
-
-To run the project from source run the setup.py to download the required dependancies. Initalize the app through the main.py.
---->
 
 ## Table of Contents
 
@@ -26,7 +22,7 @@ To run the project from source run the setup.py to download the required dependa
 
 ## Usage Overview
 
-The
+The project comes pre-packaged in an executable file. To get staretd, double click the icon and the application window will open.
 
 
 ## Methodology

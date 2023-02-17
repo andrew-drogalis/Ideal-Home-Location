@@ -1,13 +1,33 @@
 from thefuzz import process
 """
     Calculation Utilities
+    Reusable Functions for the Data Analysis Class
 """
 
-# 1 Degree of Latitude is 69 Miles @ 0.6 Miles Per Minute = 115 Minutes / Degree Latitude
+"""
+    Constants:
+    1 Degree of Latitude is 69 Miles @ 0.6 Miles Per Minute = 115 Minutes / Degree Latitude
+    1 Degree of Longitude is 54.6 Miles @ 0.6 Miles Per Minute = 91 Minutes / Degree Longitude
+"""
 minutes_per_degree_lat = 115
-# 1 Degree of Longitude is 54.6 Miles @ 0.6 Miles Per Minute = 91 Minutes / Degree Longitude
 minutes_per_degree_lng = 91
 
+# Return False if Distances too Far Away
+def check_coordinates_distance(max_time: float, coordinate_1: list, coordinate_2: list):
+    # Calculate Differences For Latitude & Longitude
+    coordinate_1_2_lat_difference = abs(coordinate_1[0] - coordinate_2[0]) * minutes_per_degree_lat if coordinate_2 else 0
+    coordinate_1_2_lng_difference = abs(coordinate_1[1] - coordinate_2[1]) * minutes_per_degree_lng if coordinate_2 else 0
+
+    # Calculate Distance w/ Pythagorean theorem
+    coordinate_1_2_hypotenuse = (coordinate_1_2_latitude_difference ** 2 + coordinate_1_2_longitude_difference ** 2) ** (1/2)
+
+    # 2x Max Distance is Not Possible to Find Results - Leave Safety Factor 1.9x
+    max_time *= 1.9
+    if max_time < coordinate_1_2_hypotenuse: 
+        return False
+    return True
+
+#
 def location_radius_search(max_time: float, city_search_list: list, coordinate_1: list, coordinate_2: list = []):
     city_results_list = []
 
@@ -30,21 +50,7 @@ def location_radius_search(max_time: float, city_search_list: list, coordinate_1
 
     return city_results_list
 
-
-def check_coordinates_distance(max_time: float, coordinate_1: list, coordinate_2: list):
-    
-    coordinate_1_2_latitude_difference = abs(coordinate_1[0] - coordinate_2[0]) * minutes_per_degree_lat if coordinate_2 else 0
-    coordinate_1_2_longitude_difference = abs(coordinate_1[1] - coordinate_2[1]) * minutes_per_degree_lng if coordinate_2 else 0
-
-    coordinate_1_2_total_hypotenuse = (coordinate_1_2_latitude_difference ** 2 + coordinate_1_2_longitude_difference ** 2) ** (1/2)
-
-    # Unlikely to Return Any Results 
-    if coordinate_1_2_total_hypotenuse > max_time * 1.9: 
-        return False
-   
-    return True
-
-
+#
 def city_name_zipcode_matcher(state_coordinate_list: list, city: str = '', zipcode: str = ''):
 
         state_city_names = [[*city.keys()][0] for city in state_coordinate_list]

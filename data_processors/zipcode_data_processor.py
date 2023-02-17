@@ -4,6 +4,7 @@ from collections import defaultdict
 from uszipcode import SearchEngine
 sys.path.insert(1, str(pathlib.Path(__file__).parent.parent))
 from data_ranking.math_functions.statistics_analysis import mad_calc
+from constants.usa_states import states_abbreviation
 
 """
     Process the Zipcode Data & Store Results in JSON
@@ -13,12 +14,13 @@ from data_ranking.math_functions.statistics_analysis import mad_calc
 with open('./data_src/USA_Zipcode_3_Digits.csv', newline='') as f: 
     zipcode_prefix_data = list(csv.reader(f))
 
-# Initalize Search Engine & Results Dictionary
+# Initalize Search Engine
 search = SearchEngine(
     simple_or_comprehensive=SearchEngine.SimpleOrComprehensiveArgEnum.comprehensive)
 
+#
 city_metric_data = defaultdict(list)
-city_coordinate_data = defaultdict(list)
+zipcode_coordinate_data = defaultdict(list)
 zipcode_prefix_metric_data = {}
 all_zipcode_data = {
     'Married_Percentage': [],
@@ -431,8 +433,7 @@ for zip_prefix in zipcode_prefix_data:
                 if '...' not in common_city:
                     city_str += f'{common_city}, '
             city_str += f'{city.zipcode}'
-            city_coordinate_data[state].append({city_str:[latitude, longitude]})
-
+            zipcode_coordinate_data[states_abbreviation[state]].append({city_str:[latitude, longitude]})
 
             # Save to Bounds List
             coordinates_dict['West_Bounds'].append(bounds_west)
@@ -443,6 +444,7 @@ for zip_prefix in zipcode_prefix_data:
             coordinates_dict['Longitude'].append(longitude)
 
         # ---------------------------------------------------------
+
         ## Find Averages for Zipcode Prefix Locations
         average_percent_married = [city['Married_Percentage'] for city in city_metric_data[zip_number] if city['Married_Percentage'] is not None]
         average_percent_married = round(mean(average_percent_married), 2) if average_percent_married else None
@@ -486,6 +488,7 @@ for zip_prefix in zipcode_prefix_data:
             combined_persons_total += total_persons_list[x]
             combined_median_persons += median_value * total_persons_list[x]
             combined_distribution_list += distribution_lists[x]
+
         median_home_value = combined_median_persons / combined_persons_total if combined_persons_total else None
         mad_home_value = mad_calc(dataset=combined_distribution_list, median_of_data=median_home_value) if median_home_value else None
 
@@ -501,6 +504,7 @@ for zip_prefix in zipcode_prefix_data:
             combined_persons_total += total_persons_list[x]
             combined_median_persons += median_value * total_persons_list[x]
             combined_distribution_list += distribution_lists[x]
+
         median_household_income = combined_median_persons / combined_persons_total if combined_persons_total else None
         mad_household_income = mad_calc(dataset=combined_distribution_list, median_of_data=median_household_income) if median_household_income else None
 
@@ -522,6 +526,7 @@ for zip_prefix in zipcode_prefix_data:
         southmost_boundary = min(coordinates_dict['South_Bounds'])
         westmost_boundary = max(coordinates_dict['West_Bounds'])
         eastmost_boundary = min(coordinates_dict['East_Bounds'])
+
         # Approximate Center of Area (Exact Not Required)
         average_latitude = round(mean(coordinates_dict['Latitude']), 2)
         average_longitude = round(mean(coordinates_dict['Longitude']), 2)
@@ -569,8 +574,8 @@ with open(f"data_processors/processed_data/Zipcode_Prefix_Metrics_Data.json", 'w
 with open(f"data_processors/processed_data/All_Zipcode_Metrics_Data.json", 'w') as f:
     json.dump(all_zipcode_data, f)
 
-with open(f"data_processors/processed_data/City_Metrics_Data.json", 'w') as f:
+with open(f"data_processors/processed_data/Zipcode_Metrics_Data.json", 'w') as f:
     json.dump(zipcode_metric_data, f)
 
-with open(f"data_ranking/ranked_data/City_Coordinates_Data.json", 'w') as f:
-    json.dump(city_coordinate_data, f)
+with open(f"data_ranking/ranked_data/Zipcode_Coordinates_Data.json", 'w') as f:
+    json.dump(zipcode_coordinate_data, f)

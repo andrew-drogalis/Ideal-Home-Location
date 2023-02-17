@@ -31,20 +31,25 @@ all_weather_data = {
 for zip_prefix in zipcode_prefix_data:
     zip_number = zip_prefix[0]
     zip_prefix_search = search.by_prefix(prefix=zip_number, returns=100)
+
+    # Data Storage
     monthly_temperature_results = defaultdict(list)
     monthly_precipitation_results = defaultdict(list)
     monthly_sunshine_results = defaultdict(list)
     monthly_airpressure_results = defaultdict(list)
+
     if zip_prefix_search:
-        # Analyze Each City in the Zipcode Prefix
+        # Analyze Each Zipcode in the Zipcode Prefix
         zip_prefix_search = iter(zip_prefix_search)
         for city in zip_prefix_search:
+            # City State & Position
             state = city.state
             latitude = city.lat
             longitude = city.lng
             if latitude == 0 or longitude == 0:
                 next(zip_prefix_search, None)
                 continue
+
             # Fetch List of Nearby Stations
             radius_in_m = 20_000 # meters
             while True:
@@ -55,52 +60,67 @@ for zip_prefix in zipcode_prefix_data:
                 for station in station_ids:
                     station_start_year = stations_nearby['monthly_start'][station].year
                     station_end_year = stations_nearby['monthly_end'][station].year
+
                     station_data_length = station_end_year - station_start_year
+
                     if station_end_year >= min_exceptable_end_year:
                         station_data_dict.update({station:station_data_length})
+
                 if station_data_dict:
                     station_id = max(station_data_dict, key = station_data_dict.get)
                     break
-                else: radius_in_m += 20_000
+
+                else: 
+                    radius_in_m += 20_000
+
                 if radius_in_m > 200_000:
                     raise Exception('Confirm Data Source is online and inputs are valid')
+
             # Fetch Data from Nearby Station
             data = Monthly(station_id, start_time, end_time).convert(units.imperial).fetch().to_dict()
-            # Select Relevant Data
-            temperature_avg = data['tavg']
-            precipitation_inch = data['prcp']
+
+            # Select Data to be Analyzed
+            temperature_monthly_avg = data['tavg']
+            precipitation_inches = data['prcp']
             sealevel_airpressure = data['pres'] # Normalized (hPa)
             sunshine_minutes = data['tsun']
+
             # Monthly Keys for 30 years of data
-            datetime_keys = [*temperature_avg.keys()]
+            datetime_keys = [*temperature_monthly_avg.keys()]
             for key in datetime_keys:
-                temp = temperature_avg[key]
-                precipitation = precipitation_inch[key]
+
+                temperature = temperature_monthly_avg[key]
+                precipitation = precipitation_inches[key]
                 sunshine = sunshine_minutes[key]
                 airpressure = sealevel_airpressure[key]
-                if not math.isnan(temp):
-                    monthly_temperature_results[key.month].append(temp)
+
+                if not math.isnan(temperature):
+                    monthly_temperature_results[key.month].append(temperature)
                 if not math.isnan(precipitation):
                     monthly_precipitation_results[key.month].append(precipitation)
                 if not math.isnan(sunshine) and sunshine != 0:
                     monthly_sunshine_results[key.month].append(sunshine)
                 if not math.isnan(airpressure) and airpressure != 0:
                     monthly_airpressure_results[key.month].append(airpressure)
+
         # Temperature Monthly Averages
         temperature_normals = {}
         for month, temp_data in monthly_temperature_results.items():
             average_temp = mean(temp_data)
             temperature_normals.update({month:average_temp})
+
         # Precipitation Monthly Averages
         precipitation_normals = {}
         for month, precipitation_data in monthly_precipitation_results.items():
             average_precipitation = mean(precipitation_data)
             precipitation_normals.update({month:average_precipitation})
+
         # Sunshine Monthly Averages 
         sunshine_normals = {}
         for month, sunshine_data in monthly_sunshine_results.items():
             average_sunshine = mean(sunshine_data)
             sunshine_normals.update({month:average_sunshine})
+
         # Air Pressure Monthly Averages
         airpressure_normals = {}
         for month, airpressure_data in monthly_airpressure_results.items():
@@ -141,9 +161,10 @@ for zip_prefix in zipcode_prefix_data:
                 Assumption: High Air Pressure and Low Air Pressure is not 100% Clear Sky and 0% Clear Sky respectively. 
                             Exceptable Values are 80% Clear Sky for High Air Pressure and 20% Clear Sky for Low Air Pressure
             """
-            sunshine_normals = {}
             high_pressure = 1022
             low_pressure = 1009
+
+            sunshine_normals = {}
             for month, airpressure in airpressure_normals.items():
                 month = f'{month}'
                 # Linear Interpolation 
@@ -186,6 +207,8 @@ for zip_prefix in zipcode_prefix_data:
     else:
         print(f'No USA Cities at {zip_number} Prefix')
 
+
+# ------------------------------------------------------
 
 # Save Results Dictionary as JSON File
 with open(f"data_processors/processed_data/Zipcode_Prefix_Weather_Data.json", 'w') as f:
