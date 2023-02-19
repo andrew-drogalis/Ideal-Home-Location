@@ -32,7 +32,6 @@ class IdealHomeDataAnalysis():
         self.merged_zipcode_coordinate_data = [zipcode for state_coordinate_list in [*self.zipcode_coordinate_data.values()] for zipcode in state_coordinate_list]
 
 
-
     def family_location_frame_1(self, state: str, city: str = '', zipcode: str = ''):
 
         state_coordinate_list = self.zipcode_coordinate_data[state]

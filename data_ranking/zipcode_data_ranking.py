@@ -99,42 +99,42 @@ for zipcode_prefix, metrics_data in zipcode_prefix_metrics_data.items():
     families_with_children_deviation_ratio = (families_with_children - families_with_children_median) / families_with_children_mad if families_with_children else None
     families_with_children_rank = rank_value(deviation_ratio=families_with_children_deviation_ratio) if families_with_children else None
 
-    #
+    # Home Occupancy Median & MAD for ALL Nationwide Data
     home_occupancy_median = all_zipcode_results['Median_Home_Occupancy']
     home_occupancy_mad = all_zipcode_results['MAD_Home_Occupancy']
 
     home_occupancy_deviation_ratio = (home_occupancy - home_occupancy_median) / home_occupancy_mad if home_occupancy else None
     home_occupancy_rank = rank_value(deviation_ratio=home_occupancy_deviation_ratio) if home_occupancy else None
 
-    #
+    # Employment Percentage Median & MAD for ALL Nationwide Data
     employment_percent_median = all_zipcode_results['Median_Employment_Percentage']
     employment_percent_mad = all_zipcode_results['MAD_Employment_Percentage']
 
     employment_percent_deviation_ratio = (employment_percent - employment_percent_median) / employment_percent_mad if employment_percent else None
     employment_percent_rank = rank_value(deviation_ratio=employment_percent_deviation_ratio) if employment_percent else None
 
-    #
+    # School Enrollment Median & MAD for ALL Nationwide Data
     school_enrollment_median = all_zipcode_results['Median_School_Enrollment_Percentage']
     school_enrollment_mad = all_zipcode_results['MAD_School_Enrollment_Percentage']
 
     school_enrollment_deviation_ratio = (school_enrollment - school_enrollment_median) / school_enrollment_mad if school_enrollment else None
     school_enrollment_rank = rank_value(deviation_ratio=school_enrollment_deviation_ratio) if school_enrollment else None
 
-    #
+    # Motor Vehicle Usage Median & MAD for ALL Nationwide Data
     motor_vehicle_median = all_zipcode_results['Median_Motor_Vehicle_Work_Percentage']
     motor_vehicle_mad = all_zipcode_results['MAD_Motor_Vehicle_Work_Percentage']
 
     motor_vehicle_deviation_ratio = (motor_vehicle - motor_vehicle_median) / motor_vehicle_mad if motor_vehicle else None
     motor_vehicle_rank = rank_value(deviation_ratio=motor_vehicle_deviation_ratio) if motor_vehicle else None
 
-    #
+    # Public Transportation Usage Mean & STDV for ALL Nationwide Data
     public_transportation_mean = all_zipcode_results['Mean_Public_Transportation_Work_Percentage']
     public_transportation_stdv = all_zipcode_results['Standard_Deviation_Public_Transportation_Work_Percentage']
 
     public_transportation_deviation_ratio = (public_transportation - public_transportation_mean) / public_transportation_stdv if public_transportation else None
     public_transportation_rank = rank_value_skewed(deviation_ratio=public_transportation_deviation_ratio) if public_transportation else None
 
-    #
+    # Wilking & Biking Usage Mean & STDV for ALL Nationwide Data
     walking_biking_mean = all_zipcode_results['Mean_Walking_Biking_Work_Percentage']
     walking_biking_stdv = all_zipcode_results['Standard_Deviation_Walking_Biking_Work_Percentage']
 

@@ -1,5 +1,5 @@
 import customtkinter
-import tkintermapview
+from tkintermapview import TkinterMapView
 import sys, pathlib, webbrowser
 from PIL import Image
 from tkextrafont import Font
@@ -24,20 +24,17 @@ class App(customtkinter.CTk):
         self.geometry(f"{1100}x{950}")
 
         # Load Custom Fonts
-        Font(file="assets/fonts/Neuton-Regular.ttf")
-        Font(file="assets/fonts/Cabin-Regular.ttf")
-        Font(file="assets/fonts/Cabin-Medium.ttf")
-        Font(file="assets/fonts/Cabin-SemiBold.ttf")
+        Font(file="assets/fonts/Telex-Regular.ttf")
         Font(file="assets/fonts/Cabin-Bold.ttf")
         
-        title_font = customtkinter.CTkFont(family='Neuton', size=24, weight="normal")
-        regular_font = customtkinter.CTkFont(family='Cabin', size=16, weight="normal")
-        large_font = customtkinter.CTkFont(family='Cabin', size=20, weight="normal")
-        bold_font = customtkinter.CTkFont(family='Cabin', size=16, weight="bold")
+        title_font = customtkinter.CTkFont(family='Cabin', size=28, weight="bold")
+        regular_font = customtkinter.CTkFont(family='Telex', size=16, weight="normal")
+        large_font = customtkinter.CTkFont(family='Telex', size=20, weight="normal")
 
         # Configure App Grid Layout (4x4)
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(3, weight=1)
+
 
         """ 
             Header Frame 
@@ -47,13 +44,13 @@ class App(customtkinter.CTk):
         self.header_frame.grid_rowconfigure(0, weight=1)
         self.header_frame.grid_columnconfigure(1, weight=1)
         # Logo Image
-        self.bg_image = customtkinter.CTkImage(Image.open(current_path + "/assets/images/Ideal_Home_Location_Matcher.png"),size=(360, 85))
+        self.bg_image = customtkinter.CTkImage(Image.open(current_path + "/assets/images/Ideal_Home_Location_Matcher.png"),size=(358, 87))
         self.bg_image_label = customtkinter.CTkLabel(self.header_frame, text='', image=self.bg_image)
         self.bg_image_label.grid(row=0, column=0, padx=20, pady=(10, 10), sticky='nw')
         # Github Link
         self.github_image = customtkinter.CTkImage(light_image=Image.open(current_path + "/assets/images/github-mark.png"),dark_image=Image.open(current_path + "/assets/images/github-mark-white.png"), size=(76, 25))
         self.github_button = customtkinter.CTkButton(self.header_frame, image=self.github_image, width=90, hover_color=('#fff','#000'), text='', compound='right', fg_color='transparent', bg_color='transparent', command=self.github_more_information)
-        self.github_button.grid(row=0, column=1, padx=10, pady=(10, 10), sticky='ne')
+        self.github_button.grid(row=0, column=1, padx=10, pady=(10, 10), sticky='e')
 
         """ 
             Sidebar Frame 
@@ -321,7 +318,7 @@ class App(customtkinter.CTk):
         self.work_details_seg_button_1.set("Single")
 
 
-        self.work_details_label2 = customtkinter.CTkLabel(self.work_details_frame, text="How important is it to be around people with the same relationship status as you?", font=large_font)
+        self.work_details_label2 = customtkinter.CTkLabel(self.work_details_frame, text="How important is it to have a large amount of employment opportunities?", font=large_font)
         self.work_details_label2.grid(row=3, column=0, columnspan=4, padx=40, pady=(20, 15), sticky='')
 
         self.work_details_seg_button_2 = customtkinter.CTkSegmentedButton(self.work_details_frame, font=regular_font)
@@ -330,7 +327,7 @@ class App(customtkinter.CTk):
         self.work_details_seg_button_2.set("3")
 
 
-        self.work_details_label3 = customtkinter.CTkLabel(self.work_details_frame, text="Do you have children?", font=large_font)
+        self.work_details_label3 = customtkinter.CTkLabel(self.work_details_frame, text="Do you have to commute to work?", font=large_font)
         self.work_details_label3.grid(row=5, column=0, columnspan=4, padx=40, pady=(20, 15), sticky='')
 
 
@@ -339,21 +336,21 @@ class App(customtkinter.CTk):
         self.work_details_seg_button_3.configure(values=["Yes", "No"])
         self.work_details_seg_button_3.set("Yes")
 
-        self.work_details_label4 = customtkinter.CTkLabel(self.work_details_frame, text="How important is it to be around people with the same family status as you?", font=large_font)
+        self.work_details_label4 = customtkinter.CTkLabel(self.work_details_frame, text="What is your prefered method of getting to work?", font=large_font)
         self.work_details_label4.grid(row=7, column=0, columnspan=4, padx=40, pady=(20, 15), sticky='')
 
         self.work_details_seg_button_4 = customtkinter.CTkSegmentedButton(self.work_details_frame, font=regular_font)
         self.work_details_seg_button_4.grid(row=8, column=0, columnspan=4, padx=(20, 10), pady=(10, 10), sticky="ew")
-        self.work_details_seg_button_4.configure(values=["1", "2", "3", "4", "5"])
-        self.work_details_seg_button_4.set("3")
+        self.work_details_seg_button_4.configure(values=["Car, Truck, Personal Vehicle", "Public Transportation", "Walking or Biking"])
+        self.work_details_seg_button_4.set("Car, Truck, Personal Vehicle")
 
-        self.work_details_label5 = customtkinter.CTkLabel(self.work_details_frame, text="How important is it to have a large percent of the children enrolled in school?", font=large_font)
+        self.work_details_label5 = customtkinter.CTkLabel(self.work_details_frame, text="What is your ideal commute time?", font=large_font)
         self.work_details_label5.grid(row=9, column=0, columnspan=4, padx=40, pady=(20, 15), sticky='')
 
         self.work_details_seg_button_5 = customtkinter.CTkSegmentedButton(self.work_details_frame, font=regular_font)
         self.work_details_seg_button_5.grid(row=10, column=0, columnspan=4, padx=(20, 10), pady=(10, 10), sticky="ew")
-        self.work_details_seg_button_5.configure(values=["1", "2", "3", "4", "5"])
-        self.work_details_seg_button_5.set("3")
+        self.work_details_seg_button_5.configure(values=["Less than 20 minutes", "Less than 30 minutes", "Less than 40 minutes", "Flexible"])
+        self.work_details_seg_button_5.set("Flexible")
 
         self.work_details_button_1 = customtkinter.CTkButton(master=self.work_details_frame, text='Next', border_width=2, text_color=("gray10", "#DCE4EE"), font=regular_font, command=self.frame_2b_forward_event)
         self.work_details_button_1.grid(row=11, column=2, padx=(20, 20), pady=(20, 20), sticky="s")
@@ -366,89 +363,142 @@ class App(customtkinter.CTk):
             Income Metrics Frame 3
         """
         self.income_frame = customtkinter.CTkFrame(self, corner_radius=0)
-        #self.income_frame.grid(row=0, column=0, rowspan=4, columnspan=3, sticky="nsew")
-        self.income_frame.grid_rowconfigure(3, weight=1)
+        self.income_frame.grid_rowconfigure(11, weight=1)
         self.income_frame.grid_columnconfigure(0, weight=1)
 
-        self.income_label = customtkinter.CTkLabel(self.income_frame, text="Current Income Information", font=title_font)
-        self.income_label.grid(row=1, column=0, padx=20, columnspan=4, pady=(20, 15), sticky='')
+        self.income_label = customtkinter.CTkLabel(self.income_frame, text="Income Information", font=title_font)
+        self.income_label.grid(row=0, column=0, padx=20, columnspan=3, pady=(20, 15), sticky='')
 
 
-        self.income_label1 = customtkinter.CTkLabel(self.income_frame, text="What is your current household income?:", font=regular_font)
-        self.income_label1.grid(row=2, column=0, padx=40, pady=(20, 15), sticky='')
+        self.income_label1 = customtkinter.CTkLabel(self.income_frame, text="What is your annual household income?", font=large_font)
+        self.income_label1.grid(row=1, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
+
+        self.income_label2 = customtkinter.CTkLabel(self.income_frame, text="Do you need to take out a morgage? What term length fits you?", font=large_font)
+        self.income_label2.grid(row=3, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
+
+        self.income_label3 = customtkinter.CTkLabel(self.income_frame, text="What interest rate do you expect to receice?", font=large_font)
+        self.income_label3.grid(row=5, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
+
+        self.income_label4 = customtkinter.CTkLabel(self.income_frame, text="What percent of your budget can you allocated to home expenses? (Morgage, Tax, Insurance)", font=large_font)
+        self.income_label4.grid(row=7, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
+
+        # Change to Entry if Cash
+        self.income_label5 = customtkinter.CTkLabel(self.income_frame, text="Your Afforadable Home Price is $250,000. Adjustments?", font=large_font)
+        self.income_label5.grid(row=9, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
+
 
         self.income_button_1 = customtkinter.CTkButton(master=self.income_frame, text='Next', border_width=2, text_color=("gray10", "#DCE4EE"), font=regular_font, command=self.frame_3_forward_event)
-        self.income_button_1.grid(row=3, column=3, padx=(20, 20), pady=(20, 20), sticky="s")
+        self.income_button_1.grid(row=12, column=2, padx=(20, 20), pady=(20, 20), sticky="s")
      
         self.income_button_2 = customtkinter.CTkButton(master=self.income_frame, text='Previous', border_width=2, text_color=("gray10", "#DCE4EE"), font=regular_font, command=self.frame_3_backward_event)
-        self.income_button_2.grid(row=3, column=0, padx=(20, 20), pady=(20, 20), sticky="sw")
+        self.income_button_2.grid(row=12, column=0, padx=(20, 20), pady=(20, 20), sticky="sw")
 
         
         """ 
             Area Classification Frame 4
         """
         self.area_classification_frame = customtkinter.CTkFrame(self, corner_radius=0)
-        #self.area_classification_frame.grid(row=0, column=0, rowspan=4, columnspan=3, sticky="nsew")
-        self.area_classification_frame.grid_rowconfigure(3, weight=1)
+        self.area_classification_frame.grid_rowconfigure(10, weight=1)
         self.area_classification_frame.grid_columnconfigure(0, weight=1)
 
         self.area_classification_label = customtkinter.CTkLabel(self.area_classification_frame, text="Ideal Lifestyle Preferences", font=title_font)
-        self.area_classification_label.grid(row=1, column=0, padx=20, columnspan=4, pady=(20, 15), sticky='')
+        self.area_classification_label.grid(row=0, column=0, padx=20, columnspan=3, pady=(20, 15), sticky='')
+
+        self.area_classification_label1 = customtkinter.CTkLabel(self.area_classification_frame, text="What level of education do you have?", font=large_font)
+        self.area_classification_label1.grid(row=1, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
+
+        self.area_classification_label2 = customtkinter.CTkLabel(self.area_classification_frame, text="How important is it to be around people with the same education level as you?", font=large_font)
+        self.area_classification_label2.grid(row=3, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
+
+
+        self.area_classification_label3 = customtkinter.CTkLabel(self.area_classification_frame, text="What kind of living environment do you prefer?", font=large_font)
+        self.area_classification_label3.grid(row=5, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
+
 
         self.area_classification_button_1 = customtkinter.CTkButton(master=self.area_classification_frame, text='Next', border_width=2, text_color=("gray10", "#DCE4EE"), font=regular_font, command=self.frame_4_forward_event)
-        self.area_classification_button_1.grid(row=3, column=3, padx=(20, 20), pady=(20, 20), sticky="s")
+        self.area_classification_button_1.grid(row=11, column=2, padx=(20, 20), pady=(20, 20), sticky="s")
      
         self.area_classification_button_2 = customtkinter.CTkButton(master=self.area_classification_frame, text='Previous', border_width=2, text_color=("gray10", "#DCE4EE"), font=regular_font, command=self.frame_4_backward_event)
-        self.area_classification_button_2.grid(row=3, column=0, padx=(20, 20), pady=(20, 20), sticky="sw")
+        self.area_classification_button_2.grid(row=11, column=0, padx=(20, 20), pady=(20, 20), sticky="sw")
 
         """ 
             Weather Metrics Frame 5
         """
         self.weather_frame = customtkinter.CTkFrame(self, corner_radius=0)
-        #self.weather_frame.grid(row=0, column=0, rowspan=4, columnspan=3, sticky="nsew")
-        self.weather_frame.grid_rowconfigure(3, weight=1)
+        self.weather_frame.grid_rowconfigure(11, weight=1)
         self.weather_frame.grid_columnconfigure(0, weight=1)
 
         self.weather_label = customtkinter.CTkLabel(self.weather_frame, text="Weather & Temperature Preferences", font=title_font)
-        self.weather_label.grid(row=1, column=0, padx=20, columnspan=4, pady=(20, 15), sticky='')
+        self.weather_label.grid(row=0, column=0, padx=20, columnspan=3, pady=(20, 15), sticky='')
+
+        self.weather_label1 = customtkinter.CTkLabel(self.weather_frame, text="How many Seasons do you prefer?", font=large_font)
+        self.weather_label1.grid(row=1, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
+
+        self.weather_label1 = customtkinter.CTkLabel(self.weather_frame, text="What is your ideal summer temperature?", font=large_font)
+        self.weather_label1.grid(row=3, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
+
+        self.weather_label1 = customtkinter.CTkLabel(self.weather_frame, text="What is your ideal winter temperature?", font=large_font)
+        self.weather_label1.grid(row=5, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
+
+        self.weather_label1 = customtkinter.CTkLabel(self.weather_frame, text="What level of yearly precipitation do you prefer?", font=large_font)
+        self.weather_label1.grid(row=7, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
+
+        self.weather_label1 = customtkinter.CTkLabel(self.weather_frame, text="What level of yearly sunshine do you prefer?", font=large_font)
+        self.weather_label1.grid(row=9, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
+
 
         self.weather_button_1 = customtkinter.CTkButton(master=self.weather_frame, text='Get Started', border_width=2, text_color=("gray10", "#DCE4EE"), font=regular_font, command=self.frame_5_forward_event)
-        self.weather_button_1.grid(row=3, column=3, padx=(20, 20), pady=(20, 20), sticky="s")
+        self.weather_button_1.grid(row=12, column=2, padx=(20, 20), pady=(20, 20), sticky="s")
      
         self.weather_button_2 = customtkinter.CTkButton(master=self.weather_frame, text='Get Started', border_width=2, text_color=("gray10", "#DCE4EE"), font=regular_font, command=self.frame_5_backward_event)
-        self.weather_button_2.grid(row=3, column=0, padx=(20, 20), pady=(20, 20), sticky="sw")
+        self.weather_button_2.grid(row=12, column=0, padx=(20, 20), pady=(20, 20), sticky="sw")
         
         """ 
             Natural Disaster Risk Frame 6
         """
         self.natural_disaster_frame = customtkinter.CTkFrame(self, corner_radius=0)
-        #self.natural_disaster_frame.grid(row=0, column=0, rowspan=4, columnspan=3, sticky="nsew")
-        self.natural_disaster_frame.grid_rowconfigure(3, weight=1)
+        self.natural_disaster_frame.grid_rowconfigure(10, weight=1)
         self.natural_disaster_frame.grid_columnconfigure(0, weight=1)
 
         self.natural_disaster_label = customtkinter.CTkLabel(self.natural_disaster_frame, text="Natural Disaster Risk Tolerance", font=title_font)
-        self.natural_disaster_label.grid(row=1, column=0, padx=20, columnspan=4, pady=(20, 15), sticky='')
+        self.natural_disaster_label.grid(row=0, column=0, padx=20, columnspan=3, pady=(20, 15), sticky='')
+
+        self.natural_disaster_label1 = customtkinter.CTkLabel(self.natural_disaster_frame, text="How imporant is it to migitate natural disaster risk?", font=large_font)
+        self.natural_disaster_label1.grid(row=1, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
+
+        self.natural_disaster_label1 = customtkinter.CTkLabel(self.natural_disaster_frame, text="Which natural disasters are most important for you to avoid?", font=large_font)
+        self.natural_disaster_label1.grid(row=3, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
+
+    
 
         self.natural_disaster_button_1 = customtkinter.CTkButton(master=self.natural_disaster_frame, text='Get Started', border_width=2, text_color=("gray10", "#DCE4EE"), font=regular_font, command=self.frame_6_forward_event)
-        self.natural_disaster_button_1.grid(row=3, column=3, padx=(20, 20), pady=(20, 20), sticky="s")
+        self.natural_disaster_button_1.grid(row=11, column=2, padx=(20, 20), pady=(20, 20), sticky="s")
      
         self.natural_disaster_button_2 = customtkinter.CTkButton(master=self.natural_disaster_frame, text='Get Started', border_width=2, text_color=("gray10", "#DCE4EE"), font=regular_font, command=self.frame_6_backward_event)
-        self.natural_disaster_button_2.grid(row=3, column=0, padx=(20, 20), pady=(20, 20), sticky="sw")
+        self.natural_disaster_button_2.grid(row=11, column=0, padx=(20, 20), pady=(20, 20), sticky="sw")
 
         """ 
             Results Frame 7
         """
         self.results_frame = customtkinter.CTkFrame(self, corner_radius=0)
-        #self.natural_disaster_frame.grid(row=0, column=0, rowspan=4, columnspan=3, sticky="nsew")
-        self.results_frame.grid_rowconfigure(3, weight=1)
+        self.results_frame.grid_rowconfigure(10, weight=1)
         self.results_frame.grid_columnconfigure(0, weight=1)
 
+        self.results_label = customtkinter.CTkLabel(self.results_frame, text="I", font=title_font)
+        self.results_label.grid(row=0, column=0, padx=20, columnspan=3, pady=(20, 15), sticky='')
+
+
+        self.map_widget = TkinterMapView(self.results_frame, corner_radius=0)
+        self.map_widget.grid(row=10, column=0, columnspan=3, sticky="nswe", padx=(0, 0), pady=(0, 0))
+        self.map_widget.set_tile_server("https://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}&s=Ga", max_zoom=22)
+        # Set default values
+        self.map_widget.set_address("Berlin")
 
         self.results_button_1 = customtkinter.CTkButton(master=self.results_frame, text='Previous', border_width=2, text_color=("gray10", "#DCE4EE"), font=regular_font, command=self.frame_7_backward_event)
-        self.results_button_1.grid(row=3, column=0, padx=(20, 20), pady=(20, 20), sticky="sw")
+        self.results_button_1.grid(row=11, column=0, padx=(20, 20), pady=(20, 20), sticky="sw")
 
         self.results_button_2 = customtkinter.CTkButton(master=self.results_frame, text='Restart', border_width=2, text_color=("gray10", "#DCE4EE"), font=regular_font, command=self.frame_7_restart_event)
-        self.results_button_2.grid(row=3, column=3, padx=(20, 20), pady=(20, 20), sticky="sw")
+        self.results_button_2.grid(row=11, column=2, padx=(20, 20), pady=(20, 20), sticky="sw")
 
 
     def seg_button_family_location(self, param: str):
@@ -456,6 +506,7 @@ class App(customtkinter.CTk):
 
     def seg_button_family_location_2(self, param: str):
         print(param)
+
 
     # ----------------------- Navigation Buttons ---------------------------
 

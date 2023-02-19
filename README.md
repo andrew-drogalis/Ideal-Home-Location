@@ -2,18 +2,16 @@
     <img src="https://raw.githubusercontent.com/andrew-drogalis/Ideal-Home-Location-Matcher/main/assets/images/Ideal_Home_Location_Matcher.png" alt="Ideal-Home-Location-Matcher">
 </div>
 
-# Ideal-Home-Location-Matcher
-
 ## Getting Started
 
-To download the project executable navigate to the [Latest Release](https://github.com/andrew-drogalis/Ideal-Home-Location-Matcher/releases). For a step by step walkthrough see the [Usage Overview](#Usage-Overview).
+To download the project executable navigate to the [Latest Release](https://github.com/andrew-drogalis/Ideal-Home-Location-Matcher/releases). For a step by step usage guide see the [Usage Overview](#Usage-Overview) tutorial.
 
 Alternatively, download the zip file or clone the repository to run the program from source. Navigate to the project folder and use the setup.py file to download the required dependancies. Finally, intialize the application through the main.py file.
 
 
 ## Table of Contents
 
-* [Getting Started](#Getting-Started)
+
 * [Usage Overview](#Usage-Overview)
 * [Methodology](#Methodology)
 * [Future Improvements](#Future-Improvements)
