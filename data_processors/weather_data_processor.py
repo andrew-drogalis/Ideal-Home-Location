@@ -60,20 +60,20 @@ for zip_prefix in zipcode_prefix_data:
                 for station in station_ids:
                     station_start_year = stations_nearby['monthly_start'][station].year
                     station_end_year = stations_nearby['monthly_end'][station].year
-
+                    # Total Data Length
                     station_data_length = station_end_year - station_start_year
-
+                    # Verify Data is Recent
                     if station_end_year >= min_exceptable_end_year:
                         station_data_dict.update({station:station_data_length})
-
+        
                 if station_data_dict:
                     station_id = max(station_data_dict, key = station_data_dict.get)
                     break
-
+                # Expand Search Radius
                 else: 
                     radius_in_m += 20_000
-
-                if radius_in_m > 200_000:
+                
+                if radius_in_m > 200_000: # Max Radius is 120 Miles
                     raise Exception('Confirm Data Source is online and inputs are valid')
 
             # Fetch Data from Nearby Station

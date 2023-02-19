@@ -6,9 +6,9 @@
 
 ## Getting Started
 
-To download the project executable see the latest release. See [Usage Overview](#Usage-Overview) for a step by step walkthrough.
+To download the project executable navigate to the [Latest Release](https://github.com/andrew-drogalis/Ideal-Home-Location-Matcher/releases). For a step by step walkthrough see the [Usage Overview](#Usage-Overview).
 
-To run the project from source, download the zip file or clone the repository. Once in the project folder, run the setup.py to download the required dependancies. To initalize the application run the main.py from the project home directory.
+Alternatively, download the zip file or clone the repository to run the program from source. Navigate to the project folder and use the setup.py file to download the required dependancies. Finally, intialize the application through the main.py file.
 
 
 ## Table of Contents
@@ -22,7 +22,9 @@ To run the project from source, download the zip file or clone the repository. O
 
 ## Usage Overview
 
-The project comes pre-packaged in an executable file. To get staretd, double click the icon and the application window will open.
+The project comes pre-packaged in an executable file. To get started, double click the icon and the application window will open.
+
+The introduction page
 
 
 ## Methodology
@@ -33,6 +35,7 @@ The methodology can be found in the [GitHub Wiki](https://github.com/andrew-drog
 ## Future Improvements
 
 * Include FEMA Flood Map Data
+* Provide Downloadable Data Sheet with Results
 
 ## License
 

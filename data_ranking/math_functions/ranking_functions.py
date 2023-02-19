@@ -8,7 +8,7 @@
         - Below Average: Between -1.0 and -2.0 Deviations from the Median
         - Well Below Average: Outside -2.0 Deviations from the Median
     Usage:
-        -
+        - For Determining Closeness to the Center for Data where the Skewness is Negligable for our Analysis
 """
 def rank_value(deviation_ratio: float):
     # Return Rank for Median & Median Absolute Deviation Type Data
@@ -23,7 +23,7 @@ def rank_value(deviation_ratio: float):
         - Low: Between 1.0 and 0.0 Standard Deviations from the Mean
         - No Risk: Less thank 0.0 Standard Deviations from the Mean
     Usage:
-        -
+        - For Determining Extreme Values for Highly Skewed Data. Used to Isolate High Risk / High Likelihood Rare occurrences.
 """
 def rank_value_skewed(deviation_ratio: float, rank_label='zipcode'):
     # Return Rank for Mean & Standard Deviation Type Data

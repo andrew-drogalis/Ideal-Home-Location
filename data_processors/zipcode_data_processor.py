@@ -18,7 +18,7 @@ with open('./data_src/USA_Zipcode_3_Digits.csv', newline='') as f:
 search = SearchEngine(
     simple_or_comprehensive=SearchEngine.SimpleOrComprehensiveArgEnum.comprehensive)
 
-#
+# Data Storage
 city_metric_data = defaultdict(list)
 zipcode_coordinate_data = defaultdict(list)
 zipcode_prefix_metric_data = {}
@@ -377,6 +377,7 @@ for zip_prefix in zipcode_prefix_data:
             """
             population_density = int(city.population_density or 0)
             if population_density:
+                # Based on Reference Above
                 area_classification = 'Hyper Urban' if population_density >= 5000 else 'Urban' if 5000 > population_density >= 1000 else 'Suburban' if 1000 > population_density >= 500 else 'Rural' if 500 > population_density >= 100 else 'Hyper Rural'
             else:
                 area_classification = None
@@ -561,7 +562,7 @@ for zip_prefix in zipcode_prefix_data:
     else:
         print(f'No USA Cities at {zip_number} Prefix')
 
-# 
+# Refactor Data Structure for Faster Runtime Search
 zipcode_metric_data = {}
 for cities_list in [*city_metric_data.values()]:
     for city in cities_list:

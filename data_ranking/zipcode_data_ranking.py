@@ -6,9 +6,9 @@ from math_functions.ranking_functions import rank_value, rank_value_skewed
 """
     Rank the Zipcode Data & Store Results in JSON
 
-    Only Rainfall and Sunshine are Ranked on a National Level
-    The Temperature will be user selected.
-    Rational: Users typically know comfortable temperature data as a number, but rainfall and sunshine in terms of qualitative amounts. example: "A lot of rainfall" NOT " 1.4 inches of rainfall"
+    Only The Zipcode Metrics Provided in this File will be Ranked on a National Level
+    All others will be quantitatively user selected.
+    Rational: Users typically know income, household values, and education data as a number, but other metrics in terms of qualitative amounts. example: "A high percentage of married people" NOT "17.4% of married persons"
 """
 
 # Import Processed Zipcode Data
@@ -22,7 +22,7 @@ with open('./data_processors/processed_data/Zipcode_Metrics_Data.json', newline=
     city_metrics_data = json.load(f)
 
 
-### Analyze ALL National Disaster Data to Determine Relative Severity
+### Analyze ALL Zipcode Metrics Data
 
 all_zipcode_results = {}
 # Separate Data into Individual Lists
@@ -69,11 +69,11 @@ walking_biking_results = statistics_calc(dataset=walking_biking_list, name_of_da
 all_zipcode_results.update(walking_biking_results)
 
 
-### Analyze Zipcode Prefix Metrics Data to Determine Relative Severity
+### Analyze Zipcode Prefix Metrics Data to Rank Values
 
 zipcode_prefix_results = {}
 zipcode_metrics_results = {}
-# Seperate Data into Individual Lists
+# Check
 for zipcode_prefix, metrics_data in zipcode_prefix_metrics_data.items():
     
     married_percent = metrics_data['Married_Percentage']
@@ -85,14 +85,14 @@ for zipcode_prefix, metrics_data in zipcode_prefix_metrics_data.items():
     public_transportation = metrics_data['Public_Transportation_Work_Percentage']
     walking_biking = metrics_data['Walking_Biking_Work_Percentage']
 
-    #
+    # Married Percent Median & MAD for ALL Nationwide Data
     married_percent_median = all_zipcode_results['Median_Married_Percentage']
     married_percent_mad = all_zipcode_results['MAD_Married_Percentage']
 
     married_percent_deviation_ratio = (married_percent - married_percent_median) / married_percent_mad if married_percent else None
     married_percent_rank = rank_value(deviation_ratio=married_percent_deviation_ratio) if married_percent else None
 
-    #
+    # Families with Children Median & MAD for ALL Nationwide Data
     families_with_children_median = all_zipcode_results['Median_Families_with_Children']
     families_with_children_mad = all_zipcode_results['MAD_Families_with_Children']
 
@@ -157,7 +157,7 @@ for zipcode_prefix, metrics_data in zipcode_prefix_metrics_data.items():
     zipcode_prefix_results.update({zipcode_prefix:metrics_data})
 
 
-### Analyze Zipcode Prefix Metrics Data to Determine Relative Severity
+### Analyze Zipcode Metrics Data to Rank Values
 
 for city, city_metrics in city_metrics_data.items():
     

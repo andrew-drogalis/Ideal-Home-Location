@@ -19,7 +19,7 @@ with open('./data_processors/processed_data/All_Weather_Data.json', newline='') 
     all_weather_data = json.load(f)
 
 
-### Analyze ALL Weather Data to Determine Centroid and Deviation
+### Analyze ALL Weather Data
 
 all_weather_results = {}
 # Separate Data into Individual Lists
@@ -35,18 +35,20 @@ sunshine_results = statistics_calc(dataset=sunshine_list, name_of_data="Yearly_S
 all_weather_results.update(sunshine_results)
 
 
-### Analyze Zipcode Weather Data to Determine Precipitation and Sunshine Ranking on a National Level
+### Analyze Zipcode Prefix Weather Data
 
 zip_code_weather_results = {}
-# 
+# Check Each Zipcode Prefix to Determine Precipitation and Sunshine Ranking on a National Level
 for zipcode_prefix, weather_data in zipcode_weather_data.items():
-    #
+    
     precipitation_inches = weather_data['Yearly_Precipitation']
     sunshine_minutes = weather_data['Yearly_Sunshine']
 
-    # 
+    # Precipitation Median & MAD for All Nationwide Data
     precipitation_median = all_weather_results['Median_Yearly_Precipitation']
     precipitation_mad = all_weather_results['MAD_Yearly_Precipitation']
+
+    # Sunshine Median & MAD for All Nationwide Data
     sunshine_median = all_weather_results['Median_Yearly_Sunshine']
     sunshine_mad = all_weather_results['MAD_Yearly_Sunshine']
     
