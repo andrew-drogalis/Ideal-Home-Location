@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="https://raw.githubusercontent.com/andrew-drogalis/Ideal-Home-Location-Matcher/main/assets/images/Ideal_Home_Location_Matcher.png" alt="Ideal-Home-Location-Matcher">
+    <img src="https://raw.githubusercontent.com/andrew-drogalis/Ideal-Home-Location-Matcher/main/assets/images/Ideal_Home_Location_Matcher.png" alt="Ideal-Home-Location-Matcher" style="width: 600px">
 </div>
 
 ## Getting Started
