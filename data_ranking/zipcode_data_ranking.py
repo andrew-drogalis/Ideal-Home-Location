@@ -73,7 +73,7 @@ all_zipcode_results.update(walking_biking_results)
 
 zipcode_prefix_results = {}
 zipcode_metrics_results = {}
-# Check
+# Check All Zipcode Prefix for Deviation from Median & Rank Data
 for zipcode_prefix, metrics_data in zipcode_prefix_metrics_data.items():
     
     married_percent = metrics_data['Married_Percentage']
@@ -158,7 +158,6 @@ for zipcode_prefix, metrics_data in zipcode_prefix_metrics_data.items():
 
 
 ### Analyze Zipcode Metrics Data to Rank Values
-
 for city, city_metrics in city_metrics_data.items():
     
     married_percent = city_metrics['Married_Percentage']
@@ -170,7 +169,7 @@ for city, city_metrics in city_metrics_data.items():
     public_transportation = city_metrics['Public_Transportation_Work_Percentage']
     walking_biking = city_metrics['Walking_Biking_Work_Percentage']
 
-    # 
+    # Deviation from Median or Mean (See Ranking Functions) and Determine Rank
     married_percent_deviation_ratio = (married_percent - married_percent_median) / married_percent_mad if married_percent else None
     married_percent_rank = rank_value(deviation_ratio=married_percent_deviation_ratio) if married_percent else None
 
