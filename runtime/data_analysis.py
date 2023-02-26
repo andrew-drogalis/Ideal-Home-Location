@@ -1,5 +1,5 @@
 import json
-from runtime.utilities.calculation_utilities import location_radius_search
+from runtime.utilities.calculation_utilities import location_radius_search, check_coordinates_distance
 from runtime.utilities.state_abbreviations import states_abbreviation_list
 from thefuzz import process
 
@@ -33,8 +33,21 @@ class IdealHomeDataAnalysis():
         self.merged_zipcode_coordinate_data = [zipcode for state_coordinate_list in [*self.zipcode_coordinate_data.values()] for zipcode in state_coordinate_list]
 
         # Store Coordinates of Family & Work Locations
-        self.saved_coordinates_list = ['', '', '']
+        self.saved_coordinates_list = [[], [], []]
 
+
+    def find_middle_distance(self):
+
+        if self.saved_coordinates_list[0] and self.saved_coordinates_list[1] and not self.saved_coordinates_list[2]:
+            return check_coordinates_distance(self.saved_coordinates_list[0], self.saved_coordinates_list[1])
+    
+        elif self.saved_coordinates_list[0] and self.saved_coordinates_list[2] and not self.saved_coordinates_list[1]:
+            return check_coordinates_distance(self.saved_coordinates_list[0], self.saved_coordinates_list[2])
+
+        elif self.saved_coordinates_list[0] and self.saved_coordinates_list[1] and self.saved_coordinates_list[2]:
+            return check_coordinates_distance(self.saved_coordinates_list[0], self.saved_coordinates_list[1], self.saved_coordinates_list[2])
+
+        return 0
 
     def family_location_frame_1(self, state: str, city: str = '', zipcode: str = ''):
 
@@ -79,8 +92,8 @@ class IdealHomeDataAnalysis():
             state_coordinate_list = self.zipcode_coordinate_data[state]
 
         # Check Abbreviated State Name Provided
-        elif state in [*states_abbreviation_list.keys()]:
-            state = states_abbreviation_list[state]
+        elif state.upper() in [*states_abbreviation_list.keys()]:
+            state = states_abbreviation_list[state.upper()]
             state_coordinate_list = self.zipcode_coordinate_data[state]
         else:
             result = process.extractOne(state, [*states_abbreviation_list.values()])
