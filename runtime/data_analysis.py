@@ -49,35 +49,53 @@ class IdealHomeDataAnalysis():
 
         return 0
 
-    def family_location_frame_1(self, state: str, city: str = '', zipcode: str = ''):
 
-        results_citys = location_radius_search(max_time=10, city_search_list=self.merged_zipcode_coordinate_data, coordinate_1=matcher_results['Coordinates'])
-
-        self.current_citys_list = results_citys
-
-
-    def family_detailed_frame_1b(self):
-        pass
+    def family_details_frame_1b(self, **kwargs):
+        
+        
+        self.frame1b_results = ''
 
 
-    def work_location_frame_2(self):
-        pass
+    def work_frame_2(self, **kwargs):
+        
+        if self.saved_coordinates_list[0]:
+            # Send All Zipcode Data
+            results_citys = location_radius_search(max_distance=max_distance, city_search_list=self.merged_zipcode_coordinate_data,
+                coordinate_1=self.saved_coordinates_list[0], coordinate_2=self.saved_coordinates_list[1])
+        
+            self.frame1_results = results_citys
+        else:
+            self.frame1_results = [*self.merged_zipcode_coordinate_data]
+
+        self.frame2_results = ''
 
 
-    def income_metrics_frame_3(self):
-        pass
+    def income_frame_3(self):
+        
+        
+        self.frame3_results = ''
 
 
-    def area_classification_frame_4(self):
-        pass
+    def area_classification_frame_4(self, **kwargs):
+        
+        
+        self.frame4_results = ''
 
 
-    def weather_metrics_frame_5(self):
-        pass
+    def weather_frame_5(self, **kwargs):
+        
+        
+        self.frame5_results = ''
 
 
-    def natural_disaster_risk_frame_6(self):
-        pass
+    def natural_disaster_risk_frame_6(self, **kwargs):
+       
+       self.frame6_results = ''
+
+    def results_frame_7(self):
+       
+
+       return {}
 
     def city_name_zipcode_matcher(self, state: str = '', city: str = '', zipcode: str = '', index: int = 0):
         # Catch Errors

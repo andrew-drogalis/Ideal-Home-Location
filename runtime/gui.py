@@ -18,6 +18,7 @@ class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
         self.after(1, self.load_data_analysis)
+        self.after(1, self.load_map_widget)
 
         # Window Title
         self.title("Ideal Home Location Matcher")
@@ -30,9 +31,9 @@ class App(customtkinter.CTk):
         Font(file="assets/fonts/Cabin-Bold.ttf")
         
         title_font = customtkinter.CTkFont(family='Cabin', size=28, weight="bold")
-        self.regular_font = customtkinter.CTkFont(family='Telex', size=16, weight="normal")
         small_font = customtkinter.CTkFont(family='Telex', size=14, weight="normal")
         regular_font_underline = customtkinter.CTkFont(family='Telex', size=16, weight="normal", underline=True)
+        self.regular_font = customtkinter.CTkFont(family='Telex', size=16, weight="normal")
         self.large_font = customtkinter.CTkFont(family='Telex', size=19, weight="normal")
         self.large_bold = customtkinter.CTkFont(family='Telex', size=19, weight="bold")
         self.large_font_underline = customtkinter.CTkFont(family='Telex', size=19, weight="normal", underline=True)
@@ -40,10 +41,13 @@ class App(customtkinter.CTk):
         # Configure App Grid Layout (4x4)
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(3, weight=1)
+
+        # Initalize Class Variables
         self.income_entry1_valid = False
         self.income_entry2_valid = False
         self.family_location_valid1 = False
         self.family_location_valid2 = False
+        self.work_valid1 = False
 
         """ 
             Header Frame 
@@ -68,14 +72,14 @@ class App(customtkinter.CTk):
         self.sidebar_frame.grid(row=0, column=3, rowspan=4, sticky="nsew")
         self.sidebar_frame.grid_rowconfigure(1, weight=1)
         # Finish Label
-        self.finish_label = customtkinter.CTkLabel(self.sidebar_frame, text="Finish Line", anchor="center", font=regular_font_underline, fg_color=('#ccc','#333'))
+        self.finish_label = customtkinter.CTkLabel(self.sidebar_frame, text="Finish Line", anchor="center", font=regular_font_underline, fg_color=('#fff','#111'))
         self.finish_label.grid(row=0, column=0, ipadx=10, padx=10, pady=(40, 20))
         # Progres Bar Initalize
-        self.progressbar = customtkinter.CTkProgressBar(self.sidebar_frame, orientation="vertical", border_width=1)
+        self.progressbar = customtkinter.CTkProgressBar(self.sidebar_frame, orientation="vertical", border_width=1, fg_color='#fff')
         self.progressbar.grid(row=1, column=0, padx=(10, 10), pady=(10, 10), sticky='ns')
         self.progressbar.set(0)
         # Start Label
-        self.start_label = customtkinter.CTkLabel(self.sidebar_frame, text="Start Line", font=regular_font_underline, fg_color=('#ccc','#333'))
+        self.start_label = customtkinter.CTkLabel(self.sidebar_frame, text="Start Line", font=regular_font_underline, fg_color=('#fff','#111'))
         self.start_label.grid(row=3, column=0, ipadx=10, padx=10, pady=(20, 20), sticky='')
         # Appearance Mode
         self.appearance_mode_label = customtkinter.CTkLabel(self.sidebar_frame, text="Appearance Mode:", anchor="w", font=small_font)
@@ -94,20 +98,19 @@ class App(customtkinter.CTk):
         """ 
             Instructions Frame 
         """
-        self.intro_frame = customtkinter.CTkFrame(self, corner_radius=0)
+        self.intro_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e3e3e3',"gray17"))
         self.intro_frame.grid(row=1, column=0, rowspan=3, columnspan=3, sticky="nsew")
         self.intro_frame.grid_rowconfigure(3, weight=1)
         self.intro_frame.grid_columnconfigure(0, weight=1)
-
-        instructions_title = customtkinter.CTkLabel(self.intro_frame, text="Instructions", font=title_font, fg_color=('#ccc','#333'))
-        instructions_title.grid(row=0, column=0, columnspan=3, ipadx=20, padx=20, pady=(20, 15), sticky='')
-
-        textbox = customtkinter.CTkTextbox(self.intro_frame, fg_color='transparent', height=400, font=self.regular_font)
-        textbox.grid(row=1, column=0, columnspan=3, padx=(33, 20), pady=(20, 0), sticky="nsew")
-
-        textbox.insert("0.0", "Hello, Welcome to the Ideal Home Location Matcher! \n Today")
-        textbox.configure(state="disabled")
-
+        # Page Title
+        instructions_title = customtkinter.CTkLabel(self.intro_frame, text="Instructions", font=title_font, fg_color=('#fff','#111'))
+        instructions_title.grid(row=0, column=0, columnspan=3, padx=20, pady=(20,15), sticky='')
+        # App Instructions
+        instructions_textbox = customtkinter.CTkTextbox(self.intro_frame, fg_color='transparent', height=400, font=self.regular_font)
+        instructions_textbox.grid(row=1, column=0, columnspan=3, padx=(33, 20), pady=(20, 0), sticky="nsew")
+        instructions_textbox.insert("0.0", "Hello, Welcome to the Ideal Home Location Matcher! \n Today")
+        instructions_textbox.configure(state="disabled")
+        # Navigation Button
         instruction_get_started_button = customtkinter.CTkButton(master=self.intro_frame, text='Get Started', text_color="#DCE4EE", font=self.regular_font, command=self.instruction_button_event)
         instruction_get_started_button.grid(row=3, column=2, padx=20, pady=20, sticky="s")
 
@@ -115,18 +118,18 @@ class App(customtkinter.CTk):
         """ 
             Family Location Frame 1
         """
-        self.family_location_frame = customtkinter.CTkFrame(self, corner_radius=0)
+        self.family_location_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e3e3e3',"gray17"))
         self.family_location_frame.grid_rowconfigure((3,5,8,10,13), weight=1)
         self.family_location_frame.grid_columnconfigure(0, weight=1)
-
-        family_location_title = customtkinter.CTkLabel(self.family_location_frame, text="Ideal Family Preferences", font=title_font, fg_color=('#ccc','#333'))
-        family_location_title.grid(row=0, column=0, columnspan=3, ipadx=20, padx=20, pady=(20, 15), sticky='')
-
+        # Page Title
+        family_location_title = customtkinter.CTkLabel(self.family_location_frame, text="Ideal Family Preferences", font=title_font, fg_color=('#fff','#111'))
+        family_location_title.grid(row=0, column=0, columnspan=3, padx=20, pady=(20, 15), sticky='')
+        # Question #1
         family_location_label_1 = customtkinter.CTkLabel(self.family_location_frame, text="Do you want to be close to family members?", font=self.large_font_underline)
         family_location_label_1.grid(row=1, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
-
+        # Options Selection for Question #1
         self.family_location_seg_button_1 = customtkinter.CTkSegmentedButton(self.family_location_frame, font=self.regular_font, command=self.seg_button_family_location)
-        self.family_location_seg_button_1.grid(row=2, column=0, columnspan=3, padx=(20, 10), pady=(10, 10), sticky="ew")
+        self.family_location_seg_button_1.grid(row=2, column=0, columnspan=3, padx=(20, 20), pady=(10, 10), sticky="ew")
         self.family_location_seg_button_1.configure(values=["Yes", "No"])
         self.family_location_seg_button_1.set("Yes")
 
@@ -219,10 +222,10 @@ class App(customtkinter.CTk):
         self.family_location_seg_button_3.set("40 Miles")
 
         self.seg_button_family_location(param='Yes')
-
+        # Navigation Buttons
         family_location_next_button = customtkinter.CTkButton(master=self.family_location_frame, text='Next', text_color="#DCE4EE", font=self.regular_font, command=self.frame_1_forward_event)
         family_location_next_button.grid(row=14, column=2, padx=(20, 20), pady=(20, 20), sticky="s")
-     
+        # ----------
         family_location_previous_button = customtkinter.CTkButton(master=self.family_location_frame, text='Previous', text_color="#DCE4EE", font=self.regular_font, command=self.frame_1_backward_event)
         family_location_previous_button.grid(row=14, column=0, padx=(20, 20), pady=(20, 20), sticky="sw")
         
@@ -230,18 +233,18 @@ class App(customtkinter.CTk):
         """ 
             Family Details Frame 1b
         """
-        self.family_details_frame = customtkinter.CTkFrame(self, corner_radius=0)
+        self.family_details_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e3e3e3',"gray17"))
         self.family_details_frame.grid_rowconfigure((3,6,9,12,15), weight=1)
         self.family_details_frame.grid_columnconfigure(0, weight=1)
 
-        family_details_title = customtkinter.CTkLabel(self.family_details_frame, text="Ideal Family Preferences", font=title_font)
+        family_details_title = customtkinter.CTkLabel(self.family_details_frame, text="Ideal Family Preferences", font=title_font, fg_color=('#fff','#111'))
         family_details_title.grid(row=0, column=0, padx=20, columnspan=4, pady=(20, 15), sticky='')
 
         family_details_label1 = customtkinter.CTkLabel(self.family_details_frame, text="Are you married?", font=self.large_font_underline)
         family_details_label1.grid(row=1, column=0, columnspan=4, padx=40, pady=(20, 15), sticky='')
 
         self.family_details_seg_button_1 = customtkinter.CTkSegmentedButton(self.family_details_frame, font=self.regular_font)
-        self.family_details_seg_button_1.grid(row=2, column=0, columnspan=4, padx=(20, 10), pady=(10, 10), sticky="ew")
+        self.family_details_seg_button_1.grid(row=2, column=0, columnspan=4, padx=(20, 20), pady=(10, 10), sticky="ew")
         self.family_details_seg_button_1.configure(values=["Yes", "No"])
         self.family_details_seg_button_1.set("Yes")
 
@@ -249,7 +252,7 @@ class App(customtkinter.CTk):
         family_details_label2.grid(row=4, column=0, columnspan=4, padx=40, pady=(20, 15), sticky='')
 
         self.family_details_seg_button_2 = customtkinter.CTkSegmentedButton(self.family_details_frame, font=self.regular_font)
-        self.family_details_seg_button_2.grid(row=5, column=0, columnspan=4, padx=(20, 10), pady=(10, 10), sticky="ew")
+        self.family_details_seg_button_2.grid(row=5, column=0, columnspan=4, padx=(20, 20), pady=(10, 10), sticky="ew")
         self.family_details_seg_button_2.configure(values=["1", "2", "3", "4", "5"])
         self.family_details_seg_button_2.set("3")
 
@@ -257,7 +260,7 @@ class App(customtkinter.CTk):
         family_details_label3.grid(row=7, column=0, columnspan=4, padx=40, pady=(20, 15), sticky='')
 
         self.family_details_seg_button_3 = customtkinter.CTkSegmentedButton(self.family_details_frame, font=self.regular_font)
-        self.family_details_seg_button_3.grid(row=8, column=0, columnspan=4, padx=(20, 10), pady=(10, 10), sticky="ew")
+        self.family_details_seg_button_3.grid(row=8, column=0, columnspan=4, padx=(20, 20), pady=(10, 10), sticky="ew")
         self.family_details_seg_button_3.configure(values=["Yes", "No"])
         self.family_details_seg_button_3.set("Yes")
 
@@ -265,7 +268,7 @@ class App(customtkinter.CTk):
         family_details_label4.grid(row=10, column=0, columnspan=4, padx=40, pady=(20, 15), sticky='')
 
         self.family_details_seg_button_4 = customtkinter.CTkSegmentedButton(self.family_details_frame, font=self.regular_font)
-        self.family_details_seg_button_4.grid(row=11, column=0, columnspan=4, padx=(20, 10), pady=(10, 10), sticky="ew")
+        self.family_details_seg_button_4.grid(row=11, column=0, columnspan=4, padx=(20, 20), pady=(10, 10), sticky="ew")
         self.family_details_seg_button_4.configure(values=["1", "2", "3", "4", "5"])
         self.family_details_seg_button_4.set("3")
 
@@ -273,13 +276,13 @@ class App(customtkinter.CTk):
         family_details_label5.grid(row=13, column=0, columnspan=4, padx=40, pady=(20, 15), sticky='')
 
         self.family_details_seg_button_5 = customtkinter.CTkSegmentedButton(self.family_details_frame, font=self.regular_font)
-        self.family_details_seg_button_5.grid(row=14, column=0, columnspan=4, padx=(20, 10), pady=(10, 10), sticky="ew")
+        self.family_details_seg_button_5.grid(row=14, column=0, columnspan=4, padx=(20, 20), pady=(10, 10), sticky="ew")
         self.family_details_seg_button_5.configure(values=["1", "2", "3", "4", "5"])
         self.family_details_seg_button_5.set("3")
-
+        # Navigation Buttons
         family_details_next_button = customtkinter.CTkButton(master=self.family_details_frame, text='Next', text_color="#DCE4EE", font=self.regular_font, command=self.frame_1b_forward_event)
         family_details_next_button.grid(row=16, column=2, padx=(20, 20), pady=(20, 20), sticky="s")
-     
+        # ----------
         family_details_previous_button = customtkinter.CTkButton(master=self.family_details_frame, text='Previous', text_color="#DCE4EE", font=self.regular_font, command=self.frame_1b_backward_event)
         family_details_previous_button.grid(row=16, column=0, padx=(20, 20), pady=(20, 20), sticky="sw")
         
@@ -287,18 +290,18 @@ class App(customtkinter.CTk):
         """ 
             Work Frame 2
         """
-        self.work_frame = customtkinter.CTkFrame(self, corner_radius=0)
+        self.work_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e3e3e3',"gray17"))
         self.work_frame.grid_rowconfigure((3,6,9,12), weight=1)
         self.work_frame.grid_columnconfigure(0, weight=1)
 
-        work_title = customtkinter.CTkLabel(self.work_frame, text="Ideal Work Preferences", font=title_font)
+        work_title = customtkinter.CTkLabel(self.work_frame, text="Ideal Work Preferences", font=title_font, fg_color=('#fff','#111'))
         work_title.grid(row=0, column=0, padx=20, columnspan=4, pady=(20, 15), sticky='')
 
         work_label_1 = customtkinter.CTkLabel(self.work_frame, text="Are you employed or open to new job opportunities?", font=self.large_font_underline)
         work_label_1.grid(row=1, column=0, columnspan=3, pady=10, padx=20, sticky="")
 
         self.work_seg_button_1 = customtkinter.CTkSegmentedButton(self.work_frame, font=self.regular_font, command=self.seg_button_work_1)
-        self.work_seg_button_1.grid(row=2, column=0, columnspan=3, padx=(20, 10), pady=(10, 10), sticky="ew")
+        self.work_seg_button_1.grid(row=2, column=0, columnspan=3, padx=(20, 20), pady=(10, 10), sticky="ew")
         self.work_seg_button_1.configure(values=["Employed", "Seeking a new Job"])
         self.work_seg_button_1.set("Employed")
 
@@ -373,9 +376,10 @@ class App(customtkinter.CTk):
         self.seg_button_work_1(param='Employed')
         self.seg_button_work_2(param='Yes')
 
+        # Navigation Buttons
         work_next_button = customtkinter.CTkButton(master=self.work_frame, text='Next', text_color="#DCE4EE", font=self.regular_font, command=self.frame_2_forward_event)
         work_next_button.grid(row=13, column=2, padx=(20, 20), pady=(20, 20), sticky="s")
-     
+        # ----------
         work_previous_button = customtkinter.CTkButton(master=self.work_frame, text='Previous', text_color="#DCE4EE", font=self.regular_font, command=self.frame_2_backward_event)
         work_previous_button.grid(row=13, column=0, padx=(20, 20), pady=(20, 20), sticky="sw")
 
@@ -383,11 +387,11 @@ class App(customtkinter.CTk):
         """ 
             Income Metrics Frame 3
         """
-        self.income_frame = customtkinter.CTkFrame(self, corner_radius=0)
+        self.income_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e3e3e3',"gray17"))
         self.income_frame.grid_rowconfigure((3,6,9,12,15), weight=1)
         self.income_frame.grid_columnconfigure(0, weight=1)
 
-        income_title = customtkinter.CTkLabel(self.income_frame, text="Income Information", font=title_font)
+        income_title = customtkinter.CTkLabel(self.income_frame, text="Income Information", font=title_font, fg_color=('#fff','#111'))
         income_title.grid(row=0, column=0, padx=20, columnspan=3, pady=(20, 15), sticky='')
 
         income_label_1 = customtkinter.CTkLabel(self.income_frame, text="What is your annual household income?", font=self.large_font_underline)
@@ -413,7 +417,7 @@ class App(customtkinter.CTk):
         income_label_2.grid(row=4, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
 
         self.income_seg_button_1 = customtkinter.CTkSegmentedButton(self.income_frame, font=self.regular_font, command=self.seg_button_income)
-        self.income_seg_button_1.grid(row=5, column=0, columnspan=3, padx=(20, 10), pady=(10, 10), sticky="ew")
+        self.income_seg_button_1.grid(row=5, column=0, columnspan=3, padx=(20, 20), pady=(10, 10), sticky="ew")
         self.income_seg_button_1.configure(values=["No Morgage", "15 Years", "30 Years"])
         self.income_seg_button_1.set("30 Years")
 
@@ -448,9 +452,10 @@ class App(customtkinter.CTk):
         self.income_seg_button_3.configure(values=["-10%", "-5%", "No Change", "+5%", "+10%"])
         self.income_seg_button_3.set("No Change")
 
+        # Navigation Buttons
         self.income_next_button = customtkinter.CTkButton(master=self.income_frame, text='Next', text_color="#DCE4EE", font=self.regular_font, command=self.frame_3_forward_event)
         self.income_next_button.grid(row=16, column=2, padx=(20, 20), pady=(20, 20), sticky="s")
-     
+        # ----------
         self.income_previous_button = customtkinter.CTkButton(master=self.income_frame, text='Previous', text_color="#DCE4EE", font=self.regular_font, command=self.frame_3_backward_event)
         self.income_previous_button.grid(row=16, column=0, padx=(20, 20), pady=(20, 20), sticky="sw")
 
@@ -459,11 +464,11 @@ class App(customtkinter.CTk):
         """ 
             Area Classification Frame 4
         """
-        self.area_classification_frame = customtkinter.CTkFrame(self, corner_radius=0)
+        self.area_classification_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e3e3e3',"gray17"))
         self.area_classification_frame.grid_rowconfigure((3, 6, 9, 12), weight=1)
         self.area_classification_frame.grid_columnconfigure(0, weight=1)
 
-        area_classification_title = customtkinter.CTkLabel(self.area_classification_frame, text="Ideal Lifestyle Preferences", font=title_font)
+        area_classification_title = customtkinter.CTkLabel(self.area_classification_frame, text="Ideal Lifestyle Preferences", font=title_font, fg_color=('#fff','#111'))
         area_classification_title.grid(row=0, column=0, padx=20, columnspan=3, pady=(20, 15), sticky='')
 
         area_classification_label_1 = customtkinter.CTkLabel(self.area_classification_frame, text="What level of education do you have?", font=self.large_font_underline)
@@ -471,7 +476,7 @@ class App(customtkinter.CTk):
 
         # Segmented Button #1
         self.area_classification_seg_button_1 = customtkinter.CTkSegmentedButton(self.area_classification_frame, font=self.regular_font)
-        self.area_classification_seg_button_1.grid(row=2, column=0, columnspan=3, padx=(20, 10), pady=(10, 10), sticky="ew")
+        self.area_classification_seg_button_1.grid(row=2, column=0, columnspan=3, padx=(20, 20), pady=(10, 10), sticky="ew")
         self.area_classification_seg_button_1.configure(values=["Less than High School", "High School", "Associate's", "Bachelor's", "Master's", "Doctorate"])
         self.area_classification_seg_button_1.set("High School")
 
@@ -480,7 +485,7 @@ class App(customtkinter.CTk):
 
         # Segmented Button #2
         self.area_classification_seg_button_2 = customtkinter.CTkSegmentedButton(self.area_classification_frame, font=self.regular_font)
-        self.area_classification_seg_button_2.grid(row=5, column=0, columnspan=3, padx=(20, 10), pady=(10, 10), sticky="ew")
+        self.area_classification_seg_button_2.grid(row=5, column=0, columnspan=3, padx=(20, 20), pady=(10, 10), sticky="ew")
         self.area_classification_seg_button_2.configure(values=["1", "2", "3", "4", "5"])
         self.area_classification_seg_button_2.set("3")
 
@@ -490,7 +495,7 @@ class App(customtkinter.CTk):
         # Segmented Button #3
         self.area_classification_list = ["Hyper Rural", "Rural", "Suburban", "Urban", "Hyper Urban"]
         self.area_classification_seg_button_3 = customtkinter.CTkSegmentedButton(self.area_classification_frame, font=self.regular_font, command=self.seg_button_area_classification_3)
-        self.area_classification_seg_button_3.grid(row=8, column=0, columnspan=3, padx=(20, 10), pady=(10, 10), sticky="ew")
+        self.area_classification_seg_button_3.grid(row=8, column=0, columnspan=3, padx=(20, 20), pady=(10, 10), sticky="ew")
         self.area_classification_seg_button_3.configure(values=self.area_classification_list)
         self.area_classification_seg_button_3.set("Suburban")
         self.seg_button_area_classification_3(param='Suburban')
@@ -498,20 +503,21 @@ class App(customtkinter.CTk):
         area_classification_label_4 = customtkinter.CTkLabel(self.area_classification_frame, text="What kind of living environment is second most prefered?", font=self.large_font_underline)
         area_classification_label_4.grid(row=10, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
 
+        # Navigation Buttons
         area_classification_next_button = customtkinter.CTkButton(master=self.area_classification_frame, text='Next', text_color="#DCE4EE", font=self.regular_font, command=self.frame_4_forward_event)
         area_classification_next_button.grid(row=13, column=2, padx=(20, 20), pady=(20, 20), sticky="s")
-     
+        # ----------
         area_classification_previous_button = customtkinter.CTkButton(master=self.area_classification_frame, text='Previous', text_color="#DCE4EE", font=self.regular_font, command=self.frame_4_backward_event)
         area_classification_previous_button.grid(row=13, column=0, padx=(20, 20), pady=(20, 20), sticky="sw")
 
         """ 
             Weather Metrics Frame 5
         """
-        self.weather_frame = customtkinter.CTkFrame(self, corner_radius=0)
+        self.weather_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e3e3e3',"gray17"))
         self.weather_frame.grid_rowconfigure((3,6,9,12,15,18), weight=1)
         self.weather_frame.grid_columnconfigure(0, weight=1)
 
-        weather_title = customtkinter.CTkLabel(self.weather_frame, text="Weather & Temperature Preferences", font=title_font)
+        weather_title = customtkinter.CTkLabel(self.weather_frame, text="Weather & Temperature Preferences", font=title_font, fg_color=('#fff','#111'))
         weather_title.grid(row=0, column=0, padx=20, columnspan=3, pady=(20, 15), sticky='')
 
         weather_label_1 = customtkinter.CTkLabel(self.weather_frame, text="How many Seasons do you prefer?", font=self.large_font_underline)
@@ -519,7 +525,7 @@ class App(customtkinter.CTk):
 
         # Segmented Button #1
         self.weather_seg_button_1 = customtkinter.CTkSegmentedButton(self.weather_frame, font=self.regular_font, command=self.seg_button_weather_1)
-        self.weather_seg_button_1.grid(row=2, column=0, columnspan=4, padx=(20, 10), pady=(10, 10), sticky="ew")
+        self.weather_seg_button_1.grid(row=2, column=0, columnspan=4, padx=(20, 20), pady=(10, 10), sticky="ew")
         self.weather_seg_button_1.configure(values=["1 Season", "2 Seasons", "4 Seasons"])
         self.weather_seg_button_1.set("4 Seasons")
 
@@ -594,9 +600,10 @@ class App(customtkinter.CTk):
         self.weather_seg_button_3.configure(values=["Very Low", "Low", "Average", "High", "Very High"])
         self.weather_seg_button_3.set("Average")
 
+        # Navigation Buttons
         self.weather_next_button = customtkinter.CTkButton(master=self.weather_frame, text='Next', text_color="#DCE4EE", font=self.regular_font, command=self.frame_5_forward_event)
         self.weather_next_button.grid(row=19, column=2, padx=20, pady=20, sticky="s")
-     
+        # ----------
         self.weather_previous_button = customtkinter.CTkButton(master=self.weather_frame, text='Previous', text_color="#DCE4EE", font=self.regular_font, command=self.frame_5_backward_event)
         self.weather_previous_button.grid(row=19, column=0, padx=20, pady=20, sticky="sw")
 
@@ -605,11 +612,11 @@ class App(customtkinter.CTk):
         """ 
             Natural Disaster Risk Frame 6
         """
-        self.natural_disaster_frame = customtkinter.CTkFrame(self, corner_radius=0)
+        self.natural_disaster_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e3e3e3',"gray17"))
         self.natural_disaster_frame.grid_rowconfigure((3,6,9,12), weight=1)
         self.natural_disaster_frame.grid_columnconfigure(0, weight=1)
 
-        natural_disaster_title = customtkinter.CTkLabel(self.natural_disaster_frame, text="Natural Disaster Risk Tolerance", font=title_font)
+        natural_disaster_title = customtkinter.CTkLabel(self.natural_disaster_frame, text="Natural Disaster Risk Tolerance", font=title_font, fg_color=('#fff','#111'))
         natural_disaster_title.grid(row=0, column=0, padx=20, columnspan=3, pady=(20, 15), sticky='')
 
         natural_disaster_label_1 = customtkinter.CTkLabel(self.natural_disaster_frame, text="How imporant is it to migitate natural disaster risk?", font=self.large_font_underline)
@@ -617,7 +624,7 @@ class App(customtkinter.CTk):
 
         # Segmented Button #1
         self.natural_disaster_seg_button_1 = customtkinter.CTkSegmentedButton(self.natural_disaster_frame, font=self.regular_font)
-        self.natural_disaster_seg_button_1.grid(row=2, column=0, columnspan=4, padx=(20, 10), pady=(10, 10), sticky="ew")
+        self.natural_disaster_seg_button_1.grid(row=2, column=0, columnspan=4, padx=(20, 20), pady=(10, 10), sticky="ew")
         self.natural_disaster_seg_button_1.configure(values=["1", "2", "3", "4", "5"])
         self.natural_disaster_seg_button_1.set("3")
 
@@ -627,7 +634,7 @@ class App(customtkinter.CTk):
         # Segmented Button #2 & #3
         self.natural_disaster_list = ["Flood", "Tornado", "Thunderstorm", "Drought", "Wildfire", "Earthquake", "Huricane"]
         self.natural_disaster_seg_button_2 = customtkinter.CTkSegmentedButton(self.natural_disaster_frame, font=self.regular_font, command=self.seg_button_natural_disaster_2)
-        self.natural_disaster_seg_button_2.grid(row=5, column=0, columnspan=4, padx=(20, 10), pady=(10, 10), sticky="ew")
+        self.natural_disaster_seg_button_2.grid(row=5, column=0, columnspan=4, padx=(20, 20), pady=(10, 10), sticky="ew")
         self.natural_disaster_seg_button_2.configure(values=self.natural_disaster_list)
         self.natural_disaster_seg_button_2.set("Tornado")
         self.seg_button_natural_disaster_2(param='Tornado')
@@ -638,34 +645,29 @@ class App(customtkinter.CTk):
         natural_disaster_label_4 = customtkinter.CTkLabel(self.natural_disaster_frame, text="Which natural disaster is the #3 priority to avoid?", font=self.large_font_underline)
         natural_disaster_label_4.grid(row=10, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
 
+        # Navigation Buttons
         natural_disaster_next_button = customtkinter.CTkButton(master=self.natural_disaster_frame, text='Next', text_color="#DCE4EE", font=self.regular_font, command=self.frame_6_forward_event)
         natural_disaster_next_button.grid(row=13, column=2, padx=20, pady=20, sticky="s")
-     
+        # ----------
         natural_disaster_previous_button = customtkinter.CTkButton(master=self.natural_disaster_frame, text='Previous', text_color="#DCE4EE", font=self.regular_font, command=self.frame_6_backward_event)
         natural_disaster_previous_button.grid(row=13, column=0, padx=20, pady=20, sticky="sw")
 
         """ 
             Results Frame 7
         """
-        self.results_frame = customtkinter.CTkFrame(self, corner_radius=0)
+        self.results_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e3e3e3',"gray17"))
         self.results_frame.grid_rowconfigure(10, weight=1)
         self.results_frame.grid_columnconfigure(0, weight=1)
 
-        self.results_title = customtkinter.CTkLabel(self.results_frame, text="Congratulations!", font=title_font)
+        self.results_title = customtkinter.CTkLabel(self.results_frame, text="Congratulations!", font=title_font, fg_color=('#fff','#111'))
         self.results_title.grid(row=0, column=0, padx=20, columnspan=3, pady=(20, 15), sticky='')
 
-        self.map_widget = TkinterMapView(self.results_frame, corner_radius=0)
-        self.map_widget.grid(row=10, column=0, columnspan=3, sticky="nswe", padx=(0, 0), pady=(0, 0))
-        self.map_widget.set_tile_server("https://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}&s=Ga", max_zoom=22)
-        self.map_widget.set_position(48.860381, 2.338594) 
-        # self.map_widget.fit_bounding_box((49, -3), (47, 3))
-        # self.map_widget.set_polygon([(46.0732306, 6.0095215),(46.0732306, 6.4195215),(46.3732306, 6.0095215),(46.3772542, 6.4160156)],fill_color=None,outline_color="red",border_width=10,
-        #                            name="switzerland_polygon")
-        # self.map_widget.set_marker(52.516268, 13.377695, text="Brandenburger Tor")
 
+
+        # Navigation Buttons
         results_previous_button = customtkinter.CTkButton(master=self.results_frame, text='Previous', text_color="#DCE4EE", font=self.regular_font, command=self.frame_7_backward_event)
         results_previous_button.grid(row=11, column=0, padx=20, pady=20, sticky="sw")
-
+        # ----------
         results_restart_button = customtkinter.CTkButton(master=self.results_frame, text='Restart', text_color="#DCE4EE", font=self.regular_font, command=self.frame_7_restart_event)
         results_restart_button.grid(row=11, column=2, padx=20, pady=20, sticky="sw")
 
@@ -714,26 +716,12 @@ class App(customtkinter.CTk):
     def family_location_button1_confirm(self):
         self.family_location_valid1 = True
         self.f_location_label5.configure(border_width=2, border_color='green')
-        self.family_location_update_middle_distance()
+        self.update_middle_distance_label()
 
     def family_location_button2_confirm(self):
         self.family_location_valid2 = True
         self.f2_location_label5.configure(border_width=2, border_color='green')
-        self.family_location_update_middle_distance()
-
-    def family_location_update_middle_distance(self):
-        display_options_list = ["10 Miles", "20 Miles", "40 Miles", "60 Miles", "100 Miles", "200 Miles"]
-        if self.family_location_valid1 and self.family_location_valid2:
-            middle_distance = self.IdealHomeDataAnalysis.find_middle_distance()
-            if middle_distance > 10:
-                display_options_list = [f"{middle_distance} Miles", f"{middle_distance+20} Miles", f"{middle_distance+40} Miles", f"{middle_distance+60} Miles", f"{middle_distance+100} Miles", f"{middle_distance+200} Miles"]
-         
-            self.family_location_label3.configure(text=f"What is the maximum distance prefered? (Middle Distance: {middle_distance} Miles)")
-        else:
-            self.family_location_label3.configure(text="What is the maximum distance prefered?")
-
-        self.family_location_seg_button_3.configure(values=display_options_list)
-        self.family_location_seg_button_3.set(display_options_list[0])
+        self.update_middle_distance_label()
 
     def work_button_verify(self, entry_field: str = ''):
         self.work_location_entry_frame1.focus()
@@ -758,6 +746,28 @@ class App(customtkinter.CTk):
     def work_button_confirm(self):
         self.work_valid1 = True
         self.w_location_label5.configure(border_width=2, border_color='green')
+        self.update_middle_distance_label()
+
+    def update_middle_distance_label(self):
+        display_options_list = ["10 Miles", "20 Miles", "40 Miles", "60 Miles", "100 Miles", "200 Miles"]
+        label = 'Max ' if self.family_location_valid1 and self.family_location_valid2 and self.work_valid1 else ''
+
+        middle_distance = self.IdealHomeDataAnalysis.find_middle_distance()
+        if middle_distance > 10:
+            display_options_list = [f"{middle_distance} Miles", f"{middle_distance+20} Miles", f"{middle_distance+40} Miles", f"{middle_distance+60} Miles", f"{middle_distance+100} Miles", f"{middle_distance+200} Miles"]
+
+        if self.family_location_valid2 or (self.family_location_valid1 and self.work_valid1):
+            self.work_label4.configure(text=f"What is the maximum distance prefered? ({label}Middle Distance: {middle_distance} Miles)")
+
+            self.family_location_label3.configure(text=f"What is the maximum distance prefered? ({label}Middle Distance: {middle_distance} Miles)")
+        else:
+            self.family_location_label3.configure(text="What is the maximum distance prefered?")
+            self.work_label4.configure(text="What is the maximum distance prefered?")
+
+        self.family_location_seg_button_3.configure(values=display_options_list)
+        self.family_location_seg_button_3.set(display_options_list[0])
+        self.work_seg_button_4.configure(values=display_options_list)
+        self.work_seg_button_4.set(display_options_list[0])
 
     def income_button_1(self, entry_field: str = ''):
         self.income_frame.focus()
@@ -792,7 +802,7 @@ class App(customtkinter.CTk):
 
         if self.income_entry1_valid and self.income_entry2_valid and morgage_param != 'No Morgage':
             self.income_label5.grid(row=13, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
-            self.income_seg_button_3.grid(row=14, column=0, columnspan=3, padx=(20, 10), pady=(10, 10), sticky="ew")
+            self.income_seg_button_3.grid(row=14, column=0, columnspan=3, padx=(20, 20), pady=(10, 10), sticky="ew")
 
     def weather_button_1(self, entry_field: str = ''):
         self.weather_frame.focus()
@@ -848,7 +858,7 @@ class App(customtkinter.CTk):
         if param == "Yes":
             self.family_location_entry_frame1.grid(row=4, column=0, columnspan=3, pady=10, sticky="nsew")
             self.family_location_label2.grid(row=6, column=0, columnspan=3, pady=10, padx=20, sticky="")
-            self.family_location_seg_button_2.grid(row=7, column=0, columnspan=3, padx=(20, 10), pady=(10, 10), sticky="ew")
+            self.family_location_seg_button_2.grid(row=7, column=0, columnspan=3, padx=(20, 20), pady=(10, 10), sticky="ew")
             self.seg_button_family_location_2(param=self.family_location_seg_button_2.get())
         else:
             self.family_location_entry_frame1.grid_forget()
@@ -864,13 +874,13 @@ class App(customtkinter.CTk):
             self.family_location_entry_frame2.grid(row=9, column=0, columnspan=3, pady=10, sticky="nsew")
             self.family_location_frame.grid_rowconfigure(10, weight=1)
             self.family_location_label3.grid(row=11, column=0, columnspan=4, padx=40, pady=(20, 15), sticky='')
-            self.family_location_seg_button_3.grid(row=12, column=0, columnspan=4, padx=(20, 10), pady=(10, 10), sticky="ew")
+            self.family_location_seg_button_3.grid(row=12, column=0, columnspan=4, padx=(20, 20), pady=(10, 10), sticky="ew")
         else:
             self.family_location_entry_frame2.grid_forget()
             if self.family_location_seg_button_1.get() == 'Yes':
                 self.family_location_frame.grid_rowconfigure(10, weight=0)
                 self.family_location_label3.grid(row=9, column=0, columnspan=4, padx=40, pady=(20, 15), sticky='')
-                self.family_location_seg_button_3.grid(row=10, column=0, columnspan=4, padx=(20, 10), pady=(10, 10), sticky="ew")
+                self.family_location_seg_button_3.grid(row=10, column=0, columnspan=4, padx=(20, 20), pady=(10, 10), sticky="ew")
         
 
     def seg_button_work_1(self, param: str):
@@ -878,23 +888,24 @@ class App(customtkinter.CTk):
             self.work_frame.grid_rowconfigure((7,10), weight=1)
             self.work_frame.grid_rowconfigure((6,9), weight=0)
             self.work_label2.grid(row=4, column=0, columnspan=3, pady=10, padx=20, sticky="")
-            self.work_seg_button_2.grid(row=5, column=0, columnspan=3, padx=(20, 10), pady=(10, 10), sticky="ew")
+            self.work_seg_button_2.grid(row=5, column=0, columnspan=3, padx=(20, 20), pady=(10, 10), sticky="ew")
             self.work_label3.grid_forget()
             self.work_seg_button_3.grid_forget()
             self.work_label5.grid_forget()
             self.work_seg_button_5.grid_forget()
             self.work_label6.grid_forget()
             self.work_seg_button_6.grid_forget()
+            self.seg_button_work_2(param=self.work_seg_button_2.get())
         else:
             self.work_frame.grid_rowconfigure((6,9), weight=1)
             self.work_frame.grid_rowconfigure((7,10), weight=0)
             self.work_label5.grid(row=7, column=0, columnspan=4, padx=40, pady=(20, 15), sticky='')
-            self.work_seg_button_5.grid(row=8, column=0, columnspan=4, padx=(20, 10), pady=(10, 10), sticky="ew")
+            self.work_seg_button_5.grid(row=8, column=0, columnspan=4, padx=(20, 20), pady=(10, 10), sticky="ew")
             self.work_label6.grid(row=10, column=0, columnspan=4, padx=40, pady=(20, 15), sticky='')
-            self.work_seg_button_6.grid(row=11, column=0, columnspan=4, padx=(20, 10), pady=(10, 10), sticky="ew")
+            self.work_seg_button_6.grid(row=11, column=0, columnspan=4, padx=(20, 20), pady=(10, 10), sticky="ew")
 
             self.work_label3.grid(row=4, column=0, columnspan=3, pady=10, padx=20, sticky="")
-            self.work_seg_button_3.grid(row=5, column=0, columnspan=3, padx=(20, 10), pady=(10, 10), sticky="ew")
+            self.work_seg_button_3.grid(row=5, column=0, columnspan=3, padx=(20, 20), pady=(10, 10), sticky="ew")
             self.work_label2.grid_forget()
             self.work_seg_button_2.grid_forget()
             self.seg_button_work_2(param='No')
@@ -903,7 +914,7 @@ class App(customtkinter.CTk):
         if param == 'Yes':
             self.work_location_entry_frame1.grid(row=6, column=0, columnspan=3, pady=10, sticky="nsew")
             self.work_label4.grid(row=8, column=0, columnspan=4, padx=40, pady=(20, 15), sticky='')
-            self.work_seg_button_4.grid(row=9, column=0, columnspan=4, padx=(20, 10), pady=(10, 10), sticky="ew")
+            self.work_seg_button_4.grid(row=9, column=0, columnspan=4, padx=(20, 20), pady=(10, 10), sticky="ew")
         else:
             self.work_location_entry_frame1.grid_forget()
             self.work_label4.grid_forget()
@@ -914,10 +925,10 @@ class App(customtkinter.CTk):
             self.income_label3.configure(text="What interest rate do you expect to receive?")
             self.income_entry2_units.configure(text="%")
             self.income_label4.grid(row=10, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
-            self.income_seg_button_2.grid(row=11, column=0, columnspan=3, padx=(20, 10), pady=(10, 10), sticky="ew")
+            self.income_seg_button_2.grid(row=11, column=0, columnspan=3, padx=(20, 20), pady=(10, 10), sticky="ew")
             if self.income_entry1_valid and self.income_entry2_valid:
                 self.income_label5.grid(row=13, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
-                self.income_seg_button_3.grid(row=14, column=0, columnspan=3, padx=(20, 10), pady=(10, 10), sticky="ew")
+                self.income_seg_button_3.grid(row=14, column=0, columnspan=3, padx=(20, 20), pady=(10, 10), sticky="ew")
         else:
             self.income_label3.configure(text="What home price can you afford?")
             self.income_entry2_units.configure(text="$")
@@ -939,9 +950,9 @@ class App(customtkinter.CTk):
 
             self.weather_frame.grid_rowconfigure((15,18), weight=1)
             self.weather_label5.grid(row=13, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
-            self.weather_seg_button_2.grid(row=14, column=0, columnspan=3, padx=(20, 10), pady=(10, 10), sticky="ew")
+            self.weather_seg_button_2.grid(row=14, column=0, columnspan=3, padx=(20, 20), pady=(10, 10), sticky="ew")
             self.weather_label6.grid(row=16, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
-            self.weather_seg_button_3.grid(row=17, column=0, columnspan=3, padx=(20, 10), pady=(10, 10), sticky="ew")
+            self.weather_seg_button_3.grid(row=17, column=0, columnspan=3, padx=(20, 20), pady=(10, 10), sticky="ew")
             self.weather_next_button.grid(row=19, column=2, padx=20, pady=20, sticky="s")
             self.weather_previous_button.grid(row=19, column=0, padx=20, pady=20, sticky="sw")
 
@@ -954,9 +965,9 @@ class App(customtkinter.CTk):
             self.weather_frame.grid_rowconfigure(15, weight=1)
             self.weather_frame.grid_rowconfigure(18, weight=0)
             self.weather_label5.grid(row=10, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
-            self.weather_seg_button_2.grid(row=11, column=0, columnspan=3, padx=(20, 10), pady=(10, 10), sticky="ew")
+            self.weather_seg_button_2.grid(row=11, column=0, columnspan=3, padx=(20, 20), pady=(10, 10), sticky="ew")
             self.weather_label6.grid(row=13, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
-            self.weather_seg_button_3.grid(row=14, column=0, columnspan=3, padx=(20, 10), pady=(10, 10), sticky="ew")
+            self.weather_seg_button_3.grid(row=14, column=0, columnspan=3, padx=(20, 20), pady=(10, 10), sticky="ew")
             self.weather_next_button.grid(row=16, column=2, padx=20, pady=20, sticky="s")
             self.weather_previous_button.grid(row=16, column=0, padx=20, pady=20, sticky="sw")
             try:
@@ -970,9 +981,9 @@ class App(customtkinter.CTk):
 
             self.weather_frame.grid_rowconfigure((15, 18), weight=0)
             self.weather_label5.grid(row=7, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
-            self.weather_seg_button_2.grid(row=8, column=0, columnspan=3, padx=(20, 10), pady=(10, 10), sticky="ew")
+            self.weather_seg_button_2.grid(row=8, column=0, columnspan=3, padx=(20, 20), pady=(10, 10), sticky="ew")
             self.weather_label6.grid(row=10, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
-            self.weather_seg_button_3.grid(row=11, column=0, columnspan=3, padx=(20, 10), pady=(10, 10), sticky="ew")
+            self.weather_seg_button_3.grid(row=11, column=0, columnspan=3, padx=(20, 20), pady=(10, 10), sticky="ew")
             self.weather_next_button.grid(row=13, column=2, padx=20, pady=20, sticky="s")
             self.weather_previous_button.grid(row=13, column=0, padx=20, pady=20, sticky="sw")
             try:
@@ -992,7 +1003,7 @@ class App(customtkinter.CTk):
 
         # Segmented Button #3
         self.area_classification_seg_button_4 = customtkinter.CTkSegmentedButton(self.area_classification_frame, font=self.regular_font)
-        self.area_classification_seg_button_4.grid(row=11, column=0, columnspan=3, padx=(20, 10), pady=(10, 10), sticky="ew")
+        self.area_classification_seg_button_4.grid(row=11, column=0, columnspan=3, padx=(20, 20), pady=(10, 10), sticky="ew")
         self.area_classification_seg_button_4.configure(values=area_classification_list)
         self.area_classification_seg_button_4.set(area_classification_list[0])
 
@@ -1002,7 +1013,7 @@ class App(customtkinter.CTk):
 
         # Segmented Button #3
         self.natural_disaster_seg_button_3 = customtkinter.CTkSegmentedButton(self.natural_disaster_frame, font=self.regular_font, command=self.seg_button_natural_disaster_3)
-        self.natural_disaster_seg_button_3.grid(row=8, column=0, columnspan=4, padx=(20, 10), pady=(10, 10), sticky="ew")
+        self.natural_disaster_seg_button_3.grid(row=8, column=0, columnspan=4, padx=(20, 20), pady=(10, 10), sticky="ew")
         self.natural_disaster_seg_button_3.configure(values=self.natural_disaster_list_2)
         self.natural_disaster_seg_button_3.set(self.natural_disaster_list_2[0])
         self.seg_button_natural_disaster_3(param=self.natural_disaster_list_2[0])
@@ -1013,7 +1024,7 @@ class App(customtkinter.CTk):
 
         # Segmented Button #4
         self.natural_disaster_seg_button_4 = customtkinter.CTkSegmentedButton(self.natural_disaster_frame, font=self.regular_font)
-        self.natural_disaster_seg_button_4.grid(row=11, column=0, columnspan=4, padx=(20, 10), pady=(10, 10), sticky="ew")
+        self.natural_disaster_seg_button_4.grid(row=11, column=0, columnspan=4, padx=(20, 20), pady=(10, 10), sticky="ew")
         self.natural_disaster_seg_button_4.configure(values=natural_disaster_list)
         self.natural_disaster_seg_button_4.set(natural_disaster_list[0])
 
@@ -1026,10 +1037,12 @@ class App(customtkinter.CTk):
 
     # FRAME 1
     def frame_1_forward_event(self):
-        self.family_location_frame.grid_forget()
-        self.family_details_frame.grid(row=1, column=0, rowspan=3, columnspan=3, sticky="nsew")
-        self.progressbar.set(.25)
-   
+        if self.check_frame1_progress():
+            self.family_location_frame.grid_forget()
+            self.family_details_frame.grid(row=1, column=0, rowspan=3, columnspan=3, sticky="nsew")
+            self.progressbar.set(.25)
+        else:
+            self.error_message(message_type='Segmented_Button')
 
     def frame_1_backward_event(self):
         self.family_location_frame.grid_forget()
@@ -1041,6 +1054,7 @@ class App(customtkinter.CTk):
         self.family_details_frame.grid_forget()
         self.work_frame.grid(row=1, column=0, rowspan=3, columnspan=3, sticky="nsew")
         self.progressbar.set(.375)
+        self.IdealHomeDataAnalysis.family_details_frame_1b()
 
     def frame_1b_backward_event(self):
         self.family_details_frame.grid_forget()
@@ -1049,9 +1063,13 @@ class App(customtkinter.CTk):
 
     # FRAME 2
     def frame_2_forward_event(self):
-        self.work_frame.grid_forget()
-        self.income_frame.grid(row=1, column=0, rowspan=3, columnspan=3, sticky="nsew")
-        self.progressbar.set(.5)
+        if self.check_frame2_progress():
+            self.work_frame.grid_forget()
+            self.income_frame.grid(row=1, column=0, rowspan=3, columnspan=3, sticky="nsew")
+            self.progressbar.set(.5)
+            self.IdealHomeDataAnalysis.work_frame_2()
+        else:
+            self.error_message(message_type='Segmented_Button')
  
     def frame_2_backward_event(self):
         self.work_frame.grid_forget()
@@ -1065,6 +1083,7 @@ class App(customtkinter.CTk):
             self.income_frame.grid_forget()
             self.area_classification_frame.grid(row=1, column=0, rowspan=3, columnspan=3, sticky="nsew")
             self.progressbar.set(.625)
+            self.IdealHomeDataAnalysis.income_frame_3()
         else:
             self.error_message()
 
@@ -1078,6 +1097,7 @@ class App(customtkinter.CTk):
         self.area_classification_frame.grid_forget()
         self.weather_frame.grid(row=1, column=0, rowspan=3, columnspan=3, sticky="nsew")
         self.progressbar.set(.75)
+        self.IdealHomeDataAnalysis.area_classification_frame_4()
 
     def frame_4_backward_event(self):
         self.area_classification_frame.grid_forget()
@@ -1091,6 +1111,7 @@ class App(customtkinter.CTk):
             self.weather_frame.grid_forget()
             self.natural_disaster_frame.grid(row=1, column=0, rowspan=3, columnspan=3, sticky="nsew")
             self.progressbar.set(.875)
+            self.IdealHomeDataAnalysis.weather_frame_5()
         else:
             self.error_message()
 
@@ -1102,6 +1123,9 @@ class App(customtkinter.CTk):
     # FRAME 6
     def frame_6_forward_event(self):
         self.natural_disaster_frame.grid_forget()
+        self.IdealHomeDataAnalysis.natural_disaster_risk_frame_6()
+        results_dictionary = self.IdealHomeDataAnalysis.results_frame_7()
+        self.set_map_widget()
         self.results_frame.grid(row=1, column=0, rowspan=3, columnspan=3, sticky="nsew")
         self.progressbar.set(1)
 
@@ -1122,11 +1146,44 @@ class App(customtkinter.CTk):
         self.progressbar.set(0)
 
     # UTILITIES
+    def check_frame1_progress(self):
+        if self.family_location_seg_button_1.get() == 'No':
+            return True
+        else:
+            additional_location = self.family_location_seg_button_2.get()
+            if additional_location == 'No' and self.family_location_valid1:
+                return True
+            elif additional_location == 'Yes' and self.family_location_valid1 and self.family_location_valid2:
+                return True
+            else:
+                return False
+
+    def check_frame2_progress(self):
+        if self.work_seg_button_1.get() == 'Employed' and self.work_seg_button_2.get() == 'Yes' and not self.work_valid1:
+            return False
+        else:
+            return True
+
+    def load_map_widget(self):
+        self.map_widget = TkinterMapView(self.results_frame, corner_radius=0)
+        self.map_widget.grid(row=10, column=0, columnspan=3, sticky="nswe", padx=10, pady=10)
+        self.map_widget.set_tile_server("https://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}&s=Ga", max_zoom=22)
+
+    def set_map_widget(self, **kwargs):
+        self.map_widget.set_position(48.860381, 2.338594) 
+        self.map_widget.fit_bounding_box((49, -3), (47, 3))
+        self.map_widget.set_polygon([(46.0732306, 6.0095215),(46.0732306, 6.4195215),(46.3732306, 6.0095215),(46.3772542, 6.4160156)],fill_color=None,outline_color="red",border_width=10,
+                                   name="switzerland_polygon")
+        self.map_widget.set_marker(52.516268, 13.377695, text="Brandenburger Tor")
+
     def load_data_analysis(self):
         self.IdealHomeDataAnalysis = IdealHomeDataAnalysis()
 
-    def error_message(self):
-        messagebox.showerror('Entry Field Invalid Submission', 'Please fill in all fields with valid input.')
+    def error_message(self, message_type: str = 'Entry_Field'):
+        if message_type == 'Entry_Field':
+            messagebox.showerror('Entry Field Invalid Submission', 'Please fill in all fields with valid input.')
+        elif message_type == 'Segmented_Button':
+            messagebox.showerror('Incomplete Submission', 'Please complete submission fields or deselect the location requirement.')
 
     def github_more_information(self):
         webbrowser.open_new('https://github.com/andrew-drogalis/Ideal-Home-Location-Matcher')
