@@ -217,7 +217,7 @@ class App(customtkinter.CTk):
 
         self.family_location_label3 = customtkinter.CTkLabel(self.family_location_frame, text="What is the maximum distance prefered?", font=self.large_font_underline)
 
-        self.family_location_seg_button_3 = customtkinter.CTkSegmentedButton(self.family_location_frame, font=self.regular_font)
+        self.family_location_seg_button_3 = customtkinter.CTkSegmentedButton(self.family_location_frame, font=self.regular_font, command=self.seg_button_family_location3)
         self.family_location_seg_button_3.configure(values=["10 Miles", "20 Miles", "40 Miles", "60 Miles", "100 Miles", "200 Miles"])
         self.family_location_seg_button_3.set("40 Miles")
 
@@ -357,15 +357,15 @@ class App(customtkinter.CTk):
 
         self.work_label4 = customtkinter.CTkLabel(self.work_frame, text="What is the maximum distance prefered?", font=self.large_font_underline)
         
-        self.work_seg_button_4 = customtkinter.CTkSegmentedButton(self.work_frame, font=self.regular_font)
+        self.work_seg_button_4 = customtkinter.CTkSegmentedButton(self.work_frame, font=self.regular_font, command=self.seg_button_work_3)
         self.work_seg_button_4.configure(values=["10 Miles", "20 Miles", "40 Miles", "60 Miles", "100 Miles", "200 Miles"])
         self.work_seg_button_4.set("40 Miles")
       
         self.work_label5 = customtkinter.CTkLabel(self.work_frame, text="How will you be getting to work?", font=self.large_font_underline)
 
         self.work_seg_button_5 = customtkinter.CTkSegmentedButton(self.work_frame, font=self.regular_font)
-        self.work_seg_button_5.configure(values=["Car, Truck, Personal Vehicle", "Public Transportation", "Walking or Biking", "Work From Home"])
-        self.work_seg_button_5.set("Car, Truck, Personal Vehicle")
+        self.work_seg_button_5.configure(values=["Personal Vehicle", "Public Transportation", "Walking or Biking", "Work From Home"])
+        self.work_seg_button_5.set("Personal Vehicle")
 
         self.work_label6 = customtkinter.CTkLabel(self.work_frame, text="What is your ideal commute time?", font=self.large_font_underline)
 
@@ -441,14 +441,14 @@ class App(customtkinter.CTk):
         self.income_sumbit_button2.grid(row=0, column=1, padx=(20, 20), pady=12, sticky="w")
 
        
-        self.income_seg_button_2 = customtkinter.CTkSegmentedButton(self.income_frame, font=self.regular_font)
-        self.income_seg_button_2.configure(values=["15%", "20%", "25%", "30%", "35%"])
-        self.income_seg_button_2.set("25%")
+        self.income_seg_button_2 = customtkinter.CTkSegmentedButton(self.income_frame, font=self.regular_font, command=self.income_button_1)
+        self.income_seg_button_2.configure(values=["15%", "20%", "25%", "30%", "35%", "40%"])
+        self.income_seg_button_2.set("30%")
 
         self.income_label4 = customtkinter.CTkLabel(self.income_frame, text="What percent of your income can you allocated to home expenses? (Morgage, Tax, Insurance)", font=self.large_font_underline)
         self.income_label5 = customtkinter.CTkLabel(self.income_frame, text="Your Afforadable Home Price is $250,000. Increase or Decrease?", font=self.large_bold)
 
-        self.income_seg_button_3 = customtkinter.CTkSegmentedButton(self.income_frame, font=self.regular_font)
+        self.income_seg_button_3 = customtkinter.CTkSegmentedButton(self.income_frame, font=self.regular_font, command=self.income_button_1)
         self.income_seg_button_3.configure(values=["-10%", "-5%", "No Change", "+5%", "+10%"])
         self.income_seg_button_3.set("No Change")
 
@@ -716,12 +716,12 @@ class App(customtkinter.CTk):
     def family_location_button1_confirm(self):
         self.family_location_valid1 = True
         self.f_location_label5.configure(border_width=2, border_color='green')
-        self.update_middle_distance_label()
+        self.update_center_distance_label()
 
     def family_location_button2_confirm(self):
         self.family_location_valid2 = True
         self.f2_location_label5.configure(border_width=2, border_color='green')
-        self.update_middle_distance_label()
+        self.update_center_distance_label()
 
     def work_button_verify(self, entry_field: str = ''):
         self.work_location_entry_frame1.focus()
@@ -746,20 +746,18 @@ class App(customtkinter.CTk):
     def work_button_confirm(self):
         self.work_valid1 = True
         self.w_location_label5.configure(border_width=2, border_color='green')
-        self.update_middle_distance_label()
+        self.update_center_distance_label()
 
-    def update_middle_distance_label(self):
+    def update_center_distance_label(self):
         display_options_list = ["10 Miles", "20 Miles", "40 Miles", "60 Miles", "100 Miles", "200 Miles"]
-        label = 'Max ' if self.family_location_valid1 and self.family_location_valid2 and self.work_valid1 else ''
 
-        middle_distance = self.IdealHomeDataAnalysis.find_middle_distance()
-        if middle_distance > 10:
-            display_options_list = [f"{middle_distance} Miles", f"{middle_distance+20} Miles", f"{middle_distance+40} Miles", f"{middle_distance+60} Miles", f"{middle_distance+100} Miles", f"{middle_distance+200} Miles"]
+        center_distance = self.IdealHomeDataAnalysis.find_distance_to_center()
+        if center_distance > 10:
+            display_options_list = [f"{center_distance+10} Miles", f"{center_distance+20} Miles", f"{center_distance+40} Miles", f"{center_distance+60} Miles", f"{center_distance+100} Miles", f"{center_distance+200} Miles"]
 
         if self.family_location_valid2 or (self.family_location_valid1 and self.work_valid1):
-            self.work_label4.configure(text=f"What is the maximum distance prefered? ({label}Middle Distance: {middle_distance} Miles)")
-
-            self.family_location_label3.configure(text=f"What is the maximum distance prefered? ({label}Middle Distance: {middle_distance} Miles)")
+            self.work_label4.configure(text=f"What is the maximum distance prefered? (Center Point Distance: {center_distance} Miles)")
+            self.family_location_label3.configure(text=f"What is the maximum distance prefered? (Center Point Distance: {center_distance} Miles)")
         else:
             self.family_location_label3.configure(text="What is the maximum distance prefered?")
             self.work_label4.configure(text="What is the maximum distance prefered?")
@@ -768,6 +766,7 @@ class App(customtkinter.CTk):
         self.family_location_seg_button_3.set(display_options_list[0])
         self.work_seg_button_4.configure(values=display_options_list)
         self.work_seg_button_4.set(display_options_list[0])
+        self.radius_index = 0
 
     def income_button_1(self, entry_field: str = ''):
         self.income_frame.focus()
@@ -788,19 +787,38 @@ class App(customtkinter.CTk):
             self.income_entry1_valid = True
         elif income_entry_value1 and (income_entry_float1 <= 0 or income_entry_float1 > 10_000_000):
             self.income_entry1.configure(border_color='red', border_width=2)
+            self.income_entry1_valid = False
+        else:
+            self.income_entry1.configure(border_width=0)
+            self.income_entry1_valid = False
             
         if income_entry_value2 and morgage_param != 'No Morgage' and 0 <= income_entry_float2 < 90:
             self.income_entry2.configure(border_color='green', border_width=2)
             self.income_entry2_valid = True
         elif income_entry_value2 and morgage_param != 'No Morgage' and (income_entry_float2 < 0 or income_entry_float2 >= 90):
             self.income_entry2.configure(border_color='red', border_width=2)
+            self.income_entry2_valid = False
         elif income_entry_value2 and morgage_param == 'No Morgage' and 0 < income_entry_float2 <= 10_000_000:
             self.income_entry2.configure(border_color='green', border_width=2)
             self.income_entry2_valid = True
+            self.affordable_home_price = income_entry_float2
         elif income_entry_value2 and morgage_param == 'No Morgage' and (income_entry_float2 <= 0 or income_entry_float2 > 10_000_000):
             self.income_entry2.configure(border_color='red', border_width=2)
+            self.income_entry2_valid = False
+        else:
+            self.income_entry2.configure(border_width=0)
+            self.income_entry2_valid = False
 
         if self.income_entry1_valid and self.income_entry2_valid and morgage_param != 'No Morgage':
+            self.affordable_home_price = self.IdealHomeDataAnalysis.calculate_affordable_home_price(income=income_entry_float1,
+                percent_income_allocated=self.income_seg_button_2.get(),
+                interest_rate=income_entry_float2,
+                morgage_term=self.income_seg_button_1.get(),
+                adjustments=self.income_seg_button_3.get()
+            )
+            affordable_home_price_label = ''.join(reversed([digit + ',' if index % 3 == 0 and index != 0 else digit for index, digit in enumerate(reversed(str(self.affordable_home_price)))]))
+            
+            self.income_label5.configure(text=f"Your Afforadable Home Price is ${affordable_home_price_label}. Increase or Decrease?")
             self.income_label5.grid(row=13, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
             self.income_seg_button_3.grid(row=14, column=0, columnspan=3, padx=(20, 20), pady=(10, 10), sticky="ew")
 
@@ -832,18 +850,21 @@ class App(customtkinter.CTk):
             weather_entry1_valid = True
         elif weather_entry_value1 and (weather_entry_float1 <= -40 or weather_entry_float1 > 100):
             self.weather_entry1.configure(border_color='red', border_width=2)
+            weather_entry1_valid = False
 
         if weather_entry_value2 and -40 < weather_entry_float2 <= 100:
             self.weather_entry2.configure(border_color='green', border_width=2)
             weather_entry2_valid = True
         elif weather_entry_value2 and (weather_entry_float2 <= -40 or weather_entry_float2 > 100):
             self.weather_entry2.configure(border_color='red', border_width=2)
+            weather_entry2_valid = False
 
         if weather_entry_value3 and -40 < weather_entry_float3 <= 100:
             self.weather_entry3.configure(border_color='green', border_width=2)
             weather_entry3_valid = True
         elif weather_entry_value3 and (weather_entry_float3 <= -40 or weather_entry_float3 > 100):
             self.weather_entry3.configure(border_color='red', border_width=2)
+            weather_entry3_valid = False
 
         if seasons_param == '4 Seasons' and weather_entry1_valid and weather_entry2_valid and weather_entry3_valid:
             self.total_weather_entry_valid = True
@@ -851,6 +872,8 @@ class App(customtkinter.CTk):
             self.total_weather_entry_valid = True
         elif seasons_param == '1 Season' and weather_entry1_valid:
             self.total_weather_entry_valid = True
+        else:
+            self.total_weather_entry_valid = False
 
     # ----------------------- Segmented Buttons ---------------------------
 
@@ -868,6 +891,13 @@ class App(customtkinter.CTk):
             self.family_location_seg_button_3.grid_forget()
             self.family_location_seg_button_2.set("No")
             self.seg_button_family_location_2(param='No')
+            # Clear Saved Location
+            self.f_location_label5.configure(border_width=0)
+            self.family_location_valid1 = False
+            try:
+                self.IdealHomeDataAnalysis.saved_coordinates_list[0] = []
+            except: 
+                pass
 
     def seg_button_family_location_2(self, param: str):
         if param == "Yes":
@@ -881,7 +911,18 @@ class App(customtkinter.CTk):
                 self.family_location_frame.grid_rowconfigure(10, weight=0)
                 self.family_location_label3.grid(row=9, column=0, columnspan=4, padx=40, pady=(20, 15), sticky='')
                 self.family_location_seg_button_3.grid(row=10, column=0, columnspan=4, padx=(20, 20), pady=(10, 10), sticky="ew")
-        
+            # Clear Saved Location
+            self.f2_location_label5.configure(border_width=0)
+            self.family_location_valid2 = False
+            try:
+                self.IdealHomeDataAnalysis.saved_coordinates_list[1] = []
+            except:
+                pass
+
+    def seg_button_family_location3(self, param: str):
+        self.work_seg_button_4.set(param)
+        location_options = self.family_location_seg_button_3.cget('values')
+        self.radius_index = location_options.index(param)
 
     def seg_button_work_1(self, param: str):
         if param == 'Employed':
@@ -919,6 +960,18 @@ class App(customtkinter.CTk):
             self.work_location_entry_frame1.grid_forget()
             self.work_label4.grid_forget()
             self.work_seg_button_4.grid_forget()
+            # Clear Saved Location
+            self.w_location_label5.configure(border_width=0)
+            self.work_valid1 = False
+            try:
+                self.IdealHomeDataAnalysis.saved_coordinates_list[2] = []
+            except:
+                pass
+
+    def seg_button_work_3(self, param: str):
+        self.family_location_seg_button_3.set(param)
+        location_options = self.work_seg_button_4.cget('values')
+        self.radius_index = location_options.index(param)
 
     def seg_button_income(self, param: str):
         if param == '30 Years' or param == '15 Years':
@@ -932,10 +985,12 @@ class App(customtkinter.CTk):
         else:
             self.income_label3.configure(text="What home price can you afford?")
             self.income_entry2_units.configure(text="$")
+            self.income_entry2.configure(textvariable=StringVar(self.income_entry2, ''))
             self.income_label4.grid_forget()
             self.income_seg_button_2.grid_forget()
             self.income_label5.grid_forget()
             self.income_seg_button_3.grid_forget()
+        self.income_button_1()
 
     def seg_button_weather_1(self, param: str):
 
@@ -1038,9 +1093,14 @@ class App(customtkinter.CTk):
     # FRAME 1
     def frame_1_forward_event(self):
         if self.check_frame1_progress():
-            self.family_location_frame.grid_forget()
-            self.family_details_frame.grid(row=1, column=0, rowspan=3, columnspan=3, sticky="nsew")
-            self.progressbar.set(.25)
+            self.IdealHomeDataAnalysis.family_location_frame_1(radius_index=self.radius_index)
+            if self.IdealHomeDataAnalysis.errors:
+                messagebox.showerror('Search Results Error', self.IdealHomeDataAnalysis.errors[0])
+            else:
+                self.IdealHomeDataAnalysis.errors = []
+                self.family_location_frame.grid_forget()
+                self.family_details_frame.grid(row=1, column=0, rowspan=3, columnspan=3, sticky="nsew")
+                self.progressbar.set(.25)
         else:
             self.error_message(message_type='Segmented_Button')
 
@@ -1054,7 +1114,12 @@ class App(customtkinter.CTk):
         self.family_details_frame.grid_forget()
         self.work_frame.grid(row=1, column=0, rowspan=3, columnspan=3, sticky="nsew")
         self.progressbar.set(.375)
-        self.IdealHomeDataAnalysis.family_details_frame_1b()
+        self.IdealHomeDataAnalysis.family_details_frame_1b(married=self.family_details_seg_button_1.get(),
+            married_importance=self.family_details_seg_button_2.get(),
+            children=self.family_details_seg_button_3.get(),
+            children_importance=self.family_details_seg_button_4.get(),
+            school_enrollment_importance=self.family_details_seg_button_5.get()
+        )
 
     def frame_1b_backward_event(self):
         self.family_details_frame.grid_forget()
@@ -1064,10 +1129,19 @@ class App(customtkinter.CTk):
     # FRAME 2
     def frame_2_forward_event(self):
         if self.check_frame2_progress():
-            self.work_frame.grid_forget()
-            self.income_frame.grid(row=1, column=0, rowspan=3, columnspan=3, sticky="nsew")
-            self.progressbar.set(.5)
-            self.IdealHomeDataAnalysis.work_frame_2()
+            self.IdealHomeDataAnalysis.work_frame_2(employed_status=self.work_seg_button_1.get(),
+                radius_index=self.radius_index,
+                regional_employment=self.work_seg_button_3.get(),
+                work_transportation=self.work_seg_button_5.get(),
+                commute_time=self.work_seg_button_6.get()
+            )
+            if self.IdealHomeDataAnalysis.errors:
+                messagebox.showerror('Search Results Error', self.IdealHomeDataAnalysis.errors[0])
+            else:
+                self.IdealHomeDataAnalysis.errors = []
+                self.work_frame.grid_forget()
+                self.income_frame.grid(row=1, column=0, rowspan=3, columnspan=3, sticky="nsew")
+                self.progressbar.set(.5)
         else:
             self.error_message(message_type='Segmented_Button')
  
@@ -1083,7 +1157,9 @@ class App(customtkinter.CTk):
             self.income_frame.grid_forget()
             self.area_classification_frame.grid(row=1, column=0, rowspan=3, columnspan=3, sticky="nsew")
             self.progressbar.set(.625)
-            self.IdealHomeDataAnalysis.income_frame_3()
+            self.IdealHomeDataAnalysis.income_frame_3(income=self.income_entry1.get(),
+                affordable_home_price=self.affordable_home_price
+            )
         else:
             self.error_message()
 
@@ -1097,7 +1173,11 @@ class App(customtkinter.CTk):
         self.area_classification_frame.grid_forget()
         self.weather_frame.grid(row=1, column=0, rowspan=3, columnspan=3, sticky="nsew")
         self.progressbar.set(.75)
-        self.IdealHomeDataAnalysis.area_classification_frame_4()
+        self.IdealHomeDataAnalysis.area_classification_frame_4(education_level=self.area_classification_seg_button_1.get(),
+            education_level_importance=self.area_classification_seg_button_2.get(),
+            living_enviornment=self.area_classification_seg_button_3.get(),
+            living_enviornment2=self.area_classification_seg_button_4.get()
+        )
 
     def frame_4_backward_event(self):
         self.area_classification_frame.grid_forget()
@@ -1111,7 +1191,13 @@ class App(customtkinter.CTk):
             self.weather_frame.grid_forget()
             self.natural_disaster_frame.grid(row=1, column=0, rowspan=3, columnspan=3, sticky="nsew")
             self.progressbar.set(.875)
-            self.IdealHomeDataAnalysis.weather_frame_5()
+            self.IdealHomeDataAnalysis.weather_frame_5(seasons=self.weather_seg_button_1.get(),
+                summer_temperature=self.weather_entry_frame1.get(),
+                winter_temperature=self.weather_entry_frame3.get(),
+                transition_temperature=self.weather_entry_frame2.get(),
+                precipitation_level=self.weather_seg_button_2.get(),
+                sunshine_level=self.weather_seg_button_3.get()
+            )
         else:
             self.error_message()
 
@@ -1123,7 +1209,11 @@ class App(customtkinter.CTk):
     # FRAME 6
     def frame_6_forward_event(self):
         self.natural_disaster_frame.grid_forget()
-        self.IdealHomeDataAnalysis.natural_disaster_risk_frame_6()
+        self.IdealHomeDataAnalysis.natural_disaster_risk_frame_6(natural_disaster_risk=self.natural_disaster_seg_button_1.get(),
+            disaster_to_avoid=self.natural_disaster_seg_button_2.get(),
+            disaster_to_avoid2=self.natural_disaster_seg_button_3.get(),
+            disaster_to_avoid3=self.natural_disaster_seg_button_4.get()
+        )
         results_dictionary = self.IdealHomeDataAnalysis.results_frame_7()
         self.set_map_widget()
         self.results_frame.grid(row=1, column=0, rowspan=3, columnspan=3, sticky="nsew")
