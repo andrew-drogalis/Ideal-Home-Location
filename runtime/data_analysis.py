@@ -29,14 +29,14 @@ class IdealHomeDataAnalysis():
         with open('./data_ranking/ranked_data/Zipcode_Coordinates_Data.json', newline='') as f: 
             self.zipcode_coordinate_data = json.load(f)
 
-        # Store Coordinates of Family & Work Locations
-        self.saved_coordinates_list = [[], [], []]
         # Initalize Errors List
         self.errors = []
+        # Store Coordinates of Family & Work Locations
+        self.saved_coordinates_list = [[], [], []]
         # List of all Zipcode Coordinates - Not State Specific
         self.merged_zipcode_coordinate_data = [zipcode for state_coordinate_list in [*self.zipcode_coordinate_data.values()] for zipcode in state_coordinate_list]
 
-    # -------------- Navigation Functions
+    # -------------- Navigation Functions -------------------
     def family_location_frame_1(self, **kwargs):
         self.run_location_radius_search(radius_index=kwargs['radius_index'])
 
@@ -52,10 +52,10 @@ class IdealHomeDataAnalysis():
         # Save User Selections to Class Variables
         self.employment_status = kwargs['employed_status']
         self.regional_employment = kwargs['regional_employment']
-        work_transporation = kwargs['work_transportation']
+        work_transportation = kwargs['work_transportation']
         self.commute_time = kwargs['commute_time']
-        self.transportation_method = work_transporation.replace(' ','_').replace('Personal','Motor').replace('or_','')  if work_transportation != "Work From Home" else ''
-
+        self.transportation_method = work_transportation.replace(' ','_').replace('Personal','Motor').replace('or_','') if work_transportation != "Work From Home" else ''
+        #
         self.run_location_radius_search(radius_index=kwargs['radius_index'])
 
     def income_frame_3(self, **kwargs):
@@ -66,37 +66,125 @@ class IdealHomeDataAnalysis():
     def area_classification_frame_4(self, **kwargs):
         # Save User Selections to Class Variables
         self.education_level = kwargs['education_level']
-        self.married_state = kwargs['education_level_importance']
-        self.married_state = kwargs['living_enviornment']
-        self.married_state = kwargs['living_enviornment2']
+        self.education_level_importance = kwargs['education_level_importance']
+        self.living_enviornment = kwargs['living_enviornment']
+        self.living_enviornment2 = kwargs['living_enviornment2']
 
     def weather_frame_5(self, **kwargs):
-        # Save User Selections to Class Variables
-        self.married_state = kwargs['seasons']
-        self.married_state = kwargs['summer_temperature']
-        self.married_state = kwargs['transition_temperature']
-        self.married_state = kwargs['winter_temperature']
-        self.married_state = kwargs['precipitation_level']
-        self.married_state = kwargs['sunshine_level']
+        # Save User Selections to Local Variables
+        seasons = kwargs['seasons']
+        summer_temperature = float(kwargs['summer_temperature'])
+        transition_temperature = float(kwargs['transition_temperature'] or 0)
+        winter_temperature = float(kwargs['winter_temperature'] or 0)
+        precipitation_level = kwargs['precipitation_level']
+        sunshine_level = kwargs['sunshine_level']
+
+        # Convert Values From User Friendly to Search Friendly
+        precipitation_level = 'Well Below Average' if precipitation_level == 'Very Low' else 'Below Average' if precipitation_level == 'Low' else 'Above Average' if precipitation_level == 'High' else 'Well Above Average' if precipitation_level == 'Very High' else precipitation_level
+        sunshine_level = 'Well Below Average' if sunshine_level == 'Very Low' else 'Below Average' if sunshine_level == 'Low' else 'Above Average' if sunshine_level == 'High' else 'Well Above Average' if sunshine_level == 'Very High' else sunshine_level
+        
+        # See Link Above for Full Methodology
+        # Seasons Ranked Double Importance
+        zipcode_prefix_weather_score = {}
 
         for zipcode_prefix, weather_data in self.zipcode_prefix_weather_data.items():
-            pass
+            zipcode_seasons = weather_data['Seasons']
+            zipcode_avg_temp = weather_data['Average_Temperature']
+            zipcode_min_temp = weather_data['Min_Temperature']
+            zipcode_max_temp = weather_data['Max_Temperature']
+            zipcode_precipitation = weather_data['Yearly_Precipitation']
+            zipcode_sunshine = weather_data['Yearly_Sunshine']
+
+            if seasons == '4 Seasons':
+                season_score = 4 if zipcode_seasons == 4 else 2 if zipcode_seasons == 2 else 0
+                summer_difference = abs(zipcode_max_temp - summer_temperature)
+                transition_difference = abs(zipcode_avg_temp - transition_temperature)
+                winter_difference = abs(zipcode_min_temp - winter_temperature)
+                summer_score = 3 if summer_difference <= 5 else 2 if 5 < summer_difference <= 10 else 1 if 10 < summer_difference <= 15 else 0
+                transition_score = 3 if transition_difference <= 5 else 2 if 5 < transition_difference <= 10 else 1 if 10 < transition_difference <= 15 else 0
+                winter_score = 3 if winter_difference <= 5 else 2 if 5 < winter_difference <= 10 else 1 if 10 < winter_difference <= 15 else 0
+
+                season_score = season_score + summer_score + transition_score + winter_score
+            elif seasons == '2 Seasons':
+                season_score = 4 if zipcode_seasons == 2 else 2
+                summer_difference = abs(zipcode_max_temp - summer_temperature)
+                winter_difference = abs(zipcode_min_temp - winter_temperature)
+                summer_score = 3 if summer_difference <= 5 else 2 if 5 < summer_difference <= 10 else 1 if 10 < summer_difference <= 15 else 0
+                winter_score = 3 if winter_difference <= 5 else 2 if 5 < winter_difference <= 10 else 1 if 10 < winter_difference <= 15 else 0
+
+                season_score = season_score + summer_score + winter_score
+            else:
+
+                season_score = 4 if zipcode_seasons == 1 else 2 if zipcode_seasons == 2 else 0
+                outside_difference = abs(zipcode_avg_temp - summer_temperature)
+                temperature_score = 3 if outside_difference <= 5 else 2 if 5 < outside_difference <= 10 else 1 if 10 < outside_difference <= 15 else 0
+
+                season_score = season_score + temperature_score
+
+            # Precipitation
+            if precipitation_level[:4] == 'Well':
+                precipitation_score = 2 if precipitation_level == zipcode_precipitation else 1 if precipitation_level[5:11] == zipcode_precipitation[5:11] else 0
+            elif precipitation_level == 'Below Average':
+                precipitation_score = 2 if zipcode_precipitation == 'Below Average' else 1 if zipcode_precipitation == 'Well Below Average' or zipcode_precipitation == 'Average' else 0
+            elif precipitation_level == 'Above Average':
+                precipitation_score = 2 if zipcode_precipitation == 'Above Average' else 1 if zipcode_precipitation == 'Well Above Average' or zipcode_precipitation == 'Average' else 0
+            else:
+                precipitation_score = 2 if zipcode_precipitation == 'Average' else 1 if zipcode_precipitation == 'Below Average' or zipcode_precipitation == 'Above Average' else 0
+
+            # Sunshine
+            if sunshine_level[:4] == 'Well':
+                sunshine_score = 2 if sunshine_level == zipcode_sunshine else 1 if sunshine_level[5:11] == zipcode_sunshine[5:11] else 0
+            elif sunshine_level == 'Below Average':
+                sunshine_score = 2 if zipcode_sunshine == 'Below Average' else 1 if zipcode_sunshine == 'Well Below Average' or zipcode_sunshine == 'Average' else 0
+            elif sunshine_level == 'Above Average':
+                sunshine_score = 2 if zipcode_sunshine == 'Above Average' else 1 if zipcode_sunshine == 'Well Above Average' or zipcode_sunshine == 'Average' else 0
+            else:
+                sunshine_score = 2 if zipcode_sunshine == 'Average' else 1 if zipcode_sunshine == 'Below Average' or zipcode_sunshine == 'Above Average' else 0
+
+            total_score = season_score + precipitation_score + sunshine_score
+
+            zipcode_prefix_weather_score.update({zipcode_prefix:total_score})
+
 
     def natural_disaster_risk_frame_6(self, **kwargs):
-        # Save User Selections to Class Variables
-        self.married_state = kwargs['natural_disaster_risk']
-        self.married_state = kwargs['disaster_to_avoid']
-        self.married_state = kwargs['disaster_to_avoid2']
-        self.married_state = kwargs['disaster_to_avoid3']
+        # Save User Selections to Local Variables
+        natural_disaster_risk = kwargs['natural_disaster_risk']
+        disaster_to_avoid = kwargs['disaster_to_avoid']
+        disaster_to_avoid2 = kwargs['disaster_to_avoid2']
+        disaster_to_avoid3 = kwargs['disaster_to_avoid3']
+        
+        state_natural_disaster_score = {}
 
         for state, disaster_data in self.state_natural_disaster_data.items():
-            pass
+            disaster_data = disaster_data[0]
+            total_severity = disaster_data['All_Severity_Rank']
+            total_frequency = disaster_data['All_Frequency_Rank']
+            try:
+                disaster_1_severity = disaster_data[f'{disaster_to_avoid}_Severity_Rank']
+                disaster_1_frequency = disaster_data[f'{disaster_to_avoid}_Frequency_Rank']
+            except:
+                disaster_1_severity = 0
+                disaster_1_frequency = 0
+            try:
+                disaster_2_severity = disaster_data[f'{disaster_to_avoid2}_Severity_Rank']
+                disaster_2_frequency = disaster_data[f'{disaster_to_avoid2}_Frequency_Rank']
+            except:
+                disaster_2_severity = 0
+                disaster_2_frequency = 0
+            try:
+                disaster_3_severity = disaster_data[f'{disaster_to_avoid3}_Severity_Rank']
+                disaster_3_frequency = disaster_data[f'{disaster_to_avoid3}_Frequency_Rank']
+            except:
+                disaster_3_severity = 0
+                disaster_3_frequency = 0
+
+            state_natural_disaster_score.update({state: 0})
 
     def results_frame_7(self):
         city_results = []
 
         for city in self.city_radius_results:
-            zipcode = city[-5:]
+            zipcode = [*city.keys()][0][-5:]
             zipcode_prefix = zipcode[:3]
             zipcode_data = self.zipcode_data[zipcode]
             state = zipcode_data["City"][-2:]

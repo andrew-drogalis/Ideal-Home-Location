@@ -48,6 +48,7 @@ class App(customtkinter.CTk):
         self.family_location_valid1 = False
         self.family_location_valid2 = False
         self.work_valid1 = False
+        self.radius_index = 0
 
         """ 
             Header Frame 
@@ -1192,9 +1193,9 @@ class App(customtkinter.CTk):
             self.natural_disaster_frame.grid(row=1, column=0, rowspan=3, columnspan=3, sticky="nsew")
             self.progressbar.set(.875)
             self.IdealHomeDataAnalysis.weather_frame_5(seasons=self.weather_seg_button_1.get(),
-                summer_temperature=self.weather_entry_frame1.get(),
-                winter_temperature=self.weather_entry_frame3.get(),
-                transition_temperature=self.weather_entry_frame2.get(),
+                summer_temperature=self.weather_entry1.get(),
+                winter_temperature=self.weather_entry3.get(),
+                transition_temperature=self.weather_entry2.get(),
                 precipitation_level=self.weather_seg_button_2.get(),
                 sunshine_level=self.weather_seg_button_3.get()
             )
