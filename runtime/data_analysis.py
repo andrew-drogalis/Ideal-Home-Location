@@ -148,7 +148,7 @@ class IdealHomeDataAnalysis():
 
     def natural_disaster_risk_frame_6(self, **kwargs):
         # Save User Selections to Local Variables
-        natural_disaster_risk = kwargs['natural_disaster_risk']
+        natural_disaster_risk = int(kwargs['natural_disaster_risk'])
         disaster_to_avoid = kwargs['disaster_to_avoid']
         disaster_to_avoid2 = kwargs['disaster_to_avoid2']
         disaster_to_avoid3 = kwargs['disaster_to_avoid3']
@@ -159,26 +159,42 @@ class IdealHomeDataAnalysis():
             disaster_data = disaster_data[0]
             total_severity = disaster_data['All_Severity_Rank']
             total_frequency = disaster_data['All_Frequency_Rank']
+
+            total_severity_number = 3 if total_severity == 'High' else 2 if total_severity == 'Moderate' else 1 if total_severity == 'Low' else 0
+            total_frequency_number = 4 if total_frequency == 'Well Above Average' else 3 if total_frequency == 'Above Average' else 2 if total_frequency == 'Average' else 1 if total_frequency == 'Below Average' else 0
+
+            total_disaster_score = (total_severity_number + total_frequency_number) * natural_disaster_risk
+
             try:
                 disaster_1_severity = disaster_data[f'{disaster_to_avoid}_Severity_Rank']
                 disaster_1_frequency = disaster_data[f'{disaster_to_avoid}_Frequency_Rank']
+                disaster_1_severity_number = 3 if disaster_1_severity == 'High' else 2 if disaster_1_severity == 'Moderate' else 1 if disaster_1_severity == 'Low' else 0
+                disaster_1_frequency_number = 4 if disaster_1_frequency == 'Well Above Average' else 3 if disaster_1_frequency == 'Above Average' else 2 if disaster_1_frequency == 'Average' else 1 if disaster_1_frequency == 'Below Average' else 0
+                disaster_1_score = (disaster_1_severity_number + disaster_1_frequency_number) * natural_disaster_risk
             except:
-                disaster_1_severity = 0
-                disaster_1_frequency = 0
+                disaster_1_score = 0
+
             try:
                 disaster_2_severity = disaster_data[f'{disaster_to_avoid2}_Severity_Rank']
                 disaster_2_frequency = disaster_data[f'{disaster_to_avoid2}_Frequency_Rank']
+                disaster_2_severity_number = 2 if disaster_2_severity == 'High' else 1 if disaster_2_severity == 'Moderate' else 0
+                disaster_2_frequency_number = 3 if disaster_2_frequency == 'Well Above Average' else 2 if disaster_2_frequency == 'Above Average' else 1 if disaster_2_frequency == 'Average' else 0
+                disaster_2_score = (disaster_2_severity_number + disaster_2_frequency_number) * natural_disaster_risk
             except:
-                disaster_2_severity = 0
-                disaster_2_frequency = 0
+                disaster_2_score = 0
+
             try:
                 disaster_3_severity = disaster_data[f'{disaster_to_avoid3}_Severity_Rank']
                 disaster_3_frequency = disaster_data[f'{disaster_to_avoid3}_Frequency_Rank']
+                disaster_3_severity_number = 1 if disaster_3_severity == 'High' else 0
+                disaster_3_frequency_number = 2 if disaster_3_frequency == 'Well Above Average' else 1 if disaster_3_frequency == 'Above Average' else 0
+                disaster_3_score = (disaster_3_severity_number + disaster_3_frequency_number) * natural_disaster_risk
             except:
-                disaster_3_severity = 0
-                disaster_3_frequency = 0
+                disaster_3_score = 0
 
-            state_natural_disaster_score.update({state: 0})
+            total_state_score = total_disaster_score + disaster_1_score + disaster_2_score + disaster_3_score
+
+            state_natural_disaster_score.update({state: total_state_score})
 
     def results_frame_7(self):
         city_results = []

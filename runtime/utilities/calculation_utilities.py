@@ -1,13 +1,13 @@
+from math import cos, pi
 """
     ## Calculation Utilities
     - Reusable Functions for the Data Analysis Class
 
     Constants:
     1 Degree of Latitude is 69 Miles
-    1 Degree of Longitude is 54.6 Miles
+    1 Degree of Longitude is cosine(Degree of Latitude) * 69 Miles
 """
 miles_per_degree_lat = 69
-miles_per_degree_lng = 54.6
 
 def find_centroid(c_1: list, c_2: list, c_3: list = []):
     if c_3:
@@ -23,6 +23,8 @@ def find_centroid(c_1: list, c_2: list, c_3: list = []):
 def find_hypotenuse(c_1: list, c_2: list):
     # Calculate Differences For Latitude & Longitude
     coordinate_1_2_lat_difference = abs(c_1[0] - c_2[0]) * miles_per_degree_lat
+    average_latitude_radians = (c_1[0] + c_2[0]) * pi / 360
+    miles_per_degree_lng = cos(average_latitude_radians) * miles_per_degree_lat
     coordinate_1_2_lng_difference = abs(c_1[1] - c_2[1]) * miles_per_degree_lng
 
     # Calculate Distance w/ Pythagorean theorem

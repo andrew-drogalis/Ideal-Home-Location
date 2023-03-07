@@ -32,7 +32,7 @@ class App(customtkinter.CTk):
         
         title_font = customtkinter.CTkFont(family='Cabin', size=28, weight="bold")
         small_font = customtkinter.CTkFont(family='Telex', size=14, weight="normal")
-        regular_font_underline = customtkinter.CTkFont(family='Telex', size=16, weight="normal", underline=True)
+        bold_font = customtkinter.CTkFont(family='Telex', size=16, weight="bold")
         self.regular_font = customtkinter.CTkFont(family='Telex', size=16, weight="normal")
         self.large_font = customtkinter.CTkFont(family='Telex', size=19, weight="normal")
         self.large_bold = customtkinter.CTkFont(family='Telex', size=19, weight="bold")
@@ -62,7 +62,7 @@ class App(customtkinter.CTk):
         self.bg_image_label = customtkinter.CTkLabel(self.header_frame, text='', image=self.bg_image)
         self.bg_image_label.grid(row=0, column=0, padx=20, pady=(10, 10), sticky='nw')
         # Github Link
-        self.github_image = customtkinter.CTkImage(light_image=Image.open(current_path + "/assets/images/github-mark.png"),dark_image=Image.open(current_path + "/assets/images/github-mark-white.png"), size=(101, 25))
+        self.github_image = customtkinter.CTkImage(light_image=Image.open(current_path + "/assets/images/github-mark.png"),dark_image=Image.open(current_path + "/assets/images/github-mark-white.png"), size=(81, 20))
         self.github_button = customtkinter.CTkButton(self.header_frame, image=self.github_image, width=90, hover_color=('#fff','#000'), text='', compound='right', fg_color='transparent', bg_color='transparent', command=self.github_more_information)
         self.github_button.grid(row=0, column=1, padx=15, pady=(10, 10), sticky='e')
 
@@ -73,23 +73,23 @@ class App(customtkinter.CTk):
         self.sidebar_frame.grid(row=0, column=3, rowspan=4, sticky="nsew")
         self.sidebar_frame.grid_rowconfigure(1, weight=1)
         # Finish Label
-        self.finish_label = customtkinter.CTkLabel(self.sidebar_frame, text="Finish Line", anchor="center", font=regular_font_underline, fg_color=('#fff','#111'))
+        self.finish_label = customtkinter.CTkLabel(self.sidebar_frame, text="Finish Line", anchor="center", font=bold_font, fg_color=('#fff','#111'))
         self.finish_label.grid(row=0, column=0, ipadx=10, padx=10, pady=(40, 20))
         # Progres Bar Initalize
         self.progressbar = customtkinter.CTkProgressBar(self.sidebar_frame, orientation="vertical", border_width=1, fg_color='#fff')
         self.progressbar.grid(row=1, column=0, padx=(10, 10), pady=(10, 10), sticky='ns')
         self.progressbar.set(0)
         # Start Label
-        self.start_label = customtkinter.CTkLabel(self.sidebar_frame, text="Start Line", font=regular_font_underline, fg_color=('#fff','#111'))
+        self.start_label = customtkinter.CTkLabel(self.sidebar_frame, text="Start Line", font=bold_font, fg_color=('#fff','#111'))
         self.start_label.grid(row=3, column=0, ipadx=10, padx=10, pady=(20, 20), sticky='')
         # Appearance Mode
-        self.appearance_mode_label = customtkinter.CTkLabel(self.sidebar_frame, text="Appearance Mode:", anchor="w", font=small_font)
+        self.appearance_mode_label = customtkinter.CTkLabel(self.sidebar_frame, text="Appearance Mode:", anchor="w", font=small_font, fg_color=('#fff','#111'))
         self.appearance_mode_label.grid(row=5, column=0, padx=10, pady=(10, 0))
         self.appearance_mode_optionemenu = customtkinter.CTkOptionMenu(self.sidebar_frame, width=100, values=["Light", "Dark", "System"], anchor='center', command=self.change_appearance_mode_event, font=small_font, dropdown_font=self.regular_font)
         self.appearance_mode_optionemenu.grid(row=6, column=0, padx=10, pady=(10, 10))
         self.appearance_mode_optionemenu.set("System")
         # US Scaling
-        self.scaling_label = customtkinter.CTkLabel(self.sidebar_frame, text="UI Scaling:", anchor="w", font=small_font)
+        self.scaling_label = customtkinter.CTkLabel(self.sidebar_frame, text="UI Scaling:", anchor="w", font=small_font, fg_color=('#fff','#111'))
         self.scaling_label.grid(row=7, column=0, padx=10, pady=(10, 0))
         self.scaling_optionemenu = customtkinter.CTkOptionMenu(self.sidebar_frame, width=100, values=["80%", "90%", "100%", "110%", "120%"], anchor='center', command=self.change_scaling_event, font=small_font, dropdown_font=self.regular_font)
         self.scaling_optionemenu.grid(row=8, column=0, padx=10, pady=(10, 20))
@@ -99,13 +99,13 @@ class App(customtkinter.CTk):
         """ 
             Instructions Frame 
         """
-        self.intro_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e3e3e3',"gray17"))
+        self.intro_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e3e3e3',"gray17"), border_width=1, border_color='blue')
         self.intro_frame.grid(row=1, column=0, rowspan=3, columnspan=3, sticky="nsew")
         self.intro_frame.grid_rowconfigure(3, weight=1)
         self.intro_frame.grid_columnconfigure(0, weight=1)
         # Page Title
         instructions_title = customtkinter.CTkLabel(self.intro_frame, text="Instructions", font=title_font, fg_color=('#fff','#111'))
-        instructions_title.grid(row=0, column=0, columnspan=3, padx=20, pady=(20,15), sticky='')
+        instructions_title.grid(row=0, column=0, columnspan=3, ipady=1, ipadx=20, padx=20, pady=15, sticky='')
         # App Instructions
         instructions_textbox = customtkinter.CTkTextbox(self.intro_frame, fg_color='transparent', height=400, font=self.regular_font)
         instructions_textbox.grid(row=1, column=0, columnspan=3, padx=(33, 20), pady=(20, 0), sticky="nsew")
@@ -124,7 +124,7 @@ class App(customtkinter.CTk):
         self.family_location_frame.grid_columnconfigure(0, weight=1)
         # Page Title
         family_location_title = customtkinter.CTkLabel(self.family_location_frame, text="Ideal Family Preferences", font=title_font, fg_color=('#fff','#111'))
-        family_location_title.grid(row=0, column=0, columnspan=3, padx=20, pady=(20, 15), sticky='')
+        family_location_title.grid(row=0, column=0, columnspan=3, padx=20, ipady=1, ipadx=20, pady=15, sticky='')
         # Question #1
         family_location_label_1 = customtkinter.CTkLabel(self.family_location_frame, text="Do you want to be close to family members?", font=self.large_font_underline)
         family_location_label_1.grid(row=1, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
@@ -239,7 +239,7 @@ class App(customtkinter.CTk):
         self.family_details_frame.grid_columnconfigure(0, weight=1)
 
         family_details_title = customtkinter.CTkLabel(self.family_details_frame, text="Ideal Family Preferences", font=title_font, fg_color=('#fff','#111'))
-        family_details_title.grid(row=0, column=0, padx=20, columnspan=4, pady=(20, 15), sticky='')
+        family_details_title.grid(row=0, column=0, padx=20, columnspan=4, ipady=1, ipadx=20, pady=15, sticky='')
 
         family_details_label1 = customtkinter.CTkLabel(self.family_details_frame, text="Are you married?", font=self.large_font_underline)
         family_details_label1.grid(row=1, column=0, columnspan=4, padx=40, pady=(20, 15), sticky='')
@@ -296,7 +296,7 @@ class App(customtkinter.CTk):
         self.work_frame.grid_columnconfigure(0, weight=1)
 
         work_title = customtkinter.CTkLabel(self.work_frame, text="Ideal Work Preferences", font=title_font, fg_color=('#fff','#111'))
-        work_title.grid(row=0, column=0, padx=20, columnspan=4, pady=(20, 15), sticky='')
+        work_title.grid(row=0, column=0, padx=20, columnspan=4, ipady=1, ipadx=20, pady=15, sticky='')
 
         work_label_1 = customtkinter.CTkLabel(self.work_frame, text="Are you employed or open to new job opportunities?", font=self.large_font_underline)
         work_label_1.grid(row=1, column=0, columnspan=3, pady=10, padx=20, sticky="")
@@ -393,7 +393,7 @@ class App(customtkinter.CTk):
         self.income_frame.grid_columnconfigure(0, weight=1)
 
         income_title = customtkinter.CTkLabel(self.income_frame, text="Income Information", font=title_font, fg_color=('#fff','#111'))
-        income_title.grid(row=0, column=0, padx=20, columnspan=3, pady=(20, 15), sticky='')
+        income_title.grid(row=0, column=0, padx=20, columnspan=3, ipady=1, ipadx=20, pady=15, sticky='')
 
         income_label_1 = customtkinter.CTkLabel(self.income_frame, text="What is your annual household income?", font=self.large_font_underline)
         income_label_1.grid(row=1, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
@@ -470,7 +470,7 @@ class App(customtkinter.CTk):
         self.area_classification_frame.grid_columnconfigure(0, weight=1)
 
         area_classification_title = customtkinter.CTkLabel(self.area_classification_frame, text="Ideal Lifestyle Preferences", font=title_font, fg_color=('#fff','#111'))
-        area_classification_title.grid(row=0, column=0, padx=20, columnspan=3, pady=(20, 15), sticky='')
+        area_classification_title.grid(row=0, column=0, padx=20, columnspan=3, ipady=1, ipadx=20, pady=15, sticky='')
 
         area_classification_label_1 = customtkinter.CTkLabel(self.area_classification_frame, text="What level of education do you have?", font=self.large_font_underline)
         area_classification_label_1.grid(row=1, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
@@ -519,7 +519,7 @@ class App(customtkinter.CTk):
         self.weather_frame.grid_columnconfigure(0, weight=1)
 
         weather_title = customtkinter.CTkLabel(self.weather_frame, text="Weather & Temperature Preferences", font=title_font, fg_color=('#fff','#111'))
-        weather_title.grid(row=0, column=0, padx=20, columnspan=3, pady=(20, 15), sticky='')
+        weather_title.grid(row=0, column=0, padx=20, columnspan=3, ipady=1, ipadx=20, pady=15, sticky='')
 
         weather_label_1 = customtkinter.CTkLabel(self.weather_frame, text="How many Seasons do you prefer?", font=self.large_font_underline)
         weather_label_1.grid(row=1, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
@@ -618,7 +618,7 @@ class App(customtkinter.CTk):
         self.natural_disaster_frame.grid_columnconfigure(0, weight=1)
 
         natural_disaster_title = customtkinter.CTkLabel(self.natural_disaster_frame, text="Natural Disaster Risk Tolerance", font=title_font, fg_color=('#fff','#111'))
-        natural_disaster_title.grid(row=0, column=0, padx=20, columnspan=3, pady=(20, 15), sticky='')
+        natural_disaster_title.grid(row=0, column=0, padx=20, columnspan=3, ipady=1, ipadx=20, pady=15, sticky='')
 
         natural_disaster_label_1 = customtkinter.CTkLabel(self.natural_disaster_frame, text="How imporant is it to migitate natural disaster risk?", font=self.large_font_underline)
         natural_disaster_label_1.grid(row=1, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
@@ -633,7 +633,7 @@ class App(customtkinter.CTk):
         natural_disaster_label_2.grid(row=4, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
 
         # Segmented Button #2 & #3
-        self.natural_disaster_list = ["Flood", "Tornado", "Thunderstorm", "Drought", "Wildfire", "Earthquake", "Huricane"]
+        self.natural_disaster_list = ["Flood", "Tornado", "Thunderstorm", "Drought", "Wildfire", "Earthquake", "Hurricane"]
         self.natural_disaster_seg_button_2 = customtkinter.CTkSegmentedButton(self.natural_disaster_frame, font=self.regular_font, command=self.seg_button_natural_disaster_2)
         self.natural_disaster_seg_button_2.grid(row=5, column=0, columnspan=4, padx=(20, 20), pady=(10, 10), sticky="ew")
         self.natural_disaster_seg_button_2.configure(values=self.natural_disaster_list)
@@ -661,7 +661,7 @@ class App(customtkinter.CTk):
         self.results_frame.grid_columnconfigure(0, weight=1)
 
         self.results_title = customtkinter.CTkLabel(self.results_frame, text="Congratulations!", font=title_font, fg_color=('#fff','#111'))
-        self.results_title.grid(row=0, column=0, padx=20, columnspan=3, pady=(20, 15), sticky='')
+        self.results_title.grid(row=0, column=0, padx=20, columnspan=3, ipady=1, ipadx=20, pady=15, sticky='')
 
 
 
