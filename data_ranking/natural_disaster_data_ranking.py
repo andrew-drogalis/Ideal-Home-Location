@@ -9,6 +9,7 @@ from math_functions.ranking_functions import rank_value, rank_value_skewed
 
     Note: Rare Events are omitted from Data Analysis
     A 98% Confidence Interval was used to determine of the events occured with a greater than 0 mean frequency
+        # Insert at Line 67
         '''python
             events_per_year = defaultdict(list)
             for event in disaster_type_events: 
@@ -103,26 +104,14 @@ for state, disaster_events in state_disaster_data.items():
     total_damages_mean = mean(total_damages)
     frequency = len(disaster_events)
 
-    # Total Deaths Mean & STDV for All Nationwide Data
-    all_total_deaths_mean = all_disaster_results['Mean_Total_Deaths']
-    all_total_deaths_stdv = all_disaster_results['Standard_Deviation_Total_Deaths']
-
-    # Total Damages Mean & STDV for All Nationwide Data
-    all_total_damages_mean = all_disaster_results['Mean_Total_Damages']
-    all_total_damages_stdv = all_disaster_results['Standard_Deviation_Total_Damages']
-
     # Average Total Deaths & Total Damages for Approximate Severity
-    total_damages_deviation_ratio = (total_damages_mean - all_total_damages_mean) / all_total_damages_stdv
-    total_deaths_deviation_ratio = (total_deaths_mean - all_total_deaths_mean) / all_total_deaths_stdv
+    total_damages_deviation_ratio = (total_damages_mean - all_disaster_results['Mean_Total_Damages']) / all_disaster_results['Standard_Deviation_Total_Damages']
+    total_deaths_deviation_ratio = (total_deaths_mean - all_disaster_results['Mean_Total_Deaths']) / all_disaster_results['Standard_Deviation_Total_Deaths']
     average_deviation_ratio = (total_deaths_deviation_ratio + total_damages_deviation_ratio) / 2
 
     severity_rank = rank_value_skewed(deviation_ratio=average_deviation_ratio, rank_label='naturaldisaster')
 
-    # Frequency Median & MAD for All Nationwide Data
-    all_frequency_median = all_disaster_results['Median_Frequency_Per_State']
-    all_frequency_mad = all_disaster_results['MAD_Frequency_Per_State']
-
-    frequency_deviation_ratio = (frequency - all_frequency_median) / all_frequency_mad
+    frequency_deviation_ratio = (frequency - all_disaster_results['Median_Frequency_Per_State']) / all_disaster_results['MAD_Frequency_Per_State']
     frequency_rank = rank_value(deviation_ratio=frequency_deviation_ratio)
 
     # Store Relative Rank for Nationwide Data
@@ -133,13 +122,15 @@ for state, disaster_events in state_disaster_data.items():
         }
     )
 
-    # Sort Total Events by Disaster Type
+
+    ## Sort Total Events by Disaster Type
     state_disaster_by_type = defaultdict(list)
     for event in disaster_events:
         disaster_type = event['Disaster_Type']
         state_disaster_by_type[disaster_type].append(event)
 
-    # For Each Disaster Type in Each State Rank Severity & Frequency
+
+    ## For Each Disaster Type in Each State Rank Severity & Frequency
     for disaster_type, disaster_type_events in state_disaster_by_type.items():
         if disaster_type not in ['Landslide', 'Volcanic activity', 'Sand/Dust storm']:
             
@@ -154,36 +145,21 @@ for state, disaster_events in state_disaster_data.items():
             total_damages_mean = mean(type_total_damages) if type_total_damages else 0
 
             try:
-                # Total Deaths Mean & STDV for Disaster Type Data
-                type_total_deaths_mean = disaster_by_type_results[disaster_type]['Mean_Total_Deaths']
-                type_total_deaths_stdv = disaster_by_type_results[disaster_type]['Standard_Deviation_Total_Deaths']
-
-                total_deaths_deviation_ratio = (total_deaths_mean - type_total_deaths_mean) / type_total_deaths_stdv
+                total_deaths_deviation_ratio = (total_deaths_mean - disaster_by_type_results[disaster_type]['Mean_Total_Deaths']) / disaster_by_type_results[disaster_type]['Standard_Deviation_Total_Deaths']
             except:
                 total_deaths_deviation_ratio = None
 
             try:
-                # Total Damages Mean & STDV for Disaster Type Data
-                type_total_damages_mean = disaster_by_type_results[disaster_type]['Mean_Total_Damages']
-                type_total_damages_stdv = disaster_by_type_results[disaster_type]['Standard_Deviation_Total_Damages']
-
-                total_damages_deviation_ratio = (total_damages_mean - type_total_damages_mean) / type_total_damages_stdv
+                total_damages_deviation_ratio = (total_damages_mean - disaster_by_type_results[disaster_type]['Mean_Total_Damages']) / disaster_by_type_results[disaster_type]['Standard_Deviation_Total_Damages']
             except:
                 total_damages_deviation_ratio = None
 
             # Average Total Deaths & Total Damages for Approximate Severity
             average_deviation_ratio = (total_deaths_deviation_ratio + total_damages_deviation_ratio) / 2 if total_deaths_deviation_ratio and total_damages_deviation_ratio else total_deaths_deviation_ratio if total_deaths_deviation_ratio else total_damages_deviation_ratio if total_deaths_deviation_ratio else -1
-            severity_rank = rank_value_skewed(deviation_ratio=average_deviation_ratio, rank_label='naturaldisaster')
+            severity_rank = rank_value_skewed(deviation_ratio=average_deviation_ratio, rank_label='natural_disaster')
 
-            # Frequency Median & MAD for Disaster Type Data
-            type_frequency_median = disaster_by_type_results[disaster_type]['Median_Frequency_Per_State']
-            type_frequency_mad = disaster_by_type_results[disaster_type]['MAD_Frequency_Per_State']
-
-            frequency_deviation_ratio = (frequency - type_frequency_median) / type_frequency_mad
+            frequency_deviation_ratio = (frequency - disaster_by_type_results[disaster_type]['Median_Frequency_Per_State']) / disaster_by_type_results[disaster_type]['MAD_Frequency_Per_State']
             frequency_rank = rank_value(deviation_ratio=frequency_deviation_ratio)
-
-        else:
-            print(f'Not Enough Data - {disaster_type} Ommited from Ranking')
 
         # Store Relative Rank for Disaster Type Data
         state_disaster_results[state].append(
@@ -193,6 +169,7 @@ for state, disaster_events in state_disaster_data.items():
             }
         )
     
+
 # ---------------------------------------------------------------------------   
 
 # Save Results Dictionary as JSON File

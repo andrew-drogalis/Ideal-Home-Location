@@ -40,14 +40,6 @@ for zip_prefix in zipcode_prefix_data:
     # Check if Zipcode Prefix is Valid
     if zip_prefix_search:
         # Local Data Storage
-        home_income_dict = {
-            'Total_Persons': [],
-            'Distribution_Profile': []
-        }
-        home_value_dict = {
-            'Total_Persons': [],
-            'Distribution_Profile': []
-        }
         coordinates_dict = {
             'East_Bounds': [],
             'West_Bounds': [],
@@ -163,9 +155,6 @@ for zip_prefix in zipcode_prefix_data:
 
                 # Median Absolute Deviation
                 mad_home_value = round(mad_calc(dataset=home_value_distribution_list, median_of_data=median_home_value))
-                # Use for Zipcode Prefix Average
-                home_value_dict['Total_Persons'].append(sum(persons_list))
-                home_value_dict['Distribution_Profile'].append(home_value_distribution_list)
             else:
                 median_home_value = None
                 mad_home_value = None
@@ -231,9 +220,6 @@ for zip_prefix in zipcode_prefix_data:
 
                 # Median Absolute Deviation
                 mad_household_income = round(mad_calc(dataset=income_distribution_list, median_of_data=median_household_income))
-                # Use for Zipcode Prefix Average
-                home_income_dict['Total_Persons'].append(sum(income_persons_list))
-                home_income_dict['Distribution_Profile'].append(income_distribution_list)
             else:
                 median_household_income = None
                 mad_household_income = None
@@ -447,68 +433,7 @@ for zip_prefix in zipcode_prefix_data:
         # ---------------------------------------------------------
 
         ## Find Averages for Zipcode Prefix Locations
-        average_percent_married = [city['Married_Percentage'] for city in city_metric_data[zip_number] if city['Married_Percentage'] is not None]
-        average_percent_married = round(mean(average_percent_married), 2) if average_percent_married else None
-
-        average_families_with_children = [city['Families_with_Children'] for city in city_metric_data[zip_number] if city['Families_with_Children'] is not None]
-        average_families_with_children = round(mean(average_families_with_children), 2) if average_families_with_children else None
-
-        average_home_occupancy = [city['Home_Occupancy'] for city in city_metric_data[zip_number] if city['Home_Occupancy'] is not None]
-        average_home_occupancy = round(mean(average_home_occupancy), 2) if average_home_occupancy else None
-
-        average_employment_percentage = [city['Employment_Percentage'] for city in city_metric_data[zip_number] if city['Employment_Percentage'] is not None]
-        average_employment_percentage = round(mean(average_employment_percentage), 2) if average_employment_percentage else None
-
-        average_motor_vehicle_use = [city['Motor_Vehicle_Work_Percentage'] for city in city_metric_data[zip_number] if city['Motor_Vehicle_Work_Percentage'] is not None]
-        average_motor_vehicle_use = round(mean(average_motor_vehicle_use), 2) if average_motor_vehicle_use else None
-
-        average_public_transportation_use = [city['Public_Transportation_Work_Percentage'] for city in city_metric_data[zip_number] if city['Public_Transportation_Work_Percentage'] is not None]
-        average_public_transportation_use = round(mean(average_public_transportation_use), 2) if average_public_transportation_use else None
-
-        average_walking_biking_use = [city['Walking_Biking_Work_Percentage'] for city in city_metric_data[zip_number] if city['Walking_Biking_Work_Percentage'] is not None]
-        average_walking_biking_use = round(mean(average_walking_biking_use), 2) if average_walking_biking_use else None
-
-        average_travel_time_to_work = [city['Travel_Time_To_Work'] for city in city_metric_data[zip_number] if city['Travel_Time_To_Work'] is not None]
-        average_travel_time_to_work = round(mean(average_travel_time_to_work), 2) if average_travel_time_to_work else None
-
-        average_education_score = [city['Education_Score'] for city in city_metric_data[zip_number] if city['Education_Score'] is not None]
-        average_education_score = round(mean(average_education_score), 2) if average_education_score else None
-
-        average_school_enrollment = [city['School_Enrollment_Percentage'] for city in city_metric_data[zip_number] if city['School_Enrollment_Percentage'] is not None]
-        average_school_enrollment = round(mean(average_school_enrollment), 2) if average_school_enrollment else None
-
-        ## Average Home Values for Zipcode Prefix Locations
-        median_home_value = [city['Median_Home_Value'] for city in city_metric_data[zip_number] if city['Median_Home_Value'] is not None]
-        total_persons_list = home_value_dict['Total_Persons']
-        distribution_lists = home_value_dict['Distribution_Profile']
-
-        combined_persons_total = 0
-        combined_median_persons = 0
-        combined_distribution_list = []
-        for x, median_value in enumerate(median_home_value):
-            combined_persons_total += total_persons_list[x]
-            combined_median_persons += median_value * total_persons_list[x]
-            combined_distribution_list += distribution_lists[x]
-
-        median_home_value = combined_median_persons / combined_persons_total if combined_persons_total else None
-        mad_home_value = mad_calc(dataset=combined_distribution_list, median_of_data=median_home_value) if median_home_value else None
-
-        ## Average Household Income for Zipcode Prefix Locations
-        median_household_income = [city['Median_Household_Income'] for city in city_metric_data[zip_number] if city['Median_Household_Income'] is not None]
-        total_persons_list = home_income_dict['Total_Persons']
-        distribution_lists = home_income_dict['Distribution_Profile']
-
-        combined_persons_total = 0
-        combined_median_persons = 0
-        combined_distribution_list = []
-        for x, median_value in enumerate(median_household_income):
-            combined_persons_total += total_persons_list[x]
-            combined_median_persons += median_value * total_persons_list[x]
-            combined_distribution_list += distribution_lists[x]
-
-        median_household_income = combined_median_persons / combined_persons_total if combined_persons_total else None
-        mad_household_income = mad_calc(dataset=combined_distribution_list, median_of_data=median_household_income) if median_household_income else None
-
+ 
         # Population & Land Area for Zipcode Prefix Locations
         total_population = sum(
             [city['Population'] for city in city_metric_data[zip_number] if city['Population'] is not None])
@@ -535,20 +460,6 @@ for zip_prefix in zipcode_prefix_data:
         # Update Results Dictionary
         zipcode_prefix_metric_data.update({zip_number: 
             {
-                'Married_Percentage': average_percent_married,
-                'Families_with_Children': average_families_with_children,
-                'Median_Home_Value': median_home_value,
-                'MAD_Home_Value': mad_home_value,
-                'Home_Occupancy': average_home_occupancy,
-                'Median_Houshold_Income': median_household_income,
-                'MAD_Household_Income': mad_household_income,
-                'Employment_Percentage': average_employment_percentage,
-                'Motor_Vehicle_Work_Percentage': average_motor_vehicle_use,
-                'Public_Transportation_Work_Percentage': average_public_transportation_use,
-                'Walking_Biking_Work_Percentage': average_walking_biking_use,
-                'Travel_Time_To_Work': average_travel_time_to_work,
-                'Education_Score': average_education_score,
-                'School_Enrollment_Percentage': average_school_enrollment,
                 'Area_Classification': average_area_classification,
                 'North_Boundary': northmost_boundary,
                 'South_Boundary': southmost_boundary,
@@ -569,9 +480,6 @@ for cities_list in [*city_metric_data.values()]:
         zipcode_metric_data.update({city['Zipcode']:city})
 
 # Save Results Dictionary as JSON File
-with open(f"data_processors/processed_data/Zipcode_Prefix_Metrics_Data.json", 'w') as f:
-    json.dump(zipcode_prefix_metric_data, f)
-
 with open(f"data_processors/processed_data/All_Zipcode_Metrics_Data.json", 'w') as f:
     json.dump(all_zipcode_data, f)
 

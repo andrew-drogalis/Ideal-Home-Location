@@ -3,7 +3,6 @@ import customtkinter
 from tkintermapview import TkinterMapView
 import sys, pathlib, webbrowser
 from PIL import Image
-from tkextrafont import Font
 from runtime.data_analysis import IdealHomeDataAnalysis
 current_path = str(pathlib.Path(__file__).parent.parent)
 
@@ -23,12 +22,16 @@ class App(customtkinter.CTk):
         # Window Title
         self.title("Ideal Home Location Matcher")
 
+        # Add Ideal Home Icon
+        self.iconbitmap("assets/icon/Ideal_Home.ico")
+
         # Default Window Size
         self.geometry(f"{1100}x{1000}")
 
+        font_manager = customtkinter.FontManager()
         # Load Custom Fonts
-        Font(file="assets/fonts/Telex-Regular.ttf")
-        Font(file="assets/fonts/Cabin-Bold.ttf")
+        font_manager.windows_load_font(font_path="assets/fonts/Telex-Regular.ttf")
+        font_manager.windows_load_font(font_path="assets/fonts/Cabin-Bold.ttf")
         
         title_font = customtkinter.CTkFont(family='Cabin', size=28, weight="bold")
         small_font = customtkinter.CTkFont(family='Telex', size=14, weight="normal")
@@ -99,7 +102,7 @@ class App(customtkinter.CTk):
         """ 
             Instructions Frame 
         """
-        self.intro_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e3e3e3',"gray17"), border_width=1, border_color='blue')
+        self.intro_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e3e3e3',"gray17"), border_width=1, border_color='#217bd7')
         self.intro_frame.grid(row=1, column=0, rowspan=3, columnspan=3, sticky="nsew")
         self.intro_frame.grid_rowconfigure(3, weight=1)
         self.intro_frame.grid_columnconfigure(0, weight=1)
@@ -119,7 +122,7 @@ class App(customtkinter.CTk):
         """ 
             Family Location Frame 1
         """
-        self.family_location_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e3e3e3',"gray17"))
+        self.family_location_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e3e3e3',"gray17"), border_width=1, border_color='#217bd7')
         self.family_location_frame.grid_rowconfigure((3,5,8,10,13), weight=1)
         self.family_location_frame.grid_columnconfigure(0, weight=1)
         # Page Title
@@ -234,7 +237,7 @@ class App(customtkinter.CTk):
         """ 
             Family Details Frame 1b
         """
-        self.family_details_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e3e3e3',"gray17"))
+        self.family_details_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e3e3e3',"gray17"), border_width=1, border_color='#217bd7')
         self.family_details_frame.grid_rowconfigure((3,6,9,12,15), weight=1)
         self.family_details_frame.grid_columnconfigure(0, weight=1)
 
@@ -291,7 +294,7 @@ class App(customtkinter.CTk):
         """ 
             Work Frame 2
         """
-        self.work_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e3e3e3',"gray17"))
+        self.work_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e3e3e3',"gray17"), border_width=1, border_color='#217bd7')
         self.work_frame.grid_rowconfigure((3,6,9,12), weight=1)
         self.work_frame.grid_columnconfigure(0, weight=1)
 
@@ -388,7 +391,7 @@ class App(customtkinter.CTk):
         """ 
             Income Metrics Frame 3
         """
-        self.income_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e3e3e3',"gray17"))
+        self.income_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e3e3e3',"gray17"), border_width=1, border_color='#217bd7')
         self.income_frame.grid_rowconfigure((3,6,9,12,15), weight=1)
         self.income_frame.grid_columnconfigure(0, weight=1)
 
@@ -400,7 +403,7 @@ class App(customtkinter.CTk):
 
         # Income Entry Frame 2
         self.income_entry_frame1 = customtkinter.CTkFrame(self.income_frame, corner_radius=0)
-        self.income_entry_frame1.grid(row=2, column=0, columnspan=3, pady=10, sticky="nsew")
+        self.income_entry_frame1.grid(row=2, column=0, columnspan=3, pady=10, padx=4, sticky="nsew")
         self.income_entry_frame1.grid_rowconfigure(0, weight=1)
         self.income_entry_frame1.grid_columnconfigure((0, 1), weight=1)
 
@@ -427,7 +430,7 @@ class App(customtkinter.CTk):
             
         # Income Entry Frame 2
         self.income_entry_frame2 = customtkinter.CTkFrame(self.income_frame, corner_radius=0)
-        self.income_entry_frame2.grid(row=8, column=0, columnspan=3, pady=10, sticky="nsew")
+        self.income_entry_frame2.grid(row=8, column=0, columnspan=3, padx=4, pady=10, sticky="nsew")
         self.income_entry_frame2.grid_rowconfigure(0, weight=1)
         self.income_entry_frame2.grid_columnconfigure((0, 1), weight=1)
 
@@ -465,7 +468,7 @@ class App(customtkinter.CTk):
         """ 
             Area Classification Frame 4
         """
-        self.area_classification_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e3e3e3',"gray17"))
+        self.area_classification_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e3e3e3',"gray17"), border_width=1, border_color='#217bd7')
         self.area_classification_frame.grid_rowconfigure((3, 6, 9, 12), weight=1)
         self.area_classification_frame.grid_columnconfigure(0, weight=1)
 
@@ -514,7 +517,7 @@ class App(customtkinter.CTk):
         """ 
             Weather Metrics Frame 5
         """
-        self.weather_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e3e3e3',"gray17"))
+        self.weather_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e3e3e3',"gray17"), border_width=1, border_color='#217bd7')
         self.weather_frame.grid_rowconfigure((3,6,9,12,15,18), weight=1)
         self.weather_frame.grid_columnconfigure(0, weight=1)
 
@@ -535,7 +538,7 @@ class App(customtkinter.CTk):
 
         # Weather Entry Frame 1
         self.weather_entry_frame1 = customtkinter.CTkFrame(self.weather_frame, corner_radius=0)
-        self.weather_entry_frame1.grid(row=5, column=0, columnspan=3, pady=10, sticky="nsew")
+        self.weather_entry_frame1.grid(row=5, column=0, columnspan=3, padx=4, pady=10, sticky="nsew")
         self.weather_entry_frame1.grid_rowconfigure(0, weight=1)
         self.weather_entry_frame1.grid_columnconfigure((0, 1), weight=1)
 
@@ -613,7 +616,7 @@ class App(customtkinter.CTk):
         """ 
             Natural Disaster Risk Frame 6
         """
-        self.natural_disaster_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e3e3e3',"gray17"))
+        self.natural_disaster_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e3e3e3',"gray17"), border_width=1, border_color='#217bd7')
         self.natural_disaster_frame.grid_rowconfigure((3,6,9,12), weight=1)
         self.natural_disaster_frame.grid_columnconfigure(0, weight=1)
 
@@ -656,7 +659,7 @@ class App(customtkinter.CTk):
         """ 
             Results Frame 7
         """
-        self.results_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e3e3e3',"gray17"))
+        self.results_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e3e3e3',"gray17"), border_width=1, border_color='#217bd7')
         self.results_frame.grid_rowconfigure(10, weight=1)
         self.results_frame.grid_columnconfigure(0, weight=1)
 
@@ -880,7 +883,7 @@ class App(customtkinter.CTk):
 
     def seg_button_family_location(self, param: str):
         if param == "Yes":
-            self.family_location_entry_frame1.grid(row=4, column=0, columnspan=3, pady=10, sticky="nsew")
+            self.family_location_entry_frame1.grid(row=4, column=0, columnspan=3, padx=4, pady=10, sticky="nsew")
             self.family_location_label2.grid(row=6, column=0, columnspan=3, pady=10, padx=20, sticky="")
             self.family_location_seg_button_2.grid(row=7, column=0, columnspan=3, padx=(20, 20), pady=(10, 10), sticky="ew")
             self.seg_button_family_location_2(param=self.family_location_seg_button_2.get())
@@ -902,7 +905,7 @@ class App(customtkinter.CTk):
 
     def seg_button_family_location_2(self, param: str):
         if param == "Yes":
-            self.family_location_entry_frame2.grid(row=9, column=0, columnspan=3, pady=10, sticky="nsew")
+            self.family_location_entry_frame2.grid(row=9, column=0, columnspan=3, padx=4, pady=10, sticky="nsew")
             self.family_location_frame.grid_rowconfigure(10, weight=1)
             self.family_location_label3.grid(row=11, column=0, columnspan=4, padx=40, pady=(20, 15), sticky='')
             self.family_location_seg_button_3.grid(row=12, column=0, columnspan=4, padx=(20, 20), pady=(10, 10), sticky="ew")
@@ -954,7 +957,7 @@ class App(customtkinter.CTk):
 
     def seg_button_work_2(self, param: str):
         if param == 'Yes':
-            self.work_location_entry_frame1.grid(row=6, column=0, columnspan=3, pady=10, sticky="nsew")
+            self.work_location_entry_frame1.grid(row=6, column=0, columnspan=3, padx=4, pady=10, sticky="nsew")
             self.work_label4.grid(row=8, column=0, columnspan=4, padx=40, pady=(20, 15), sticky='')
             self.work_seg_button_4.grid(row=9, column=0, columnspan=4, padx=(20, 20), pady=(10, 10), sticky="ew")
         else:
@@ -999,10 +1002,10 @@ class App(customtkinter.CTk):
             self.weather_label2.configure(text="What is your ideal summer temperature?")
 
             self.weather_label3.grid(row=7, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
-            self.weather_entry_frame2.grid(row=8, column=0, columnspan=3, pady=10, sticky="nsew")
+            self.weather_entry_frame2.grid(row=8, column=0, columnspan=3, padx=4, pady=10, sticky="nsew")
 
             self.weather_label4.grid(row=10, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
-            self.weather_entry_frame3.grid(row=11, column=0, columnspan=3, pady=10, sticky="nsew")
+            self.weather_entry_frame3.grid(row=11, column=0, columnspan=3, padx=4, pady=10, sticky="nsew")
 
             self.weather_frame.grid_rowconfigure((15,18), weight=1)
             self.weather_label5.grid(row=13, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
@@ -1016,7 +1019,7 @@ class App(customtkinter.CTk):
             self.weather_label2.configure(text="What is your ideal summer temperature?")
 
             self.weather_label4.grid(row=7, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
-            self.weather_entry_frame3.grid(row=8, column=0, columnspan=3, pady=10, sticky="nsew")
+            self.weather_entry_frame3.grid(row=8, column=0, columnspan=3, padx=4, pady=10, sticky="nsew")
 
             self.weather_frame.grid_rowconfigure(15, weight=1)
             self.weather_frame.grid_rowconfigure(18, weight=0)

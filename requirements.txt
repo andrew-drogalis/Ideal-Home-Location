@@ -1,5 +1,4 @@
 customtkinter
-tkextrafont
 thefuzz
 tkintermapview
 meteostat

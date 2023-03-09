@@ -17,10 +17,6 @@ class IdealHomeDataAnalysis():
         with open('./data_ranking/ranked_data/Weather_Ranked_Data.json', newline='') as f: 
             self.zipcode_prefix_weather_data = json.load(f)
 
-        # Import Zipcode Prefix Ranked Data
-        with open('./data_ranking/ranked_data/Zipcode_Prefix_Ranked_Data.json', newline='') as f: 
-            self.zipcode_prefix_data = json.load(f)
-
         # Import Zipcode Ranked Data
         with open('./data_ranking/ranked_data/Zipcode_Ranked_Data.json', newline='') as f: 
             self.zipcode_data = json.load(f)
@@ -52,9 +48,9 @@ class IdealHomeDataAnalysis():
         # Save User Selections to Class Variables
         self.employment_status = kwargs['employed_status']
         self.regional_employment = kwargs['regional_employment']
-        work_transportation = kwargs['work_transportation']
+        self.transportation_method = kwargs['work_transportation']
         self.commute_time = kwargs['commute_time']
-        self.transportation_method = work_transportation.replace(' ','_').replace('Personal','Motor').replace('or_','') if work_transportation != "Work From Home" else ''
+        
         #
         self.run_location_radius_search(radius_index=kwargs['radius_index'])
 
@@ -85,7 +81,7 @@ class IdealHomeDataAnalysis():
         
         # See Link Above for Full Methodology
         # Seasons Ranked Double Importance
-        zipcode_prefix_weather_score = {}
+        self.zipcode_prefix_weather_score = {}
 
         for zipcode_prefix, weather_data in self.zipcode_prefix_weather_data.items():
             zipcode_seasons = weather_data['Seasons']
@@ -143,17 +139,17 @@ class IdealHomeDataAnalysis():
 
             total_score = season_score + precipitation_score + sunshine_score
 
-            zipcode_prefix_weather_score.update({zipcode_prefix:total_score})
+            self.zipcode_prefix_weather_score.update({zipcode_prefix:total_score})
 
 
     def natural_disaster_risk_frame_6(self, **kwargs):
         # Save User Selections to Local Variables
         natural_disaster_risk = int(kwargs['natural_disaster_risk'])
-        disaster_to_avoid = kwargs['disaster_to_avoid']
-        disaster_to_avoid2 = kwargs['disaster_to_avoid2']
-        disaster_to_avoid3 = kwargs['disaster_to_avoid3']
+        disaster_to_avoid = kwargs['disaster_to_avoid'].replace('Thunderstorm','Lightning/Thunderstorms').replace('Hurricane', 'Tropical cyclone')
+        disaster_to_avoid2 = kwargs['disaster_to_avoid2'].replace('Thunderstorm','Lightning/Thunderstorms').replace('Hurricane', 'Tropical cyclone')
+        disaster_to_avoid3 = kwargs['disaster_to_avoid3'].replace('Thunderstorm','Lightning/Thunderstorms').replace('Hurricane', 'Tropical cyclone')
         
-        state_natural_disaster_score = {}
+        self.state_natural_disaster_score = {}
 
         for state, disaster_data in self.state_natural_disaster_data.items():
             disaster_data = disaster_data[0]
@@ -194,7 +190,7 @@ class IdealHomeDataAnalysis():
 
             total_state_score = total_disaster_score + disaster_1_score + disaster_2_score + disaster_3_score
 
-            state_natural_disaster_score.update({state: total_state_score})
+            self.state_natural_disaster_score.update({state: total_state_score})
 
     def results_frame_7(self):
         city_results = []
@@ -206,21 +202,50 @@ class IdealHomeDataAnalysis():
             state = zipcode_data["City"][-2:]
 
             married_percentage = zipcode_data["Married_Percentage"]
+            
+            self.married_state 
+            self.married_importance 
+
             families_with_children = zipcode_data["Families_with_Children"]
+        
+        
+            self.children_state
+            self.children_importance 
+
             school_enrollment_percentage = zipcode_data["School_Enrollment_Percentage"]
-            median_home_value = zipcode_data['Median_Home_Value']
-            mad_home_value = zipcode_data['MAD_Home_Value']
-            median_household_income = zipcode_data['Median_Household_Income']
-            mad_household_income = zipcode_data['MAD_Household_Income']
+
+            self.school_enrollment_importance
 
             if self.employment_status == 'Seeking Employment':
                 employment_percentage = zipcode_data['Employment_Percentage']
-                transportation_method = zipcode_data[f'{self.transportation_method}_Work_Percentage'] if self.transportation_method else ''
+                self.regional_employment = kwargs['regional_employment']
+                if self.transportation_method == '':
+                    transportation_method = zipcode_data[f'_Work_Percentage']
                 commute_time = zipcode_data["Travel_Time_To_Work"]
+                self.commute_time = kwargs['commute_time']
+
+
+            median_household_income = zipcode_data['Median_Household_Income']
+            mad_household_income = zipcode_data['MAD_Household_Income']
+
+            self.user_income 
+
+            median_home_value = zipcode_data['Median_Home_Value']
+            mad_home_value = zipcode_data['MAD_Home_Value']
+
+            self.user_home_price
 
             education_score = zipcode_data["Education_Score"]
+            self.education_level
+            self.education_level_importance
+
             area_classification = zipcode_data["Area_Classification"]
+            self.living_enviornment 
+            self.living_enviornment2 
     
+            weather_score = self.zipcode_prefix_weather_score[zipcode_prefix]
+            natural_disaster_score = self.state_natural_disaster_score[states_abbreviation_list[state]]
+
 
         return {}
 
