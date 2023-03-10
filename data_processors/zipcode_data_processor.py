@@ -40,14 +40,12 @@ for zip_prefix in zipcode_prefix_data:
     # Check if Zipcode Prefix is Valid
     if zip_prefix_search:
         # Local Data Storage
-        coordinates_dict = {
-            'East_Bounds': [],
+        coordinates_dict = {'East_Bounds': [],
             'West_Bounds': [],
             'North_Bounds': [],
-            'South_Bounds': [],
-            'Latitude': [],
-            'Longitude': []
+            'South_Bounds': []
         }
+
         zip_prefix_search = iter(zip_prefix_search)
         # Analyze Each City in the Zipcode Prefix
         for city in zip_prefix_search:
@@ -368,10 +366,6 @@ for zip_prefix in zipcode_prefix_data:
             else:
                 area_classification = None
 
-            ## Population & Land Area
-            population = int(city.population) if city.population else None
-            land_area = float(city.land_area_in_sqmi) if city.land_area_in_sqmi else None
-
             # Store City Metric Data
             city_metric_data[zip_number].append(
                 {
@@ -391,9 +385,7 @@ for zip_prefix in zipcode_prefix_data:
                     'Travel_Time_To_Work': average_travel_time_to_work,
                     'Education_Score': overall_education_score,
                     'School_Enrollment_Percentage': percent_enrolled_in_school,
-                    'Area_Classification': area_classification,
-                    'Population': population,
-                    'Land_Area_sqmi': land_area
+                    'Area_Classification': area_classification
                 })
 
             # All Zipcode Data Storage
@@ -427,25 +419,10 @@ for zip_prefix in zipcode_prefix_data:
             coordinates_dict['East_Bounds'].append(bounds_east)
             coordinates_dict['North_Bounds'].append(bounds_north)
             coordinates_dict['South_Bounds'].append(bounds_south)
-            coordinates_dict['Latitude'].append(latitude)
-            coordinates_dict['Longitude'].append(longitude)
 
         # ---------------------------------------------------------
 
         ## Find Averages for Zipcode Prefix Locations
- 
-        # Population & Land Area for Zipcode Prefix Locations
-        total_population = sum(
-            [city['Population'] for city in city_metric_data[zip_number] if city['Population'] is not None])
-        total_land_area = sum(
-            [city['Land_Area_sqmi'] for city in city_metric_data[zip_number] if city['Land_Area_sqmi'] is not None])
-
-        # Area Classification for Zipcode Prefix Locations
-        if total_land_area:
-            population_density = total_population / total_land_area
-            average_area_classification = 'Hyper Urban' if population_density >= 5000 else 'Urban' if 5000 > population_density >= 1000 else 'Suburban' if 1000 > population_density >= 500 else 'Rural' if 500 > population_density >= 100 else 'Hyper Rural'
-        else:
-            average_area_classification = None
        
         # Boundaries for All since All in Northern & Western Hemisphere for All Locations in the USA 50 States
         northmost_boundary = max(coordinates_dict['North_Bounds'])
@@ -453,20 +430,13 @@ for zip_prefix in zipcode_prefix_data:
         westmost_boundary = max(coordinates_dict['West_Bounds'])
         eastmost_boundary = min(coordinates_dict['East_Bounds'])
 
-        # Approximate Center of Area (Exact Not Required)
-        average_latitude = round(mean(coordinates_dict['Latitude']), 2)
-        average_longitude = round(mean(coordinates_dict['Longitude']), 2)
-
         # Update Results Dictionary
         zipcode_prefix_metric_data.update({zip_number: 
             {
-                'Area_Classification': average_area_classification,
                 'North_Boundary': northmost_boundary,
                 'South_Boundary': southmost_boundary,
                 'East_Boundary': eastmost_boundary,
-                'West_Boundary': westmost_boundary,
-                'Latitude': average_latitude,
-                'Longitude': average_longitude
+                'West_Boundary': westmost_boundary
             }
         })
 

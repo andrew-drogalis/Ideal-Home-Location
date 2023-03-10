@@ -1,4 +1,5 @@
 import json
+from collections import defaultdict
 from runtime.utilities.calculation_utilities import location_radius_search, check_coordinates_distance_to_center
 from runtime.utilities.state_abbreviations import states_abbreviation_list
 from thefuzz import process
@@ -47,7 +48,7 @@ class IdealHomeDataAnalysis():
     def work_frame_2(self, **kwargs):
         # Save User Selections to Class Variables
         self.employment_status = kwargs['employed_status']
-        self.regional_employment = kwargs['regional_employment']
+        self.regional_employment_importance = kwargs['regional_employment_importance']
         self.transportation_method = kwargs['work_transportation']
         self.commute_time = kwargs['commute_time']
         
@@ -156,16 +157,16 @@ class IdealHomeDataAnalysis():
             total_severity = disaster_data['All_Severity_Rank']
             total_frequency = disaster_data['All_Frequency_Rank']
 
-            total_severity_number = 3 if total_severity == 'High' else 2 if total_severity == 'Moderate' else 1 if total_severity == 'Low' else 0
-            total_frequency_number = 4 if total_frequency == 'Well Above Average' else 3 if total_frequency == 'Above Average' else 2 if total_frequency == 'Average' else 1 if total_frequency == 'Below Average' else 0
+            total_severity_number = 0 if total_severity == 'High' else 0.33 if total_severity == 'Moderate' else 0.66 if total_severity == 'Low' else 1
+            total_frequency_number = 0 if total_frequency == 'Well Above Average' else 0.25 if total_frequency == 'Above Average' else 0.5 if total_frequency == 'Average' else 0.75 if total_frequency == 'Below Average' else 1
 
             total_disaster_score = (total_severity_number + total_frequency_number) * natural_disaster_risk
 
             try:
                 disaster_1_severity = disaster_data[f'{disaster_to_avoid}_Severity_Rank']
                 disaster_1_frequency = disaster_data[f'{disaster_to_avoid}_Frequency_Rank']
-                disaster_1_severity_number = 3 if disaster_1_severity == 'High' else 2 if disaster_1_severity == 'Moderate' else 1 if disaster_1_severity == 'Low' else 0
-                disaster_1_frequency_number = 4 if disaster_1_frequency == 'Well Above Average' else 3 if disaster_1_frequency == 'Above Average' else 2 if disaster_1_frequency == 'Average' else 1 if disaster_1_frequency == 'Below Average' else 0
+                disaster_1_severity_number = 0 if disaster_1_severity == 'High' else 0.33 if disaster_1_severity == 'Moderate' else 0.66 if disaster_1_severity == 'Low' else 1
+                disaster_1_frequency_number = 0 if disaster_1_frequency == 'Well Above Average' else 0.25 if disaster_1_frequency == 'Above Average' else 0.5 if disaster_1_frequency == 'Average' else 0.75 if disaster_1_frequency == 'Below Average' else 1
                 disaster_1_score = (disaster_1_severity_number + disaster_1_frequency_number) * natural_disaster_risk
             except:
                 disaster_1_score = 0
@@ -173,8 +174,8 @@ class IdealHomeDataAnalysis():
             try:
                 disaster_2_severity = disaster_data[f'{disaster_to_avoid2}_Severity_Rank']
                 disaster_2_frequency = disaster_data[f'{disaster_to_avoid2}_Frequency_Rank']
-                disaster_2_severity_number = 2 if disaster_2_severity == 'High' else 1 if disaster_2_severity == 'Moderate' else 0
-                disaster_2_frequency_number = 3 if disaster_2_frequency == 'Well Above Average' else 2 if disaster_2_frequency == 'Above Average' else 1 if disaster_2_frequency == 'Average' else 0
+                disaster_2_severity_number = 0 if disaster_2_severity == 'High' else 0.33 if disaster_2_severity == 'Moderate' else 0.66
+                disaster_2_frequency_number = 0 if disaster_2_frequency == 'Well Above Average' else 0.25 if disaster_2_frequency == 'Above Average' else 0.5 if disaster_2_frequency == 'Average' else 0.75
                 disaster_2_score = (disaster_2_severity_number + disaster_2_frequency_number) * natural_disaster_risk
             except:
                 disaster_2_score = 0
@@ -182,8 +183,8 @@ class IdealHomeDataAnalysis():
             try:
                 disaster_3_severity = disaster_data[f'{disaster_to_avoid3}_Severity_Rank']
                 disaster_3_frequency = disaster_data[f'{disaster_to_avoid3}_Frequency_Rank']
-                disaster_3_severity_number = 1 if disaster_3_severity == 'High' else 0
-                disaster_3_frequency_number = 2 if disaster_3_frequency == 'Well Above Average' else 1 if disaster_3_frequency == 'Above Average' else 0
+                disaster_3_severity_number = 0 if disaster_3_severity == 'High' else 0.33
+                disaster_3_frequency_number = 0 if disaster_3_frequency == 'Well Above Average' else 0.25 if disaster_3_frequency == 'Above Average' else 0.5
                 disaster_3_score = (disaster_3_severity_number + disaster_3_frequency_number) * natural_disaster_risk
             except:
                 disaster_3_score = 0
@@ -192,38 +193,57 @@ class IdealHomeDataAnalysis():
 
             self.state_natural_disaster_score.update({state: total_state_score})
 
+        max_total_disaster_score = 2 * natural_disaster_risk
+        max_disaster_1_score = 2 * natural_disaster_risk
+        max_disaster_2_score = 1.41 * natural_disaster_risk
+        max_disaster_3_score = 0.83 * natural_disaster_risk
+        self.max_possible_state_disaster_score = max_total_disaster_score + max_disaster_1_score + max_disaster_2_score + max_disaster_3_score
+
     def results_frame_7(self):
-        city_results = []
 
         # Are you Married
         married_importance = int(self.married_importance)
         if self.married_state == 'No':
-            married_scoring_order = [2 * married_importance, 1.5 * married_importance, 1 * married_importance, 0.5 * married_importance, 0]
+            married_scoring_order = [1 * married_importance, 0.75 * married_importance, 0.5 * married_importance, 0.25 * married_importance, 0]
         else:
-            married_scoring_order = [0, 0.5 * married_importance, 1 * married_importance, 1.5 * married_importance, 2 * married_importance]
+            married_scoring_order = [0, 0.25 * married_importance, 0.5 * married_importance, 0.75 * married_importance, 1 * married_importance]
 
         # Do you have children
         children_importance = int(self.children_importance )
         if self.children_state == 'No':
-            children_scoring_order = [2 * children_importance, 1.5 * children_importance, 1 * children_importance, 0.5 * children_importance, 0]
+            children_scoring_order = [1 * children_importance, 0.75 * children_importance, 0.5 * children_importance, 0.25 * children_importance, 0]
         else:
-            children_scoring_order = [0, 0.5 * children__importance, 1 * children__importance, 1.5 * children__importance, 2 * children__importance]
+            children_scoring_order = [0, 0.25 * children_importance, 0.5 * children_importance, 0.75 * children_importance, 1 * children_importance]
+
+        school_enrollment_scoring_order = [0, 0.25, 0.5, 0.75, 1] if self.school_enrollment_importance == '1' else [0, 0.5, 1, 1.5, 2] if self.school_enrollment_importance == '2' else [0, 0.75, 1.5, 2.25, 3] if self.school_enrollment_importance == '3' else [0, 1, 2, 3, 4] if self.school_enrollment_importance == '4' else [0, 1.25, 2.5, 3.75, 5]
+
+        user_commute_time = int(self.commute_time[6:8])
+        # What's your education level:
+        education_importance = int(self.education_level_importance)
+        user_education_number = 0 if self.education_level == 'Less than High School' else 1 if self.education_level == 'High School' else 2 if self.education_level == "Associate's" else 3 if self.education_level == "Bachelor's" else 4 if self.education_level == "Master's" else 5
 
         living_enviornment_scoring_order1 = [4,2,1,0,0] if self.living_enviornment == 'Hyper Rural' else [2,4,2,1,0] if self.living_enviornment == 'Rural' else [1,2,4,2,1] if self.living_enviornment == 'Suburban' else [0,1,2,4,2] if self.living_enviornment == 'Urban' else [0,0,1,2,4]
         living_enviornment_scoring_order2 = [2,1,0,0,0] if self.living_enviornment2 == 'Hyper Rural' else [1,2,1,0,0] if self.living_enviornment2 == 'Rural' else [0,1,2,1,0] if self.living_enviornment2 == 'Suburban' else [0,0,1,2,1] if self.living_enviornment2 == 'Urban' else [0,0,0,1,2]
                 
-
+        unlikely_to_afford_warning = []
+        final_city_score = []
+        final_zipcode_prefix_score = defaultdict(dict)
+        city_coordinates_dictionary = {}
         for city in self.city_radius_results:
-            zipcode = [*city.keys()][0][-5:]
+            city_name = [*city.keys()][0]
+            zipcode = city_name[-5:]
             zipcode_prefix = zipcode[:3]
             zipcode_data = self.zipcode_data[zipcode]
             state = zipcode_data["City"][-2:]
+            city_coordinates_dictionary.update(city)
 
             median_home_value = zipcode_data['Median_Home_Value']
             mad_home_value = zipcode_data['MAD_Home_Value']
 
-            # Most Importance
-            if self.user_home_price >= median_home_value - mad_home_value * 1.5:
+            if median_home_value and mad_home_value:
+                # Most Importance
+                if self.user_home_price >= median_home_value - mad_home_value * 1.5:
+                    unlikely_to_afford_warning.append(city)
 
                 # Preferance Toward the Median
                 whole_mad_home_value_positive = median_home_value + mad_home_value
@@ -232,54 +252,91 @@ class IdealHomeDataAnalysis():
                 whole_mad_home_value_negative = median_home_value - mad_home_value
 
                 home_afforability_score = 10 if half_mad_home_value_negative <= self.user_home_price <= half_mad_home_value_positive else 5 if whole_mad_home_value_negative <= self.user_home_price <= whole_mad_home_value_positive else 0
+            else:
+                home_afforability_score = 0
 
-                median_household_income = zipcode_data['Median_Household_Income']
-                mad_household_income = zipcode_data['MAD_Household_Income']
+            median_household_income = zipcode_data['Median_Household_Income']
+            mad_household_income = zipcode_data['MAD_Household_Income']
 
+            if median_household_income and mad_household_income:
                 whole_mad_income_positive = median_household_income + mad_household_income
                 half_mad_income_positive = median_household_income + mad_household_income * 0.5
                 half_mad_income_negative = median_household_income - mad_household_income * 0.5
                 whole_mad_income_negative = median_household_income - mad_household_income
 
                 household_income_score = 10 if half_mad_income_negative <= self.user_home_price <= half_mad_income_positive else 5 if whole_mad_income_negative <= self.user_home_price <= whole_mad_income_positive else 0
+            else:
+                household_income_score = 0
 
-                married_percentage = zipcode_data["Married_Percentage"]
-                married_score = married_scoring_order[0] if married_percentage == 'Well Bellow Average' else married_scoring_order[1] if married_percentage == 'Bellow Average' else married_scoring_order[2] if married_percentage == 'Average' else married_scoring_order[3] if married_percentage == 'Above Average' else married_scoring_order[4]
+            married_percentage = zipcode_data["Married_Percentage"]
+            married_score = married_scoring_order[0] if married_percentage == 'Well Below Average' else married_scoring_order[1] if married_percentage == 'Below Average' else married_scoring_order[2] if married_percentage == 'Average' else married_scoring_order[3] if married_percentage == 'Above Average' else married_scoring_order[4]
+            
+            families_with_children = zipcode_data["Families_with_Children"]
+            families_with_children_score = children_scoring_order[0] if families_with_children == 'Well Below Average' else children_scoring_order[1] if families_with_children == 'Below Average' else children_scoring_order[2] if families_with_children == 'Average' else children_scoring_order[3] if families_with_children == 'Above Average' else children_scoring_order[4]
                 
-                families_with_children = zipcode_data["Families_with_Children"]
-                families_with_children_score = children_scoring_order[0] if families_with_children == 'Well Bellow Average' else children_scoring_order[1] if families_with_children == 'Bellow Average' else children_scoring_order[2] if families_with_children == 'Average' else children_scoring_order[3] if families_with_children == 'Above Average' else children_scoring_order[4]
-                    
+            school_enrollment_percentage = zipcode_data["School_Enrollment_Percentage"]
+            school_enrollment_score = school_enrollment_scoring_order[0] if school_enrollment_percentage == 'Well Below Average' else school_enrollment_scoring_order[1] if school_enrollment_percentage == 'Below Average' else school_enrollment_scoring_order[2] if school_enrollment_percentage == 'Average' else school_enrollment_scoring_order[3] if school_enrollment_percentage == 'Above Average' else school_enrollment_scoring_order[4]
 
-                school_enrollment_percentage = zipcode_data["School_Enrollment_Percentage"]
+            if self.employment_status == 'Seeking Employment':
+                regional_employment_importance = int(self.regional_employment_importance)
+                employment_percentage = zipcode_data['Employment_Percentage']
+                employment_score = 1 * regional_employment_importance if employment_percentage == 'Well Above Average' else 0.75 * regional_employment_importance if employment_percentage == 'Above Average' else 0.5 * regional_employment_importance if employment_percentage == 'Average' else 0.25 * regional_employment_importance if employment_percentage == 'Below Average' else 0
 
-                self.school_enrollment_importance
+                if self.transportation_method == "Personal Vehicle":
+                    transportation_method = zipcode_data['Motor_Vehicle_Work_Percentage']
+                    transportation_score = 5 if transportation_method == 'Well Above Average' else 4 if transportation_method == 'Above Average' else 3 if transportation_method == 'Average' else 2 if transportation_method == 'Below Average' else 1 
+                elif self.transportation_method in ["Public Transportation", "Walking or Biking"]:
+                    name = self.transportation_method.replace('or ', '').replace(' ', '_')
+                    transportation_method = zipcode_data[f'{name}_Work_Percentage']
+                    transportation_score = 5 if transportation_method == 'Very Good' else 4 if transportation_method == 'Good' else 3 if transportation_method == 'Exceptable' else 0
+                else:
+                    transportation_score = 0
 
-                if self.employment_status == 'Seeking Employment':
-                    employment_percentage = zipcode_data['Employment_Percentage']
-                    self.regional_employment = kwargs['regional_employment']
-                    if self.transportation_method == '':
-                        transportation_method = zipcode_data[f'_Work_Percentage']
-                    commute_time = zipcode_data["Travel_Time_To_Work"]
-                    self.commute_time = kwargs['commute_time']
+                city_commute_time = zipcode_data["Travel_Time_To_Work"]
+                if city_commute_time and self.transportation_method != 'Work From Home':
+                    commute_time_difference = user_commute_time - city_commute_time
+                    commute_score = 5 if commute_time_difference <= 0 else 4 if commute_time_difference <= 5 else 3 if commute_time_difference <= 10 else 2 if commute_time_difference <= 15 else 1 if commute_time_difference <= 20 else 0
+                else:
+                    commute_score = 0
+
+                work_score = employment_score + transportation_score + commute_score
+            else:
+                work_score = 0
+            
+            city_education_level = zipcode_data["Education_Score"]
+            if city_education_level:
+                education_level_difference = abs(city_education_level - user_education_number)
+                education_score = 1 * education_importance if education_level_difference < 0.5 else 0.75 * education_importance if education_level_difference < 1 else 0.5 * education_importance if education_level_difference < 1.5 else 0.25 * education_importance if education_level_difference < 2 else 0
+            else:
+                education_score = 0
+
+            area_classification = zipcode_data["Area_Classification"]
+            area_classification_list_key = 0 if area_classification == 'Hyper Rural' else 1 if area_classification == 'Rural' else 2 if area_classification == 'Suburban' else 3 if area_classification == 'Urban' else 4
+            area_classification_score = living_enviornment_scoring_order1[area_classification_list_key] + living_enviornment_scoring_order2[area_classification_list_key]
+            
+            weather_score = self.zipcode_prefix_weather_score[zipcode_prefix]
+            natural_disaster_score = self.state_natural_disaster_score[states_abbreviation_list[state]]
+
+            total_city_score = home_afforability_score + household_income_score + married_score + families_with_children_score + school_enrollment_score + work_score + education_score + area_classification_score + weather_score + natural_disaster_score
+            final_city_score.append((city_name,total_city_score))
+
+            if final_zipcode_prefix_score[zipcode_prefix]:
+                final_zipcode_prefix_score[zipcode_prefix]['Score'] += total_city_score
+                final_zipcode_prefix_score[zipcode_prefix]['Qty'] += 1
+            else:
+                final_zipcode_prefix_score[zipcode_prefix].update({'Score': total_city_score, 'Qty': 1})
+
+        max_home_afforabilty = 10
+        max_household_income = 10
+        max_possible_score = max_home_afforabilty + max_household_income + max(married_scoring_order) + max(children_scoring_order) + max(school_enrollment_scoring_order)
+
+        final_zipcode_prefix_score = sorted([(zipcode_prefix, score_data['Score'] / score_data['Qty']) for zipcode_prefix, score_data in final_zipcode_prefix_score.items()], key=lambda x: x[1], reverse=True)[:5]
+        final_city_score = sorted(final_city_score, key=lambda x: x[1], reverse=True)[:20]
 
 
-
-                # What's your education level:
-                education_importance = int(self.education_level_importance)
-                self.education_level
-                education_score = zipcode_data["Education_Score"]
-
-                area_classification = zipcode_data["Area_Classification"]
-                area_classification_list_key = 0 if area_classification == 'Hyper Rural' else 1 if area_classification == 'Rural' else 2 if area_classification == 'Suburban' else 3 if area_classification == 'Urban' else 4
-                area_classification_score = living_enviornment_scoring_order1[area_classification_list_key] + living_enviornment_scoring_order2[area_classification_list_key]
-               
-                weather_score = self.zipcode_prefix_weather_score[zipcode_prefix]
-                natural_disaster_score = self.state_natural_disaster_score[states_abbreviation_list[state]]
-
-                total_zipcode_score = home_afforability_score + household_income_score + married_score + families_with_children_score
-
-
-        return {}
+        result_city = final_city_score[0][0]
+        
+        return (result_city.split(',')[0], city_coordinates_dictionary[result_city])
 
     def find_distance_to_center(self):
         # Order Does Not Matter
@@ -301,7 +358,7 @@ class IdealHomeDataAnalysis():
             # Send All Zipcode Data
             self.city_radius_results = location_radius_search(radius, self.merged_zipcode_coordinate_data, *args_list)
             # Check for Errors
-            if len(self.city_results) < 1:
+            if len(self.city_radius_results) < 1:
                 self.errors.append('Please alter distance or city selections. Zero cities in area selected.')
         else:
             self.city_radius_results = self.merged_zipcode_coordinate_data
@@ -366,6 +423,8 @@ class IdealHomeDataAnalysis():
         state_city_names = [[*city.keys()][0] for city in state_coordinate_list]
 
         if zipcode:
+            if len(zipcode) != 5:
+                return 'Please Provide Valid Zipcode'
             for city_name in state_city_names:
                 if zipcode in city_name:
                     state_city_name = city_name

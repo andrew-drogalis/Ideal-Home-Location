@@ -306,7 +306,7 @@ class App(customtkinter.CTk):
 
         self.work_seg_button_1 = customtkinter.CTkSegmentedButton(self.work_frame, font=self.regular_font, command=self.seg_button_work_1)
         self.work_seg_button_1.grid(row=2, column=0, columnspan=3, padx=(20, 20), pady=(10, 10), sticky="ew")
-        self.work_seg_button_1.configure(values=["Employed", "Seeking a new Job"])
+        self.work_seg_button_1.configure(values=["Employed", "Seeking Employment"])
         self.work_seg_button_1.set("Employed")
 
         self.work_label2 = customtkinter.CTkLabel(self.work_frame, text="Do you want to be close to work?", font=self.large_font_underline)
@@ -374,8 +374,8 @@ class App(customtkinter.CTk):
         self.work_label6 = customtkinter.CTkLabel(self.work_frame, text="What is your ideal commute time?", font=self.large_font_underline)
 
         self.work_seg_button_6 = customtkinter.CTkSegmentedButton(self.work_frame, font=self.regular_font)
-        self.work_seg_button_6.configure(values=["Less than 20 minutes", "Less than 30 minutes", "Less than 40 minutes", "Flexible"])
-        self.work_seg_button_6.set("Flexible")
+        self.work_seg_button_6.configure(values=["Under 10 Minutes", "Under 20 Minutes", "Under 30 Minutes", "Under 40 Minutes", "Under 50 Minutes"])
+        self.work_seg_button_6.set("Under 30 Minutes")
 
         self.seg_button_work_1(param='Employed')
         self.seg_button_work_2(param='Yes')
@@ -802,10 +802,10 @@ class App(customtkinter.CTk):
             self.income_entry1.configure(border_width=0)
             self.income_entry1_valid = False
             
-        if income_entry_value2 and morgage_param != 'No Morgage' and 0 <= income_entry_float2 < 90:
+        if income_entry_value2 and morgage_param != 'No Morgage' and 0 < income_entry_float2 < 90:
             self.income_entry2.configure(border_color='green', border_width=2)
             self.income_entry2_valid = True
-        elif income_entry_value2 and morgage_param != 'No Morgage' and (income_entry_float2 < 0 or income_entry_float2 >= 90):
+        elif income_entry_value2 and morgage_param != 'No Morgage' and (income_entry_float2 <= 0 or income_entry_float2 >= 90):
             self.income_entry2.configure(border_color='red', border_width=2)
             self.income_entry2_valid = False
         elif income_entry_value2 and morgage_param == 'No Morgage' and 0 < income_entry_float2 <= 10_000_000:
@@ -1138,7 +1138,7 @@ class App(customtkinter.CTk):
         if self.check_frame2_progress():
             self.IdealHomeDataAnalysis.work_frame_2(employed_status=self.work_seg_button_1.get(),
                 radius_index=self.radius_index,
-                regional_employment=self.work_seg_button_3.get(),
+                regional_employment_importance=self.work_seg_button_3.get(),
                 work_transportation=self.work_seg_button_5.get(),
                 commute_time=self.work_seg_button_6.get()
             )
@@ -1221,7 +1221,7 @@ class App(customtkinter.CTk):
             disaster_to_avoid2=self.natural_disaster_seg_button_3.get(),
             disaster_to_avoid3=self.natural_disaster_seg_button_4.get()
         )
-        results_dictionary = self.IdealHomeDataAnalysis.results_frame_7()
+        self.results_city = self.IdealHomeDataAnalysis.results_frame_7()
         self.set_map_widget()
         self.results_frame.grid(row=1, column=0, rowspan=3, columnspan=3, sticky="nsew")
         self.progressbar.set(1)
@@ -1267,11 +1267,11 @@ class App(customtkinter.CTk):
         self.map_widget.set_tile_server("https://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}&s=Ga", max_zoom=22)
 
     def set_map_widget(self, **kwargs):
-        self.map_widget.set_position(48.860381, 2.338594) 
-        self.map_widget.fit_bounding_box((49, -3), (47, 3))
-        self.map_widget.set_polygon([(46.0732306, 6.0095215),(46.0732306, 6.4195215),(46.3732306, 6.0095215),(46.3772542, 6.4160156)],fill_color=None,outline_color="red",border_width=10,
-                                   name="switzerland_polygon")
-        self.map_widget.set_marker(52.516268, 13.377695, text="Brandenburger Tor")
+        self.map_widget.set_position(self.results_city[1][0], self.results_city[1][1]) 
+        #self.map_widget.fit_bounding_box((49, -3), (47, 3))
+        #self.map_widget.set_polygon([(46.0732306, 6.0095215),(46.0732306, 6.4195215),(46.3732306, 6.0095215),(46.3772542, 6.4160156)],fill_color=None,outline_color="red",border_width=10,
+        #                           name="switzerland_polygon")
+        self.map_widget.set_marker(self.results_city[1][0], self.results_city[1][1], text=f"{self.results_city[0]}")
 
     def load_data_analysis(self):
         self.IdealHomeDataAnalysis = IdealHomeDataAnalysis()
