@@ -96,7 +96,7 @@ states_abbreviation = {
     'RI': 'Rhode Island',
     'SC': 'South Carolina',
     'SD': 'South Dakota',
-    'TN': 'Tennesse',
+    'TN': 'Tennessee',
     'TX': 'Texas',
     'UT': 'Utah',
     'VT': 'Vermont',

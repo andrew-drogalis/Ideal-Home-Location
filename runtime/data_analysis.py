@@ -195,56 +195,88 @@ class IdealHomeDataAnalysis():
     def results_frame_7(self):
         city_results = []
 
+        # Are you Married
+        married_importance = int(self.married_importance)
+        if self.married_state == 'No':
+            married_scoring_order = [2 * married_importance, 1.5 * married_importance, 1 * married_importance, 0.5 * married_importance, 0]
+        else:
+            married_scoring_order = [0, 0.5 * married_importance, 1 * married_importance, 1.5 * married_importance, 2 * married_importance]
+
+        # Do you have children
+        children_importance = int(self.children_importance )
+        if self.children_state == 'No':
+            children_scoring_order = [2 * children_importance, 1.5 * children_importance, 1 * children_importance, 0.5 * children_importance, 0]
+        else:
+            children_scoring_order = [0, 0.5 * children__importance, 1 * children__importance, 1.5 * children__importance, 2 * children__importance]
+
+        living_enviornment_scoring_order1 = [4,2,1,0,0] if self.living_enviornment == 'Hyper Rural' else [2,4,2,1,0] if self.living_enviornment == 'Rural' else [1,2,4,2,1] if self.living_enviornment == 'Suburban' else [0,1,2,4,2] if self.living_enviornment == 'Urban' else [0,0,1,2,4]
+        living_enviornment_scoring_order2 = [2,1,0,0,0] if self.living_enviornment2 == 'Hyper Rural' else [1,2,1,0,0] if self.living_enviornment2 == 'Rural' else [0,1,2,1,0] if self.living_enviornment2 == 'Suburban' else [0,0,1,2,1] if self.living_enviornment2 == 'Urban' else [0,0,0,1,2]
+                
+
         for city in self.city_radius_results:
             zipcode = [*city.keys()][0][-5:]
             zipcode_prefix = zipcode[:3]
             zipcode_data = self.zipcode_data[zipcode]
             state = zipcode_data["City"][-2:]
 
-            married_percentage = zipcode_data["Married_Percentage"]
-            
-            self.married_state 
-            self.married_importance 
-
-            families_with_children = zipcode_data["Families_with_Children"]
-        
-        
-            self.children_state
-            self.children_importance 
-
-            school_enrollment_percentage = zipcode_data["School_Enrollment_Percentage"]
-
-            self.school_enrollment_importance
-
-            if self.employment_status == 'Seeking Employment':
-                employment_percentage = zipcode_data['Employment_Percentage']
-                self.regional_employment = kwargs['regional_employment']
-                if self.transportation_method == '':
-                    transportation_method = zipcode_data[f'_Work_Percentage']
-                commute_time = zipcode_data["Travel_Time_To_Work"]
-                self.commute_time = kwargs['commute_time']
-
-
-            median_household_income = zipcode_data['Median_Household_Income']
-            mad_household_income = zipcode_data['MAD_Household_Income']
-
-            self.user_income 
-
             median_home_value = zipcode_data['Median_Home_Value']
             mad_home_value = zipcode_data['MAD_Home_Value']
 
-            self.user_home_price
+            # Most Importance
+            if self.user_home_price >= median_home_value - mad_home_value * 1.5:
 
-            education_score = zipcode_data["Education_Score"]
-            self.education_level
-            self.education_level_importance
+                # Preferance Toward the Median
+                whole_mad_home_value_positive = median_home_value + mad_home_value
+                half_mad_home_value_positive = median_home_value + mad_home_value * 0.5
+                half_mad_home_value_negative = median_home_value - mad_home_value * 0.5
+                whole_mad_home_value_negative = median_home_value - mad_home_value
 
-            area_classification = zipcode_data["Area_Classification"]
-            self.living_enviornment 
-            self.living_enviornment2 
-    
-            weather_score = self.zipcode_prefix_weather_score[zipcode_prefix]
-            natural_disaster_score = self.state_natural_disaster_score[states_abbreviation_list[state]]
+                home_afforability_score = 10 if half_mad_home_value_negative <= self.user_home_price <= half_mad_home_value_positive else 5 if whole_mad_home_value_negative <= self.user_home_price <= whole_mad_home_value_positive else 0
+
+                median_household_income = zipcode_data['Median_Household_Income']
+                mad_household_income = zipcode_data['MAD_Household_Income']
+
+                whole_mad_income_positive = median_household_income + mad_household_income
+                half_mad_income_positive = median_household_income + mad_household_income * 0.5
+                half_mad_income_negative = median_household_income - mad_household_income * 0.5
+                whole_mad_income_negative = median_household_income - mad_household_income
+
+                household_income_score = 10 if half_mad_income_negative <= self.user_home_price <= half_mad_income_positive else 5 if whole_mad_income_negative <= self.user_home_price <= whole_mad_income_positive else 0
+
+                married_percentage = zipcode_data["Married_Percentage"]
+                married_score = married_scoring_order[0] if married_percentage == 'Well Bellow Average' else married_scoring_order[1] if married_percentage == 'Bellow Average' else married_scoring_order[2] if married_percentage == 'Average' else married_scoring_order[3] if married_percentage == 'Above Average' else married_scoring_order[4]
+                
+                families_with_children = zipcode_data["Families_with_Children"]
+                families_with_children_score = children_scoring_order[0] if families_with_children == 'Well Bellow Average' else children_scoring_order[1] if families_with_children == 'Bellow Average' else children_scoring_order[2] if families_with_children == 'Average' else children_scoring_order[3] if families_with_children == 'Above Average' else children_scoring_order[4]
+                    
+
+                school_enrollment_percentage = zipcode_data["School_Enrollment_Percentage"]
+
+                self.school_enrollment_importance
+
+                if self.employment_status == 'Seeking Employment':
+                    employment_percentage = zipcode_data['Employment_Percentage']
+                    self.regional_employment = kwargs['regional_employment']
+                    if self.transportation_method == '':
+                        transportation_method = zipcode_data[f'_Work_Percentage']
+                    commute_time = zipcode_data["Travel_Time_To_Work"]
+                    self.commute_time = kwargs['commute_time']
+
+
+
+                # What's your education level:
+                education_importance = int(self.education_level_importance)
+                self.education_level
+                education_score = zipcode_data["Education_Score"]
+
+                area_classification = zipcode_data["Area_Classification"]
+                area_classification_list_key = 0 if area_classification == 'Hyper Rural' else 1 if area_classification == 'Rural' else 2 if area_classification == 'Suburban' else 3 if area_classification == 'Urban' else 4
+                area_classification_score = living_enviornment_scoring_order1[area_classification_list_key] + living_enviornment_scoring_order2[area_classification_list_key]
+               
+                weather_score = self.zipcode_prefix_weather_score[zipcode_prefix]
+                natural_disaster_score = self.state_natural_disaster_score[states_abbreviation_list[state]]
+
+                total_zipcode_score = home_afforability_score + household_income_score + married_score + families_with_children_score
 
 
         return {}

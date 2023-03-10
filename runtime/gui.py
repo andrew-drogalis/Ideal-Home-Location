@@ -502,11 +502,13 @@ class App(customtkinter.CTk):
         self.area_classification_seg_button_3.grid(row=8, column=0, columnspan=3, padx=(20, 20), pady=(10, 10), sticky="ew")
         self.area_classification_seg_button_3.configure(values=self.area_classification_list)
         self.area_classification_seg_button_3.set("Suburban")
-        self.seg_button_area_classification_3(param='Suburban')
-
+        
         area_classification_label_4 = customtkinter.CTkLabel(self.area_classification_frame, text="What kind of living environment is second most prefered?", font=self.large_font_underline)
         area_classification_label_4.grid(row=10, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
 
+        self.area_classification_seg_button_4 = customtkinter.CTkSegmentedButton(self.area_classification_frame, font=self.regular_font)
+
+        self.seg_button_area_classification_3(param='Suburban')
         # Navigation Buttons
         area_classification_next_button = customtkinter.CTkButton(master=self.area_classification_frame, text='Next', text_color="#DCE4EE", font=self.regular_font, command=self.frame_4_forward_event)
         area_classification_next_button.grid(row=13, column=2, padx=(20, 20), pady=(20, 20), sticky="s")
@@ -641,14 +643,18 @@ class App(customtkinter.CTk):
         self.natural_disaster_seg_button_2.grid(row=5, column=0, columnspan=4, padx=(20, 20), pady=(10, 10), sticky="ew")
         self.natural_disaster_seg_button_2.configure(values=self.natural_disaster_list)
         self.natural_disaster_seg_button_2.set("Tornado")
-        self.seg_button_natural_disaster_2(param='Tornado')
-
+        
         natural_disaster_label_3 = customtkinter.CTkLabel(self.natural_disaster_frame, text="Which natural disaster is the #2 priority to avoid?", font=self.large_font_underline)
         natural_disaster_label_3.grid(row=7, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
 
+        self.natural_disaster_seg_button_3 = customtkinter.CTkSegmentedButton(self.natural_disaster_frame, font=self.regular_font, command=self.seg_button_natural_disaster_3)
+
         natural_disaster_label_4 = customtkinter.CTkLabel(self.natural_disaster_frame, text="Which natural disaster is the #3 priority to avoid?", font=self.large_font_underline)
         natural_disaster_label_4.grid(row=10, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
+            
+        self.natural_disaster_seg_button_4 = customtkinter.CTkSegmentedButton(self.natural_disaster_frame, font=self.regular_font)
 
+        self.seg_button_natural_disaster_2(param='Tornado')
         # Navigation Buttons
         natural_disaster_next_button = customtkinter.CTkButton(master=self.natural_disaster_frame, text='Next', text_color="#DCE4EE", font=self.regular_font, command=self.frame_6_forward_event)
         natural_disaster_next_button.grid(row=13, column=2, padx=20, pady=20, sticky="s")
@@ -1061,7 +1067,6 @@ class App(customtkinter.CTk):
         area_classification_list.remove(param)
 
         # Segmented Button #3
-        self.area_classification_seg_button_4 = customtkinter.CTkSegmentedButton(self.area_classification_frame, font=self.regular_font)
         self.area_classification_seg_button_4.grid(row=11, column=0, columnspan=3, padx=(20, 20), pady=(10, 10), sticky="ew")
         self.area_classification_seg_button_4.configure(values=area_classification_list)
         self.area_classification_seg_button_4.set(area_classification_list[0])
@@ -1071,7 +1076,6 @@ class App(customtkinter.CTk):
         self.natural_disaster_list_2.remove(param)
 
         # Segmented Button #3
-        self.natural_disaster_seg_button_3 = customtkinter.CTkSegmentedButton(self.natural_disaster_frame, font=self.regular_font, command=self.seg_button_natural_disaster_3)
         self.natural_disaster_seg_button_3.grid(row=8, column=0, columnspan=4, padx=(20, 20), pady=(10, 10), sticky="ew")
         self.natural_disaster_seg_button_3.configure(values=self.natural_disaster_list_2)
         self.natural_disaster_seg_button_3.set(self.natural_disaster_list_2[0])
@@ -1082,7 +1086,6 @@ class App(customtkinter.CTk):
         natural_disaster_list.remove(param)
 
         # Segmented Button #4
-        self.natural_disaster_seg_button_4 = customtkinter.CTkSegmentedButton(self.natural_disaster_frame, font=self.regular_font)
         self.natural_disaster_seg_button_4.grid(row=11, column=0, columnspan=4, padx=(20, 20), pady=(10, 10), sticky="ew")
         self.natural_disaster_seg_button_4.configure(values=natural_disaster_list)
         self.natural_disaster_seg_button_4.set(natural_disaster_list[0])
