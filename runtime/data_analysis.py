@@ -26,6 +26,10 @@ class IdealHomeDataAnalysis():
         with open('./data_ranking/ranked_data/Zipcode_Coordinates_Data.json', newline='') as f: 
             self.zipcode_coordinate_data = json.load(f)
 
+        # Import Zipcode Prefix Boundary Data
+        with open('./data_ranking/ranked_data/Zipcode_Prefix_Boundary_Data.json', newline='') as f: 
+            self.zipcode_prefix_boundary_data = json.load(f)
+
         # Initalize Errors List
         self.errors = []
         # Store Coordinates of Family & Work Locations
@@ -141,6 +145,11 @@ class IdealHomeDataAnalysis():
             total_score = season_score + precipitation_score + sunshine_score
 
             self.zipcode_prefix_weather_score.update({zipcode_prefix:total_score})
+
+        max_season_score = 13 if seasons == '4 Seasons' else 10 if seasons == '2 Seasons' else 7
+        max_precipitation_score = 2
+        max_sunshine_score = 2
+        self.max_possible_weather_score = max_season_score + max_precipitation_score + max_sunshine_score
 
 
     def natural_disaster_risk_frame_6(self, **kwargs):
@@ -285,23 +294,31 @@ class IdealHomeDataAnalysis():
                 if self.transportation_method == "Personal Vehicle":
                     transportation_method = zipcode_data['Motor_Vehicle_Work_Percentage']
                     transportation_score = 5 if transportation_method == 'Well Above Average' else 4 if transportation_method == 'Above Average' else 3 if transportation_method == 'Average' else 2 if transportation_method == 'Below Average' else 1 
+                    max_transportation_score = 5
                 elif self.transportation_method in ["Public Transportation", "Walking or Biking"]:
                     name = self.transportation_method.replace('or ', '').replace(' ', '_')
                     transportation_method = zipcode_data[f'{name}_Work_Percentage']
                     transportation_score = 5 if transportation_method == 'Very Good' else 4 if transportation_method == 'Good' else 3 if transportation_method == 'Exceptable' else 0
+                    max_transportation_score = 5
                 else:
                     transportation_score = 0
+                    max_transportation_score = 0
 
                 city_commute_time = zipcode_data["Travel_Time_To_Work"]
                 if city_commute_time and self.transportation_method != 'Work From Home':
                     commute_time_difference = user_commute_time - city_commute_time
                     commute_score = 5 if commute_time_difference <= 0 else 4 if commute_time_difference <= 5 else 3 if commute_time_difference <= 10 else 2 if commute_time_difference <= 15 else 1 if commute_time_difference <= 20 else 0
+                    max_commute_score = 5
                 else:
                     commute_score = 0
+                    max_commute_score = 0 if self.transportation_method != 'Work From Home' else 5
 
                 work_score = employment_score + transportation_score + commute_score
+                max_employment_score = regional_employment_importance
+                max_work_score = max_employment_score + max_transportation_score + max_commute_score
             else:
                 work_score = 0
+                max_work_score = 0
             
             city_education_level = zipcode_data["Education_Score"]
             if city_education_level:
@@ -328,15 +345,35 @@ class IdealHomeDataAnalysis():
 
         max_home_afforabilty = 10
         max_household_income = 10
-        max_possible_score = max_home_afforabilty + max_household_income + max(married_scoring_order) + max(children_scoring_order) + max(school_enrollment_scoring_order)
+        max_education_score = education_importance
+        max_area_classification_score = max(living_enviornment_scoring_order1) + max(living_enviornment_scoring_order2)
+        max_possible_score = max_home_afforabilty + max_household_income + max(married_scoring_order) + max(children_scoring_order) + max(school_enrollment_scoring_order) + max_work_score + max_education_score + max_area_classification_score + self.max_possible_weather_score + self.max_possible_state_disaster_score
 
-        final_zipcode_prefix_score = sorted([(zipcode_prefix, score_data['Score'] / score_data['Qty']) for zipcode_prefix, score_data in final_zipcode_prefix_score.items()], key=lambda x: x[1], reverse=True)[:5]
-        final_city_score = sorted(final_city_score, key=lambda x: x[1], reverse=True)[:20]
+        final_zipcode_prefix_score = sorted([(zipcode_prefix, score_data['Score'] / score_data['Qty']) for zipcode_prefix, score_data in final_zipcode_prefix_score.items()], key=lambda x: x[1], reverse=True)
+        max_score_zipcode_prefix_list = [zipcode_prefix_data[0] for zipcode_prefix_data in final_zipcode_prefix_score if zipcode_prefix_data[1] == final_zipcode_prefix_score[0][1]]
 
+        # Top 5 Matches
+        final_city_score = sorted(final_city_score, key=lambda x: x[1], reverse=True)[:5]
 
-        result_city = final_city_score[0][0]
+        for city in final_city_score:
+            zipcode = city[0][-5:]
+            zipcode_prefix = zipcode[:3]
+            if zipcode_prefix in max_score_zipcode_prefix_list:
+                result_city = city
+                result_zipcode_prefix = zipcode_prefix
+                break
+        else:
+            result_city = final_city_score[0]
+            zipcode = city[0][-5:]
+            result_zipcode_prefix = zipcode[:3]
+
+        match_percentage = round(result_city[1] * 100 / max_possible_score)
+
+        print(match_percentage)
+
+        zipcode_prefix_boundary = self.zipcode_prefix_boundary_data[result_zipcode_prefix]
         
-        return (result_city.split(',')[0], city_coordinates_dictionary[result_city])
+        return {'Result_City': result_city[0].split(',')[0],'Result_City_Coordinates': city_coordinates_dictionary[result_city[0]],'Match_Percentage':match_percentage,'Result_Zipcode_Prefix':result_zipcode_prefix, 'Zipcode_Prefix_Boundary': zipcode_prefix_boundary}
 
     def find_distance_to_center(self):
         # Order Does Not Matter

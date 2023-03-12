@@ -7,7 +7,7 @@ from constants.usa_states import states_dict
 """
 
 # Import Raw Natural Disaster Data
-with open('./data_src/EMDAT_1900-2021_NatDis_USA.csv', newline='') as f: 
+with open('./data_source/EMDAT_1900-2021_NatDis_USA.csv', newline='') as f: 
     natural_disaster_data = list(csv.reader(f))
 
 """

@@ -16,7 +16,7 @@ start_time = datetime(1993, 1, 1)
 end_time = datetime(2023, 1, 1)
 
 # Import Raw Zipcode Prefix Data
-with open('./data_src/USA_Zipcode_3_Digits.csv', newline='') as f: 
+with open('./data_source/USA_Zipcode_3_Digits.csv', newline='') as f: 
     zipcode_prefix_data = list(csv.reader(f))
 
 # Initalize Search Engine & Results Dictionary

@@ -46,6 +46,7 @@ class App(customtkinter.CTk):
         self.grid_rowconfigure(3, weight=1)
 
         # Initalize Class Variables
+        self.map_marker = None
         self.income_entry1_valid = False
         self.income_entry2_valid = False
         self.family_location_valid1 = False
@@ -1221,7 +1222,10 @@ class App(customtkinter.CTk):
             disaster_to_avoid2=self.natural_disaster_seg_button_3.get(),
             disaster_to_avoid3=self.natural_disaster_seg_button_4.get()
         )
-        self.results_city = self.IdealHomeDataAnalysis.results_frame_7()
+        self.final_results = self.IdealHomeDataAnalysis.results_frame_7()
+        self.city_name = self.final_results['Result_City']
+        self.city_coordinates = self.final_results['Result_City_Coordinates']
+        self.zipcode_prefix_boundary = self.final_results['Zipcode_Prefix_Boundary']
         self.set_map_widget()
         self.results_frame.grid(row=1, column=0, rowspan=3, columnspan=3, sticky="nsew")
         self.progressbar.set(1)
@@ -1267,11 +1271,17 @@ class App(customtkinter.CTk):
         self.map_widget.set_tile_server("https://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}&s=Ga", max_zoom=22)
 
     def set_map_widget(self, **kwargs):
-        self.map_widget.set_position(self.results_city[1][0], self.results_city[1][1]) 
-        #self.map_widget.fit_bounding_box((49, -3), (47, 3))
-        #self.map_widget.set_polygon([(46.0732306, 6.0095215),(46.0732306, 6.4195215),(46.3732306, 6.0095215),(46.3772542, 6.4160156)],fill_color=None,outline_color="red",border_width=10,
+        if self.map_marker:
+            self.map_marker.delete()
+            #self.map_position.delete()
+
+        self.map_position = self.map_widget.set_position(self.city_coordinates[0], self.city_coordinates[1]) 
+        
+        self.map_widget.fit_bounding_box((self.zipcode_prefix_boundary['North_Boundary'], self.zipcode_prefix_boundary['West_Boundary']), (self.zipcode_prefix_boundary['South_Boundary'], self.zipcode_prefix_boundary['East_Boundary']))
+        #self.map_widget.set_polygon([(46.0732306, 6.0095215),(46.0732306, 6.4195215),(46.3732306, 6.0095215),(46.3772542, 6.4160156)],fill_color=None,outline_color="green",border_width=4,
         #                           name="switzerland_polygon")
-        self.map_widget.set_marker(self.results_city[1][0], self.results_city[1][1], text=f"{self.results_city[0]}")
+        self.map_marker = self.map_widget.set_marker(self.city_coordinates[0], self.city_coordinates[1], text=f"{self.city_name}")
+        
 
     def load_data_analysis(self):
         self.IdealHomeDataAnalysis = IdealHomeDataAnalysis()

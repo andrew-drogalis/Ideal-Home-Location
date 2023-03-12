@@ -11,7 +11,7 @@ from constants.usa_states import states_abbreviation
 """
 
 # Import Raw Zipcode Prefix Data
-with open('./data_src/USA_Zipcode_3_Digits.csv', newline='') as f: 
+with open('./data_source/USA_Zipcode_3_Digits.csv', newline='') as f: 
     zipcode_prefix_data = list(csv.reader(f))
 
 # Initalize Search Engine
@@ -21,7 +21,7 @@ search = SearchEngine(
 # Data Storage
 city_metric_data = defaultdict(list)
 zipcode_coordinate_data = defaultdict(list)
-zipcode_prefix_metric_data = {}
+zipcode_prefix_boundary_data = {}
 all_zipcode_data = {
     'Married_Percentage': [],
     'Families_with_Children': [],
@@ -431,7 +431,7 @@ for zip_prefix in zipcode_prefix_data:
         eastmost_boundary = min(coordinates_dict['East_Bounds'])
 
         # Update Results Dictionary
-        zipcode_prefix_metric_data.update({zip_number: 
+        zipcode_prefix_boundary_data.update({zip_number: 
             {
                 'North_Boundary': northmost_boundary,
                 'South_Boundary': southmost_boundary,
@@ -458,3 +458,6 @@ with open(f"data_processors/processed_data/Zipcode_Metrics_Data.json", 'w') as f
 
 with open(f"data_ranking/ranked_data/Zipcode_Coordinates_Data.json", 'w') as f:
     json.dump(zipcode_coordinate_data, f)
+
+with open('data_ranking/ranked_data/Zipcode_Prefix_Boundary_Data.json', 'w') as f: 
+    json.dump(zipcode_prefix_boundary_data, f)
