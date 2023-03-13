@@ -26,7 +26,7 @@ class App(customtkinter.CTk):
         self.iconbitmap("assets/icon/Ideal_Home.ico")
 
         # Default Window Size
-        self.geometry(f"{1100}x{1000}")
+        self.geometry(f"{1200}x{1000}")
 
         font_manager = customtkinter.FontManager()
         # Load Custom Fonts
@@ -34,7 +34,6 @@ class App(customtkinter.CTk):
         font_manager.windows_load_font(font_path="assets/fonts/Cabin-Bold.ttf")
         
         title_font = customtkinter.CTkFont(family='Cabin', size=28, weight="bold")
-        small_font = customtkinter.CTkFont(family='Telex', size=14, weight="normal")
         bold_font = customtkinter.CTkFont(family='Telex', size=16, weight="bold")
         self.regular_font = customtkinter.CTkFont(family='Telex', size=16, weight="normal")
         self.large_font = customtkinter.CTkFont(family='Telex', size=19, weight="normal")
@@ -87,15 +86,15 @@ class App(customtkinter.CTk):
         self.start_label = customtkinter.CTkLabel(self.sidebar_frame, text="Start Line", font=bold_font, fg_color=('#fff','#111'))
         self.start_label.grid(row=3, column=0, ipadx=10, padx=10, pady=(20, 20), sticky='')
         # Appearance Mode
-        self.appearance_mode_label = customtkinter.CTkLabel(self.sidebar_frame, text="Appearance Mode:", anchor="w", font=small_font, fg_color=('#fff','#111'))
+        self.appearance_mode_label = customtkinter.CTkLabel(self.sidebar_frame, text="Appearance Mode", anchor="w", font=self.regular_font, fg_color=('#fff','#111'))
         self.appearance_mode_label.grid(row=5, column=0, padx=10, pady=(10, 0))
-        self.appearance_mode_optionemenu = customtkinter.CTkOptionMenu(self.sidebar_frame, width=100, values=["Light", "Dark", "System"], anchor='center', command=self.change_appearance_mode_event, font=small_font, dropdown_font=self.regular_font)
+        self.appearance_mode_optionemenu = customtkinter.CTkOptionMenu(self.sidebar_frame, width=100, values=["Light", "Dark", "System"], anchor='center', command=self.change_appearance_mode_event, font=self.regular_font, dropdown_font=self.regular_font)
         self.appearance_mode_optionemenu.grid(row=6, column=0, padx=10, pady=(10, 10))
         self.appearance_mode_optionemenu.set("System")
         # US Scaling
-        self.scaling_label = customtkinter.CTkLabel(self.sidebar_frame, text="UI Scaling:", anchor="w", font=small_font, fg_color=('#fff','#111'))
+        self.scaling_label = customtkinter.CTkLabel(self.sidebar_frame, text="Zoom %", anchor="w", font=self.regular_font, fg_color=('#fff','#111'))
         self.scaling_label.grid(row=7, column=0, padx=10, pady=(10, 0))
-        self.scaling_optionemenu = customtkinter.CTkOptionMenu(self.sidebar_frame, width=100, values=["80%", "90%", "100%", "110%", "120%"], anchor='center', command=self.change_scaling_event, font=small_font, dropdown_font=self.regular_font)
+        self.scaling_optionemenu = customtkinter.CTkOptionMenu(self.sidebar_frame, width=100, values=["80%", "90%", "100%", "110%", "120%"], anchor='center', command=self.change_scaling_event, font=self.regular_font, dropdown_font=self.regular_font)
         self.scaling_optionemenu.grid(row=8, column=0, padx=10, pady=(10, 20))
         self.scaling_optionemenu.set("100%")
 
@@ -116,7 +115,7 @@ class App(customtkinter.CTk):
         instructions_textbox.insert("0.0", "Hello, Welcome to the Ideal Home Location Matcher! \n Today")
         instructions_textbox.configure(state="disabled")
         # Navigation Button
-        instruction_get_started_button = customtkinter.CTkButton(master=self.intro_frame, text='Get Started', text_color="#DCE4EE", font=self.regular_font, command=self.instruction_button_event)
+        instruction_get_started_button = customtkinter.CTkButton(master=self.intro_frame, width=120, height=30, border_width=1, text='Get Started', text_color="#DCE4EE", font=self.regular_font, command=self.instruction_button_event)
         instruction_get_started_button.grid(row=3, column=2, padx=20, pady=20, sticky="s")
 
 
@@ -168,12 +167,12 @@ class App(customtkinter.CTk):
         self.family_location_entry3.grid(row=2, column=2, padx=40, pady=5, sticky='n')
         self.family_location_entry3.bind("<Return>", self.family_location_button1_verify)
 
-        self.f_location_button_1 = customtkinter.CTkButton(master=self.family_location_entry_frame1, text='Verify', text_color="#DCE4EE", font=self.regular_font, command=self.family_location_button1_verify)
+        self.f_location_button_1 = customtkinter.CTkButton(master=self.family_location_entry_frame1, text='Verify', width=120, height=30, border_width=1, text_color="#DCE4EE", font=self.regular_font, command=self.family_location_button1_verify)
         self.f_location_button_1.grid(row=2, column=3, padx=(20, 30), pady=5, sticky="n")
 
         self.f_location_label5 = customtkinter.CTkEntry(self.family_location_entry_frame1, width=450, font=self.large_font, state='disabled')
 
-        self.f_location_button_2 = customtkinter.CTkButton(master=self.family_location_entry_frame1, text='Confirm', text_color="#DCE4EE", font=self.regular_font, command=self.family_location_button1_confirm)
+        self.f_location_button_2 = customtkinter.CTkButton(master=self.family_location_entry_frame1, text='Confirm', width=120, height=30, border_width=1, text_color="#DCE4EE", font=self.regular_font, command=self.family_location_button1_confirm)
 
 
         self.family_location_label2 = customtkinter.CTkLabel(self.family_location_frame, text="Additional Location?", font=self.large_font_underline)
@@ -212,12 +211,12 @@ class App(customtkinter.CTk):
         self.family_location_entry6.grid(row=2, column=2, padx=40, pady=5, sticky='n')
         self.family_location_entry6.bind("<Return>", self.family_location_button2_verify)
 
-        self.f2_location_button_1 = customtkinter.CTkButton(master=self.family_location_entry_frame2, text='Verify', text_color="#DCE4EE", font=self.regular_font, command=self.family_location_button2_verify)
+        self.f2_location_button_1 = customtkinter.CTkButton(master=self.family_location_entry_frame2, text='Verify', width=120, height=30, border_width=1, text_color="#DCE4EE", font=self.regular_font, command=self.family_location_button2_verify)
         self.f2_location_button_1.grid(row=2, column=3, padx=(20, 30), pady=5, sticky="n")
 
         self.f2_location_label5 = customtkinter.CTkEntry(self.family_location_entry_frame2, width=450, font=self.large_font, state='disabled')
 
-        self.f2_location_button_2 = customtkinter.CTkButton(master=self.family_location_entry_frame2, text='Confirm', text_color="#DCE4EE", font=self.regular_font, command=self.family_location_button2_confirm)
+        self.f2_location_button_2 = customtkinter.CTkButton(master=self.family_location_entry_frame2, text='Confirm', width=120, height=30, border_width=1, text_color="#DCE4EE", font=self.regular_font, command=self.family_location_button2_confirm)
     
 
         self.family_location_label3 = customtkinter.CTkLabel(self.family_location_frame, text="What is the maximum distance prefered?", font=self.large_font_underline)
@@ -228,10 +227,10 @@ class App(customtkinter.CTk):
 
         self.seg_button_family_location(param='Yes')
         # Navigation Buttons
-        family_location_next_button = customtkinter.CTkButton(master=self.family_location_frame, text='Next', text_color="#DCE4EE", font=self.regular_font, command=self.frame_1_forward_event)
+        family_location_next_button = customtkinter.CTkButton(master=self.family_location_frame, width=120, height=30, border_width=1, text='Next', text_color="#DCE4EE", font=self.regular_font, command=self.frame_1_forward_event)
         family_location_next_button.grid(row=14, column=2, padx=(20, 20), pady=(20, 20), sticky="s")
         # ----------
-        family_location_previous_button = customtkinter.CTkButton(master=self.family_location_frame, text='Previous', text_color="#DCE4EE", font=self.regular_font, command=self.frame_1_backward_event)
+        family_location_previous_button = customtkinter.CTkButton(master=self.family_location_frame, width=120, height=30, border_width=1, text='Previous', text_color="#DCE4EE", font=self.regular_font, command=self.frame_1_backward_event)
         family_location_previous_button.grid(row=14, column=0, padx=(20, 20), pady=(20, 20), sticky="sw")
         
 
@@ -285,10 +284,10 @@ class App(customtkinter.CTk):
         self.family_details_seg_button_5.configure(values=["1", "2", "3", "4", "5"])
         self.family_details_seg_button_5.set("3")
         # Navigation Buttons
-        family_details_next_button = customtkinter.CTkButton(master=self.family_details_frame, text='Next', text_color="#DCE4EE", font=self.regular_font, command=self.frame_1b_forward_event)
+        family_details_next_button = customtkinter.CTkButton(master=self.family_details_frame, width=120, height=30, border_width=1, text='Next', text_color="#DCE4EE", font=self.regular_font, command=self.frame_1b_forward_event)
         family_details_next_button.grid(row=16, column=2, padx=(20, 20), pady=(20, 20), sticky="s")
         # ----------
-        family_details_previous_button = customtkinter.CTkButton(master=self.family_details_frame, text='Previous', text_color="#DCE4EE", font=self.regular_font, command=self.frame_1b_backward_event)
+        family_details_previous_button = customtkinter.CTkButton(master=self.family_details_frame, width=120, height=30, border_width=1, text='Previous', text_color="#DCE4EE", font=self.regular_font, command=self.frame_1b_backward_event)
         family_details_previous_button.grid(row=16, column=0, padx=(20, 20), pady=(20, 20), sticky="sw")
         
 
@@ -352,12 +351,12 @@ class App(customtkinter.CTk):
         self.work_location_entry3.grid(row=2, column=2, padx=40, pady=5, sticky='n')
         self.work_location_entry3.bind("<Return>", self.work_button_verify)
 
-        self.w_location_button_1 = customtkinter.CTkButton(master=self.work_location_entry_frame1, text='Verify', text_color="#DCE4EE", font=self.regular_font, command=self.work_button_verify)
+        self.w_location_button_1 = customtkinter.CTkButton(master=self.work_location_entry_frame1, width=120, height=30, border_width=1,text='Verify', text_color="#DCE4EE", font=self.regular_font, command=self.work_button_verify)
         self.w_location_button_1.grid(row=2, column=3, padx=(20, 20), pady=5, sticky="n")
 
         self.w_location_label5 = customtkinter.CTkEntry(self.work_location_entry_frame1, width=450, font=self.large_font, state='disabled')
         
-        self.w_location_button_2 = customtkinter.CTkButton(master=self.work_location_entry_frame1, text='Confirm', text_color="#DCE4EE", font=self.regular_font, command=self.work_button_confirm)
+        self.w_location_button_2 = customtkinter.CTkButton(master=self.work_location_entry_frame1, width=120, height=30, border_width=1, text='Confirm', text_color="#DCE4EE", font=self.regular_font, command=self.work_button_confirm)
 
 
         self.work_label4 = customtkinter.CTkLabel(self.work_frame, text="What is the maximum distance prefered?", font=self.large_font_underline)
@@ -382,10 +381,10 @@ class App(customtkinter.CTk):
         self.seg_button_work_2(param='Yes')
 
         # Navigation Buttons
-        work_next_button = customtkinter.CTkButton(master=self.work_frame, text='Next', text_color="#DCE4EE", font=self.regular_font, command=self.frame_2_forward_event)
+        work_next_button = customtkinter.CTkButton(master=self.work_frame, width=120, height=30, border_width=1, text='Next', text_color="#DCE4EE", font=self.regular_font, command=self.frame_2_forward_event)
         work_next_button.grid(row=13, column=2, padx=(20, 20), pady=(20, 20), sticky="s")
         # ----------
-        work_previous_button = customtkinter.CTkButton(master=self.work_frame, text='Previous', text_color="#DCE4EE", font=self.regular_font, command=self.frame_2_backward_event)
+        work_previous_button = customtkinter.CTkButton(master=self.work_frame, width=120, height=30, border_width=1, text='Previous', text_color="#DCE4EE", font=self.regular_font, command=self.frame_2_backward_event)
         work_previous_button.grid(row=13, column=0, padx=(20, 20), pady=(20, 20), sticky="sw")
 
         
@@ -458,10 +457,10 @@ class App(customtkinter.CTk):
         self.income_seg_button_3.set("No Change")
 
         # Navigation Buttons
-        self.income_next_button = customtkinter.CTkButton(master=self.income_frame, text='Next', text_color="#DCE4EE", font=self.regular_font, command=self.frame_3_forward_event)
+        self.income_next_button = customtkinter.CTkButton(master=self.income_frame, width=120, height=30, border_width=1, text='Next', text_color="#DCE4EE", font=self.regular_font, command=self.frame_3_forward_event)
         self.income_next_button.grid(row=16, column=2, padx=(20, 20), pady=(20, 20), sticky="s")
         # ----------
-        self.income_previous_button = customtkinter.CTkButton(master=self.income_frame, text='Previous', text_color="#DCE4EE", font=self.regular_font, command=self.frame_3_backward_event)
+        self.income_previous_button = customtkinter.CTkButton(master=self.income_frame, width=120, height=30, border_width=1, text='Previous', text_color="#DCE4EE", font=self.regular_font, command=self.frame_3_backward_event)
         self.income_previous_button.grid(row=16, column=0, padx=(20, 20), pady=(20, 20), sticky="sw")
 
         self.seg_button_income(param='30 Years')
@@ -511,10 +510,10 @@ class App(customtkinter.CTk):
 
         self.seg_button_area_classification_3(param='Suburban')
         # Navigation Buttons
-        area_classification_next_button = customtkinter.CTkButton(master=self.area_classification_frame, text='Next', text_color="#DCE4EE", font=self.regular_font, command=self.frame_4_forward_event)
+        area_classification_next_button = customtkinter.CTkButton(master=self.area_classification_frame, width=120, height=30, border_width=1, text='Next', text_color="#DCE4EE", font=self.regular_font, command=self.frame_4_forward_event)
         area_classification_next_button.grid(row=13, column=2, padx=(20, 20), pady=(20, 20), sticky="s")
         # ----------
-        area_classification_previous_button = customtkinter.CTkButton(master=self.area_classification_frame, text='Previous', text_color="#DCE4EE", font=self.regular_font, command=self.frame_4_backward_event)
+        area_classification_previous_button = customtkinter.CTkButton(master=self.area_classification_frame, width=120, height=30, border_width=1, text='Previous', text_color="#DCE4EE", font=self.regular_font, command=self.frame_4_backward_event)
         area_classification_previous_button.grid(row=13, column=0, padx=(20, 20), pady=(20, 20), sticky="sw")
 
         """ 
@@ -552,7 +551,7 @@ class App(customtkinter.CTk):
         self.weather_entry1.grid(row=0, column=0, padx=40, pady=12, sticky='e')
         self.weather_entry1.bind("<Return>", self.weather_button_1)
 
-        self.weather_submit_button1 = customtkinter.CTkButton(master=self.weather_entry_frame1, text='Submit', text_color="#DCE4EE", font=self.regular_font, command=self.weather_button_1)
+        self.weather_submit_button1 = customtkinter.CTkButton(master=self.weather_entry_frame1, text='Submit', width=120, height=30, border_width=1, text_color="#DCE4EE", font=self.regular_font, command=self.weather_button_1)
         self.weather_submit_button1.grid(row=0, column=1, padx=(20, 20), pady=12, sticky="w")
 
         self.weather_label3 = customtkinter.CTkLabel(self.weather_frame, text="What is your ideal transition temperature?", font=self.large_font_underline)          
@@ -570,7 +569,7 @@ class App(customtkinter.CTk):
         self.weather_entry2.grid(row=0, column=0, padx=40, pady=12, sticky='e')
         self.weather_entry2.bind("<Return>", self.weather_button_1)
 
-        self.weather_submit_button2 = customtkinter.CTkButton(master=self.weather_entry_frame2, text='Submit', text_color="#DCE4EE", font=self.regular_font, command=self.weather_button_1)
+        self.weather_submit_button2 = customtkinter.CTkButton(master=self.weather_entry_frame2, text='Submit', width=120, height=30, border_width=1, text_color="#DCE4EE", font=self.regular_font, command=self.weather_button_1)
         self.weather_submit_button2.grid(row=0, column=1, padx=(20, 20), pady=12, sticky="w")
 
         self.weather_label4 = customtkinter.CTkLabel(self.weather_frame, text="What is your ideal winter temperature?", font=self.large_font_underline)
@@ -588,7 +587,7 @@ class App(customtkinter.CTk):
         self.weather_entry3.grid(row=0, column=0, padx=40, pady=12, sticky='e')
         self.weather_entry3.bind("<Return>", self.weather_button_1)
 
-        self.weather_submit_button3 = customtkinter.CTkButton(master=self.weather_entry_frame3, text='Submit', text_color="#DCE4EE", font=self.regular_font, command=self.weather_button_1)
+        self.weather_submit_button3 = customtkinter.CTkButton(master=self.weather_entry_frame3, text='Submit', width=120, height=30, border_width=1, text_color="#DCE4EE", font=self.regular_font, command=self.weather_button_1)
         self.weather_submit_button3.grid(row=0, column=1, padx=(20, 20), pady=12, sticky="w")
 
         self.weather_label5 = customtkinter.CTkLabel(self.weather_frame, text="What level of yearly precipitation do you prefer?", font=self.large_font_underline)
@@ -608,10 +607,10 @@ class App(customtkinter.CTk):
         self.weather_seg_button_3.set("Average")
 
         # Navigation Buttons
-        self.weather_next_button = customtkinter.CTkButton(master=self.weather_frame, text='Next', text_color="#DCE4EE", font=self.regular_font, command=self.frame_5_forward_event)
+        self.weather_next_button = customtkinter.CTkButton(master=self.weather_frame, text='Next', width=120, height=30, border_width=1, text_color="#DCE4EE", font=self.regular_font, command=self.frame_5_forward_event)
         self.weather_next_button.grid(row=19, column=2, padx=20, pady=20, sticky="s")
         # ----------
-        self.weather_previous_button = customtkinter.CTkButton(master=self.weather_frame, text='Previous', text_color="#DCE4EE", font=self.regular_font, command=self.frame_5_backward_event)
+        self.weather_previous_button = customtkinter.CTkButton(master=self.weather_frame, text='Previous', width=120, height=30, border_width=1, text_color="#DCE4EE", font=self.regular_font, command=self.frame_5_backward_event)
         self.weather_previous_button.grid(row=19, column=0, padx=20, pady=20, sticky="sw")
 
         self.seg_button_weather_1(param="4 Seasons")
@@ -657,10 +656,10 @@ class App(customtkinter.CTk):
 
         self.seg_button_natural_disaster_2(param='Tornado')
         # Navigation Buttons
-        natural_disaster_next_button = customtkinter.CTkButton(master=self.natural_disaster_frame, text='Next', text_color="#DCE4EE", font=self.regular_font, command=self.frame_6_forward_event)
+        natural_disaster_next_button = customtkinter.CTkButton(master=self.natural_disaster_frame, width=120, height=30, border_width=1, text='Next', text_color="#DCE4EE", font=self.regular_font, command=self.frame_6_forward_event)
         natural_disaster_next_button.grid(row=13, column=2, padx=20, pady=20, sticky="s")
         # ----------
-        natural_disaster_previous_button = customtkinter.CTkButton(master=self.natural_disaster_frame, text='Previous', text_color="#DCE4EE", font=self.regular_font, command=self.frame_6_backward_event)
+        natural_disaster_previous_button = customtkinter.CTkButton(master=self.natural_disaster_frame, width=120, height=30, border_width=1, text='Previous', text_color="#DCE4EE", font=self.regular_font, command=self.frame_6_backward_event)
         natural_disaster_previous_button.grid(row=13, column=0, padx=20, pady=20, sticky="sw")
 
         """ 
@@ -670,16 +669,20 @@ class App(customtkinter.CTk):
         self.results_frame.grid_rowconfigure(10, weight=1)
         self.results_frame.grid_columnconfigure(0, weight=1)
 
-        self.results_title = customtkinter.CTkLabel(self.results_frame, text="Congratulations!", font=title_font, fg_color=('#fff','#111'))
-        self.results_title.grid(row=0, column=0, padx=20, columnspan=3, ipady=1, ipadx=20, pady=15, sticky='')
+        results_title = customtkinter.CTkLabel(self.results_frame, text="Congratulations!", font=title_font, fg_color=('#fff','#111'))
+        results_title.grid(row=0, column=0, padx=20, columnspan=3, ipady=1, ipadx=20, pady=15, sticky='')
 
+        self.results_label_1 = customtkinter.CTkLabel(self.results_frame, text="You have a 100% Match with City Name", font=self.large_font_underline)
+        self.results_label_1.grid(row=1, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
 
+        self.results_label_2 = customtkinter.CTkLabel(self.results_frame, text="It's recommended to look for a home in the greater Region Area.", font=self.large_font_underline)
+        self.results_label_2.grid(row=2, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
 
         # Navigation Buttons
-        results_previous_button = customtkinter.CTkButton(master=self.results_frame, text='Previous', text_color="#DCE4EE", font=self.regular_font, command=self.frame_7_backward_event)
+        results_previous_button = customtkinter.CTkButton(master=self.results_frame, text='Previous', width=120, height=30, border_width=1, text_color="#DCE4EE", font=self.regular_font, command=self.frame_7_backward_event)
         results_previous_button.grid(row=11, column=0, padx=20, pady=20, sticky="sw")
         # ----------
-        results_restart_button = customtkinter.CTkButton(master=self.results_frame, text='Restart', text_color="#DCE4EE", font=self.regular_font, command=self.frame_7_restart_event)
+        results_restart_button = customtkinter.CTkButton(master=self.results_frame, text='Restart', width=120, height=30, border_width=1, text_color="#DCE4EE", font=self.regular_font, command=self.frame_7_restart_event)
         results_restart_button.grid(row=11, column=2, padx=20, pady=20, sticky="sw")
 
     # ----------------------- Buttons ---------------------------
@@ -1226,7 +1229,10 @@ class App(customtkinter.CTk):
         self.city_name = self.final_results['Result_City']
         self.city_coordinates = self.final_results['Result_City_Coordinates']
         self.zipcode_prefix_boundary = self.final_results['Zipcode_Prefix_Boundary']
-        self.set_map_widget()
+        self.results_label_1.configure(text=f"You have a {self.final_results['Match_Percentage']}% Match with {self.city_name}")
+        self.results_label_2.configure(text=f"It's recommended to look for a home in the greater Region Area.")
+        self.set_map_position()
+        self.after(100, self.set_map_results)
         self.results_frame.grid(row=1, column=0, rowspan=3, columnspan=3, sticky="nsew")
         self.progressbar.set(1)
 
@@ -1268,20 +1274,26 @@ class App(customtkinter.CTk):
     def load_map_widget(self):
         self.map_widget = TkinterMapView(self.results_frame, corner_radius=0)
         self.map_widget.grid(row=10, column=0, columnspan=3, sticky="nswe", padx=10, pady=10)
-        self.map_widget.set_tile_server("https://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}&s=Ga", max_zoom=22)
+        self.map_widget.set_tile_server("https://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}&s=Ga", max_zoom=22)
 
-    def set_map_widget(self, **kwargs):
+    def set_map_position(self):
+        self.map_position = self.map_widget.set_position(self.city_coordinates[0], self.city_coordinates[1]) 
+
+    def set_map_results(self, **kwargs):
         if self.map_marker:
             self.map_marker.delete()
-            #self.map_position.delete()
 
-        self.map_position = self.map_widget.set_position(self.city_coordinates[0], self.city_coordinates[1]) 
-        
-        self.map_widget.fit_bounding_box((self.zipcode_prefix_boundary['North_Boundary'], self.zipcode_prefix_boundary['West_Boundary']), (self.zipcode_prefix_boundary['South_Boundary'], self.zipcode_prefix_boundary['East_Boundary']))
-        #self.map_widget.set_polygon([(46.0732306, 6.0095215),(46.0732306, 6.4195215),(46.3732306, 6.0095215),(46.3772542, 6.4160156)],fill_color=None,outline_color="green",border_width=4,
-        #                           name="switzerland_polygon")
         self.map_marker = self.map_widget.set_marker(self.city_coordinates[0], self.city_coordinates[1], text=f"{self.city_name}")
-        
+        self.map_widget.fit_bounding_box((self.zipcode_prefix_boundary['North_Boundary']+0.5, self.zipcode_prefix_boundary['West_Boundary']-0.5), (self.zipcode_prefix_boundary['South_Boundary']-0.5, self.zipcode_prefix_boundary['East_Boundary']+0.5))
+        self.map_widget.set_polygon([(self.zipcode_prefix_boundary['North_Boundary'], self.zipcode_prefix_boundary['West_Boundary']), 
+            (self.zipcode_prefix_boundary['North_Boundary'], self.zipcode_prefix_boundary['East_Boundary']),
+            (self.zipcode_prefix_boundary['South_Boundary'], self.zipcode_prefix_boundary['East_Boundary']),
+            (self.zipcode_prefix_boundary['South_Boundary'], self.zipcode_prefix_boundary['West_Boundary'])],
+            fill_color=None,
+            outline_color="green",
+            border_width=4,
+            name="switzerland_polygon")
+    
 
     def load_data_analysis(self):
         self.IdealHomeDataAnalysis = IdealHomeDataAnalysis()

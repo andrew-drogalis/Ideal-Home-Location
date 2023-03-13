@@ -4,7 +4,7 @@ from collections import defaultdict
 from uszipcode import SearchEngine
 sys.path.insert(1, str(pathlib.Path(__file__).parent.parent))
 from data_ranking.math_functions.statistics_analysis import mad_calc
-from constants.usa_states import states_abbreviation
+from runtime.utilities.state_abbreviations import states_abbreviation_list
 
 """
     Process the Zipcode Data & Store Results in JSON
@@ -412,7 +412,7 @@ for zip_prefix in zipcode_prefix_data:
                 if '...' not in common_city:
                     city_str += f'{common_city}, '
             city_str += f'{city.zipcode}'
-            zipcode_coordinate_data[states_abbreviation[state]].append({city_str:[latitude, longitude]})
+            zipcode_coordinate_data[states_abbreviation_list[state]].append({city_str:[latitude, longitude]})
 
             # Save to Bounds List
             coordinates_dict['West_Bounds'].append(bounds_west)
@@ -427,8 +427,8 @@ for zip_prefix in zipcode_prefix_data:
         # Boundaries for All since All in Northern & Western Hemisphere for All Locations in the USA 50 States
         northmost_boundary = max(coordinates_dict['North_Bounds'])
         southmost_boundary = min(coordinates_dict['South_Bounds'])
-        westmost_boundary = max(coordinates_dict['West_Bounds'])
-        eastmost_boundary = min(coordinates_dict['East_Bounds'])
+        westmost_boundary = min(coordinates_dict['West_Bounds'])
+        eastmost_boundary = max(coordinates_dict['East_Bounds'])
 
         # Update Results Dictionary
         zipcode_prefix_boundary_data.update({zip_number: 

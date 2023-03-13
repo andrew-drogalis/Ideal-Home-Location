@@ -1,4 +1,4 @@
-import json
+import json, csv
 from collections import defaultdict
 from runtime.utilities.calculation_utilities import location_radius_search, check_coordinates_distance_to_center
 from runtime.utilities.state_abbreviations import states_abbreviation_list
@@ -30,12 +30,14 @@ class IdealHomeDataAnalysis():
         with open('./data_ranking/ranked_data/Zipcode_Prefix_Boundary_Data.json', newline='') as f: 
             self.zipcode_prefix_boundary_data = json.load(f)
 
+        # Import Zipcode Prefix Region Name
+        with open('./data_source/USA_Zipcode_3_Digits.csv', newline='') as f: 
+            self.zipcode_prefix_region_names = list(csv.reader(f))
+
         # Initalize Errors List
         self.errors = []
         # Store Coordinates of Family & Work Locations
         self.saved_coordinates_list = [[], [], []]
-        # List of all Zipcode Coordinates - Not State Specific
-        self.merged_zipcode_coordinate_data = [zipcode for state_coordinate_list in [*self.zipcode_coordinate_data.values()] for zipcode in state_coordinate_list]
 
     # -------------- Navigation Functions -------------------
     def family_location_frame_1(self, **kwargs):
@@ -364,16 +366,18 @@ class IdealHomeDataAnalysis():
                 break
         else:
             result_city = final_city_score[0]
-            zipcode = city[0][-5:]
+            zipcode = result_city[0][-5:]
             result_zipcode_prefix = zipcode[:3]
 
         match_percentage = round(result_city[1] * 100 / max_possible_score)
-
-        print(match_percentage)
+        
+        raise_affordability_warning = True if result_city[0] in unlikely_to_afford_warning else False
 
         zipcode_prefix_boundary = self.zipcode_prefix_boundary_data[result_zipcode_prefix]
+
+        region_name = [row[1] for row in self.zipcode_prefix_region_names if row[0] == result_zipcode_prefix][0]
         
-        return {'Result_City': result_city[0].split(',')[0],'Result_City_Coordinates': city_coordinates_dictionary[result_city[0]],'Match_Percentage':match_percentage,'Result_Zipcode_Prefix':result_zipcode_prefix, 'Zipcode_Prefix_Boundary': zipcode_prefix_boundary}
+        return {'Result_City': result_city[0].split(',')[0],'Result_City_Coordinates': city_coordinates_dictionary[result_city[0]],'Match_Percentage':match_percentage,'Result_Zipcode_Prefix':result_zipcode_prefix, 'Zipcode_Prefix_Boundary': zipcode_prefix_boundary, 'Afforability_Warning': raise_affordability_warning}
 
     def find_distance_to_center(self):
         # Order Does Not Matter
@@ -388,6 +392,9 @@ class IdealHomeDataAnalysis():
 
     def run_location_radius_search(self, radius_index: int):
         args_list = [coordinate for coordinate in self.saved_coordinates_list if coordinate]
+
+        # List of all Zipcode Coordinates - Not State Specific
+        self.merged_zipcode_coordinate_data = [zipcode for state_coordinate_list in [*self.zipcode_coordinate_data.values()] for zipcode in state_coordinate_list]
         
         if args_list:
             # Miles of Radius
