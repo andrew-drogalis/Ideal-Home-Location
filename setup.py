@@ -1,5 +1,6 @@
 from os import path
 from setuptools import setup, find_packages
+from version import current_version
 
 """
     Setup file
@@ -26,7 +27,7 @@ REQUIRES = read_requirements_file("requirements.txt")
 # Setup
 setup(
 	name='Ideal-Home-Location-Matcher',
-	version='0.9.0',
+	version=current_version,
 	author='Andrew Drogalis',
     author_email='andrew.drogalis2@gmail.com',
     description="A collection of weather, natural disaster, and US Census data stored and analyzed to find the optimal living location for each individual's requirements.",

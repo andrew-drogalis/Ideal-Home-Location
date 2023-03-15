@@ -38,6 +38,8 @@ class IdealHomeDataAnalysis():
         self.errors = []
         # Store Coordinates of Family & Work Locations
         self.saved_coordinates_list = [[], [], []]
+        # Convert to Hash Map
+        self.zipcode_prefix_region_names = {row[0]:row[1] for row in self.zipcode_prefix_region_names}
 
     # -------------- Navigation Functions -------------------
     def family_location_frame_1(self, **kwargs):
@@ -375,9 +377,13 @@ class IdealHomeDataAnalysis():
 
         zipcode_prefix_boundary = self.zipcode_prefix_boundary_data[result_zipcode_prefix]
 
-        region_name = [row[1] for row in self.zipcode_prefix_region_names if row[0] == result_zipcode_prefix][0]
+        region_name = self.zipcode_prefix_region_names[result_zipcode_prefix]
+
+        state = region_name[-2:]
+
+        region_name = f'{region_name.title()[:-3]}, {state}'
         
-        return {'Result_City': result_city[0].split(',')[0],'Result_City_Coordinates': city_coordinates_dictionary[result_city[0]],'Match_Percentage':match_percentage,'Result_Zipcode_Prefix':result_zipcode_prefix, 'Zipcode_Prefix_Boundary': zipcode_prefix_boundary, 'Afforability_Warning': raise_affordability_warning}
+        return {'Result_City': f"{result_city[0].split(',')[0]}, {state}",'Result_City_Coordinates': city_coordinates_dictionary[result_city[0]],'Match_Percentage':match_percentage,'Region_Name':region_name, 'Zipcode_Prefix_Boundary': zipcode_prefix_boundary, 'Afforability_Warning': raise_affordability_warning}
 
     def find_distance_to_center(self):
         # Order Does Not Matter

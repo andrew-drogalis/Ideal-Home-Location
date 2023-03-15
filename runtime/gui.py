@@ -1,9 +1,10 @@
 from tkinter import messagebox, StringVar
 import customtkinter
 from tkintermapview import TkinterMapView
-import sys, pathlib, webbrowser
+import os, sys, pathlib, webbrowser
 from PIL import Image
 from runtime.data_analysis import IdealHomeDataAnalysis
+from version import current_version
 current_path = str(pathlib.Path(__file__).parent.parent)
 
 """
@@ -23,15 +24,15 @@ class App(customtkinter.CTk):
         self.title("Ideal Home Location Matcher")
 
         # Add Ideal Home Icon
-        self.iconbitmap("assets/icon/Ideal_Home.ico")
+        self.iconbitmap(self.resource_path("assets/icon/Ideal_Home.ico"))
 
         # Default Window Size
         self.geometry(f"{1200}x{1000}")
 
         font_manager = customtkinter.FontManager()
         # Load Custom Fonts
-        font_manager.windows_load_font(font_path="assets/fonts/Telex-Regular.ttf")
-        font_manager.windows_load_font(font_path="assets/fonts/Cabin-Bold.ttf")
+        font_manager.windows_load_font(font_path=self.resource_path("assets/fonts/Telex-Regular.ttf"))
+        font_manager.windows_load_font(font_path=self.resource_path("assets/fonts/Cabin-Bold.ttf"))
         
         title_font = customtkinter.CTkFont(family='Cabin', size=28, weight="bold")
         bold_font = customtkinter.CTkFont(family='Telex', size=16, weight="bold")
@@ -56,23 +57,26 @@ class App(customtkinter.CTk):
         """ 
             Header Frame 
         """
-        self.header_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e5f1fc','#333333'))
+        self.header_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e5f1fc','#32485c'))
         self.header_frame.grid(row=0, column=0, columnspan=3, sticky="nsew")
         self.header_frame.grid_rowconfigure(0, weight=1)
         self.header_frame.grid_columnconfigure(1, weight=1)
         # Logo Image
-        self.bg_image = customtkinter.CTkImage(Image.open(current_path + "/assets/images/Ideal_Home_Location_Matcher.png"),size=(358, 87))
-        self.bg_image_label = customtkinter.CTkLabel(self.header_frame, text='', image=self.bg_image)
-        self.bg_image_label.grid(row=0, column=0, padx=20, pady=(10, 10), sticky='nw')
+        bg_image = customtkinter.CTkImage(Image.open(current_path + "/assets/images/Ideal_Home_Location_Matcher.png"),size=(358, 87))
+        bg_image_label = customtkinter.CTkLabel(self.header_frame, text='', image=bg_image)
+        bg_image_label.grid(row=0, column=0, padx=20, pady=(10, 10), sticky='nw')
         # Github Link
-        self.github_image = customtkinter.CTkImage(light_image=Image.open(current_path + "/assets/images/github-mark.png"),dark_image=Image.open(current_path + "/assets/images/github-mark-white.png"), size=(81, 20))
-        self.github_button = customtkinter.CTkButton(self.header_frame, image=self.github_image, width=90, hover_color=('#fff','#000'), text='', compound='right', fg_color='transparent', bg_color='transparent', command=self.github_more_information)
-        self.github_button.grid(row=0, column=1, padx=15, pady=(10, 10), sticky='e')
+        github_image = customtkinter.CTkImage(light_image=Image.open(current_path + "/assets/images/github-mark.png"),dark_image=Image.open(current_path + "/assets/images/github-mark-white.png"), size=(81, 20))
+        github_button = customtkinter.CTkButton(self.header_frame, image=github_image, width=90, hover_color=('#fff','#000'), text='', compound='right', fg_color='transparent', bg_color='transparent', command=self.github_more_information)
+        github_button.grid(row=0, column=1, padx=15, pady=(10, 10), sticky='e')
+        # Version label
+        version_label = customtkinter.CTkLabel(self.header_frame, text=f'Version: {current_version}', font=customtkinter.CTkFont(family='Telex', size=12, weight="normal"))
+        version_label.grid(row=0, column=1, padx=17, pady=(10, 10), sticky='se')
 
         """ 
             Sidebar Frame 
         """
-        self.sidebar_frame = customtkinter.CTkFrame(self, width=100, corner_radius=0, fg_color=('#e5f1fc','#333333'))
+        self.sidebar_frame = customtkinter.CTkFrame(self, width=100, corner_radius=0, fg_color=('#e5f1fc','#32485c'))
         self.sidebar_frame.grid(row=0, column=3, rowspan=4, sticky="nsew")
         self.sidebar_frame.grid_rowconfigure(1, weight=1)
         # Finish Label
@@ -102,7 +106,7 @@ class App(customtkinter.CTk):
         """ 
             Instructions Frame 
         """
-        self.intro_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e3e3e3',"gray17"), border_width=1, border_color='#217bd7')
+        self.intro_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e1e5eb',"gray17"), border_width=1, border_color=('#217bd7','#1b66b3'))
         self.intro_frame.grid(row=1, column=0, rowspan=3, columnspan=3, sticky="nsew")
         self.intro_frame.grid_rowconfigure(3, weight=1)
         self.intro_frame.grid_columnconfigure(0, weight=1)
@@ -122,7 +126,7 @@ class App(customtkinter.CTk):
         """ 
             Family Location Frame 1
         """
-        self.family_location_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e3e3e3',"gray17"), border_width=1, border_color='#217bd7')
+        self.family_location_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e1e5eb',"gray17"), border_width=1, border_color=('#217bd7','#1b66b3'))
         self.family_location_frame.grid_rowconfigure((3,5,8,10,13), weight=1)
         self.family_location_frame.grid_columnconfigure(0, weight=1)
         # Page Title
@@ -138,7 +142,7 @@ class App(customtkinter.CTk):
         self.family_location_seg_button_1.set("Yes")
 
         # Family Location Entry Frame 1
-        self.family_location_entry_frame1 = customtkinter.CTkFrame(self.family_location_frame, corner_radius=0)
+        self.family_location_entry_frame1 = customtkinter.CTkFrame(self.family_location_frame, corner_radius=0, fg_color=('#d1d7e1',"gray22"))
         self.family_location_entry_frame1.grid_rowconfigure(10, weight=1)
         self.family_location_entry_frame1.grid_columnconfigure((0, 1, 2, 3), weight=1)
 
@@ -168,7 +172,7 @@ class App(customtkinter.CTk):
         self.family_location_entry3.bind("<Return>", self.family_location_button1_verify)
 
         self.f_location_button_1 = customtkinter.CTkButton(master=self.family_location_entry_frame1, text='Verify', width=120, height=30, border_width=1, text_color="#DCE4EE", font=self.regular_font, command=self.family_location_button1_verify)
-        self.f_location_button_1.grid(row=2, column=3, padx=(20, 30), pady=5, sticky="n")
+        self.f_location_button_1.grid(row=2, column=3, padx=(20, 30), pady=(5,10), sticky="n")
 
         self.f_location_label5 = customtkinter.CTkEntry(self.family_location_entry_frame1, width=450, font=self.large_font, state='disabled')
 
@@ -182,7 +186,7 @@ class App(customtkinter.CTk):
         self.family_location_seg_button_2.set("No")
 
         # Family Location Entry Frame 2
-        self.family_location_entry_frame2 = customtkinter.CTkFrame(self.family_location_frame, corner_radius=0)
+        self.family_location_entry_frame2 = customtkinter.CTkFrame(self.family_location_frame, corner_radius=0, fg_color=('#d1d7e1',"gray22"))
         self.family_location_entry_frame2.grid_rowconfigure(10, weight=1)
         self.family_location_entry_frame2.grid_columnconfigure((0, 1, 2, 3), weight=1)
 
@@ -212,7 +216,7 @@ class App(customtkinter.CTk):
         self.family_location_entry6.bind("<Return>", self.family_location_button2_verify)
 
         self.f2_location_button_1 = customtkinter.CTkButton(master=self.family_location_entry_frame2, text='Verify', width=120, height=30, border_width=1, text_color="#DCE4EE", font=self.regular_font, command=self.family_location_button2_verify)
-        self.f2_location_button_1.grid(row=2, column=3, padx=(20, 30), pady=5, sticky="n")
+        self.f2_location_button_1.grid(row=2, column=3, padx=(20, 30), pady=(5,10), sticky="n")
 
         self.f2_location_label5 = customtkinter.CTkEntry(self.family_location_entry_frame2, width=450, font=self.large_font, state='disabled')
 
@@ -237,7 +241,7 @@ class App(customtkinter.CTk):
         """ 
             Family Details Frame 1b
         """
-        self.family_details_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e3e3e3',"gray17"), border_width=1, border_color='#217bd7')
+        self.family_details_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e1e5eb',"gray17"), border_width=1, border_color=('#217bd7','#1b66b3'))
         self.family_details_frame.grid_rowconfigure((3,6,9,12,15), weight=1)
         self.family_details_frame.grid_columnconfigure(0, weight=1)
 
@@ -294,7 +298,7 @@ class App(customtkinter.CTk):
         """ 
             Work Frame 2
         """
-        self.work_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e3e3e3',"gray17"), border_width=1, border_color='#217bd7')
+        self.work_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e1e5eb',"gray17"), border_width=1, border_color=('#217bd7','#1b66b3'))
         self.work_frame.grid_rowconfigure((3,6,9,12), weight=1)
         self.work_frame.grid_columnconfigure(0, weight=1)
 
@@ -322,7 +326,7 @@ class App(customtkinter.CTk):
         self.work_seg_button_3.set("3")
 
         # Work Location Entry Frame 1
-        self.work_location_entry_frame1 = customtkinter.CTkFrame(self.work_frame, corner_radius=0)
+        self.work_location_entry_frame1 = customtkinter.CTkFrame(self.work_frame, corner_radius=0, fg_color=('#d1d7e1',"gray22"))
         self.work_location_entry_frame1.grid_rowconfigure(10, weight=1)
         self.work_location_entry_frame1.grid_columnconfigure((0, 1, 2, 3), weight=1)
 
@@ -352,7 +356,7 @@ class App(customtkinter.CTk):
         self.work_location_entry3.bind("<Return>", self.work_button_verify)
 
         self.w_location_button_1 = customtkinter.CTkButton(master=self.work_location_entry_frame1, width=120, height=30, border_width=1,text='Verify', text_color="#DCE4EE", font=self.regular_font, command=self.work_button_verify)
-        self.w_location_button_1.grid(row=2, column=3, padx=(20, 20), pady=5, sticky="n")
+        self.w_location_button_1.grid(row=2, column=3, padx=(20, 20), pady=(5,10), sticky="n")
 
         self.w_location_label5 = customtkinter.CTkEntry(self.work_location_entry_frame1, width=450, font=self.large_font, state='disabled')
         
@@ -391,7 +395,7 @@ class App(customtkinter.CTk):
         """ 
             Income Metrics Frame 3
         """
-        self.income_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e3e3e3',"gray17"), border_width=1, border_color='#217bd7')
+        self.income_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e1e5eb',"gray17"), border_width=1, border_color=('#217bd7','#1b66b3'))
         self.income_frame.grid_rowconfigure((3,6,9,12,15), weight=1)
         self.income_frame.grid_columnconfigure(0, weight=1)
 
@@ -402,7 +406,7 @@ class App(customtkinter.CTk):
         income_label_1.grid(row=1, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
 
         # Income Entry Frame 2
-        self.income_entry_frame1 = customtkinter.CTkFrame(self.income_frame, corner_radius=0)
+        self.income_entry_frame1 = customtkinter.CTkFrame(self.income_frame, corner_radius=0, fg_color=('#d1d7e1',"gray22"))
         self.income_entry_frame1.grid(row=2, column=0, columnspan=3, pady=10, padx=4, sticky="nsew")
         self.income_entry_frame1.grid_rowconfigure(0, weight=1)
         self.income_entry_frame1.grid_columnconfigure((0, 1), weight=1)
@@ -429,7 +433,7 @@ class App(customtkinter.CTk):
         self.income_label3.grid(row=7, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
             
         # Income Entry Frame 2
-        self.income_entry_frame2 = customtkinter.CTkFrame(self.income_frame, corner_radius=0)
+        self.income_entry_frame2 = customtkinter.CTkFrame(self.income_frame, corner_radius=0, fg_color=('#d1d7e1',"gray22"))
         self.income_entry_frame2.grid(row=8, column=0, columnspan=3, padx=4, pady=10, sticky="nsew")
         self.income_entry_frame2.grid_rowconfigure(0, weight=1)
         self.income_entry_frame2.grid_columnconfigure((0, 1), weight=1)
@@ -468,7 +472,7 @@ class App(customtkinter.CTk):
         """ 
             Area Classification Frame 4
         """
-        self.area_classification_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e3e3e3',"gray17"), border_width=1, border_color='#217bd7')
+        self.area_classification_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e1e5eb',"gray17"), border_width=1, border_color=('#217bd7','#1b66b3'))
         self.area_classification_frame.grid_rowconfigure((3, 6, 9, 12), weight=1)
         self.area_classification_frame.grid_columnconfigure(0, weight=1)
 
@@ -519,7 +523,7 @@ class App(customtkinter.CTk):
         """ 
             Weather Metrics Frame 5
         """
-        self.weather_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e3e3e3',"gray17"), border_width=1, border_color='#217bd7')
+        self.weather_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e1e5eb',"gray17"), border_width=1, border_color=('#217bd7','#1b66b3'))
         self.weather_frame.grid_rowconfigure((3,6,9,12,15,18), weight=1)
         self.weather_frame.grid_columnconfigure(0, weight=1)
 
@@ -539,7 +543,7 @@ class App(customtkinter.CTk):
         self.weather_label2.grid(row=4, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
 
         # Weather Entry Frame 1
-        self.weather_entry_frame1 = customtkinter.CTkFrame(self.weather_frame, corner_radius=0)
+        self.weather_entry_frame1 = customtkinter.CTkFrame(self.weather_frame, corner_radius=0, fg_color=('#d1d7e1',"gray22"))
         self.weather_entry_frame1.grid(row=5, column=0, columnspan=3, padx=4, pady=10, sticky="nsew")
         self.weather_entry_frame1.grid_rowconfigure(0, weight=1)
         self.weather_entry_frame1.grid_columnconfigure((0, 1), weight=1)
@@ -557,7 +561,7 @@ class App(customtkinter.CTk):
         self.weather_label3 = customtkinter.CTkLabel(self.weather_frame, text="What is your ideal transition temperature?", font=self.large_font_underline)          
 
         # Weather Entry Frame 2
-        self.weather_entry_frame2 = customtkinter.CTkFrame(self.weather_frame, corner_radius=0)
+        self.weather_entry_frame2 = customtkinter.CTkFrame(self.weather_frame, corner_radius=0, fg_color=('#d1d7e1',"gray22"))
         #self.weather_entry_frame2.grid(row=5, column=0, columnspan=3, pady=10, sticky="nsew")
         self.weather_entry_frame2.grid_rowconfigure(0, weight=1)
         self.weather_entry_frame2.grid_columnconfigure((0, 1), weight=1)
@@ -575,7 +579,7 @@ class App(customtkinter.CTk):
         self.weather_label4 = customtkinter.CTkLabel(self.weather_frame, text="What is your ideal winter temperature?", font=self.large_font_underline)
 
         # Weather Entry Frame 3
-        self.weather_entry_frame3 = customtkinter.CTkFrame(self.weather_frame, corner_radius=0)
+        self.weather_entry_frame3 = customtkinter.CTkFrame(self.weather_frame, corner_radius=0, fg_color=('#d1d7e1',"gray22"))
         #self.weather_entry_frame3.grid(row=5, column=0, columnspan=3, pady=10, sticky="nsew")
         self.weather_entry_frame3.grid_rowconfigure(0, weight=1)
         self.weather_entry_frame3.grid_columnconfigure((0, 1), weight=1)
@@ -618,7 +622,7 @@ class App(customtkinter.CTk):
         """ 
             Natural Disaster Risk Frame 6
         """
-        self.natural_disaster_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e3e3e3',"gray17"), border_width=1, border_color='#217bd7')
+        self.natural_disaster_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e1e5eb',"gray17"), border_width=1, border_color=('#217bd7','#1b66b3'))
         self.natural_disaster_frame.grid_rowconfigure((3,6,9,12), weight=1)
         self.natural_disaster_frame.grid_columnconfigure(0, weight=1)
 
@@ -665,7 +669,7 @@ class App(customtkinter.CTk):
         """ 
             Results Frame 7
         """
-        self.results_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e3e3e3',"gray17"), border_width=1, border_color='#217bd7')
+        self.results_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e1e5eb',"gray17"), border_width=1, border_color=('#217bd7','#1b66b3'))
         self.results_frame.grid_rowconfigure(10, weight=1)
         self.results_frame.grid_columnconfigure(0, weight=1)
 
@@ -675,7 +679,7 @@ class App(customtkinter.CTk):
         self.results_label_1 = customtkinter.CTkLabel(self.results_frame, text="You have a 100% Match with City Name", font=self.large_font_underline)
         self.results_label_1.grid(row=1, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
 
-        self.results_label_2 = customtkinter.CTkLabel(self.results_frame, text="It's recommended to look for a home in the greater Region Area.", font=self.large_font_underline)
+        self.results_label_2 = customtkinter.CTkLabel(self.results_frame, text="It's recommended to look for a home in the greater Region.", font=self.large_font_underline)
         self.results_label_2.grid(row=2, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
 
         # Navigation Buttons
@@ -703,7 +707,7 @@ class App(customtkinter.CTk):
         self.f_location_label5.configure(textvariable=str_obj)
         self.f_location_label5.grid(row=3, column=0, columnspan=2, padx=40, pady=15, sticky='e')
         if result not in ['Provide State','Provide City or Zipcode','Please Provide Valid US State','Please Provide Valid Zipcode']:
-            self.f_location_button_2.grid(row=3, column=2, padx=(20, 20), pady=15, sticky="")
+            self.f_location_button_2.grid(row=3, column=2, padx=(20, 20), pady=(10,15), sticky="")
         else:
             self.f_location_button_2.grid_forget()
 
@@ -723,7 +727,7 @@ class App(customtkinter.CTk):
         self.f2_location_label5.configure(textvariable=str_obj)
         self.f2_location_label5.grid(row=3, column=0, columnspan=2, padx=40, pady=15, sticky='e')
         if result not in ['Provide State','Provide City or Zipcode','Please Provide Valid US State','Please Provide Valid Zipcode']:
-            self.f2_location_button_2.grid(row=3, column=2, padx=(20, 20), pady=15, sticky="")
+            self.f2_location_button_2.grid(row=3, column=2, padx=(20, 20), pady=(10,15), sticky="")
         else:
             self.f2_location_button_2.grid_forget()
             
@@ -753,7 +757,7 @@ class App(customtkinter.CTk):
         self.w_location_label5.configure(textvariable=str_obj)
         self.w_location_label5.grid(row=3, column=0, columnspan=2, padx=40, pady=15, sticky='e')
         if result not in ['Provide State','Provide City or Zipcode','Please Provide Valid US State','Please Provide Valid Zipcode']:
-            self.w_location_button_2.grid(row=3, column=2, padx=(20, 20), pady=15, sticky="")
+            self.w_location_button_2.grid(row=3, column=2, padx=(20, 20), pady=(10,15), sticky="")
         else:
             self.w_location_button_2.grid_forget()
 
@@ -1230,7 +1234,7 @@ class App(customtkinter.CTk):
         self.city_coordinates = self.final_results['Result_City_Coordinates']
         self.zipcode_prefix_boundary = self.final_results['Zipcode_Prefix_Boundary']
         self.results_label_1.configure(text=f"You have a {self.final_results['Match_Percentage']}% Match with {self.city_name}")
-        self.results_label_2.configure(text=f"It's recommended to look for a home in the greater Region Area.")
+        self.results_label_2.configure(text=f"It's recommended to look for a home in the greater {self.final_results['Region_Name']} Region.")
         self.set_map_position()
         self.after(100, self.set_map_results)
         self.results_frame.grid(row=1, column=0, rowspan=3, columnspan=3, sticky="nsew")
@@ -1274,17 +1278,17 @@ class App(customtkinter.CTk):
     def load_map_widget(self):
         self.map_widget = TkinterMapView(self.results_frame, corner_radius=0)
         self.map_widget.grid(row=10, column=0, columnspan=3, sticky="nswe", padx=10, pady=10)
-        self.map_widget.set_tile_server("https://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}&s=Ga", max_zoom=22)
+        self.map_widget.set_tile_server("https://a.tile.openstreetmap.org/{z}/{x}/{y}.png", max_zoom=22)
 
     def set_map_position(self):
         self.map_position = self.map_widget.set_position(self.city_coordinates[0], self.city_coordinates[1]) 
+        self.map_widget.fit_bounding_box((self.zipcode_prefix_boundary['North_Boundary']+0.5, self.zipcode_prefix_boundary['West_Boundary']-0.5), (self.zipcode_prefix_boundary['South_Boundary']-0.5, self.zipcode_prefix_boundary['East_Boundary']+0.5))
 
     def set_map_results(self, **kwargs):
         if self.map_marker:
             self.map_marker.delete()
 
         self.map_marker = self.map_widget.set_marker(self.city_coordinates[0], self.city_coordinates[1], text=f"{self.city_name}")
-        self.map_widget.fit_bounding_box((self.zipcode_prefix_boundary['North_Boundary']+0.5, self.zipcode_prefix_boundary['West_Boundary']-0.5), (self.zipcode_prefix_boundary['South_Boundary']-0.5, self.zipcode_prefix_boundary['East_Boundary']+0.5))
         self.map_widget.set_polygon([(self.zipcode_prefix_boundary['North_Boundary'], self.zipcode_prefix_boundary['West_Boundary']), 
             (self.zipcode_prefix_boundary['North_Boundary'], self.zipcode_prefix_boundary['East_Boundary']),
             (self.zipcode_prefix_boundary['South_Boundary'], self.zipcode_prefix_boundary['East_Boundary']),
@@ -1292,8 +1296,17 @@ class App(customtkinter.CTk):
             fill_color=None,
             outline_color="green",
             border_width=4,
-            name="switzerland_polygon")
+            name=self.final_results['Region_Name'])
     
+    def resource_path(self, relative_path):
+        """ Get absolute path to resource, works for dev and for PyInstaller """
+        try:
+            # PyInstaller creates a temp folder and stores path in _MEIPASS
+            base_path = sys._MEIPASS
+        except Exception:
+            base_path = os.path.abspath(".")
+
+        return os.path.join(base_path, relative_path)
 
     def load_data_analysis(self):
         self.IdealHomeDataAnalysis = IdealHomeDataAnalysis()
