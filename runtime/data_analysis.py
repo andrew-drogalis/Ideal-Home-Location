@@ -290,7 +290,7 @@ class IdealHomeDataAnalysis():
             school_enrollment_percentage = zipcode_data["School_Enrollment_Percentage"]
             school_enrollment_score = school_enrollment_scoring_order[0] if school_enrollment_percentage == 'Well Below Average' else school_enrollment_scoring_order[1] if school_enrollment_percentage == 'Below Average' else school_enrollment_scoring_order[2] if school_enrollment_percentage == 'Average' else school_enrollment_scoring_order[3] if school_enrollment_percentage == 'Above Average' else school_enrollment_scoring_order[4]
 
-            if self.employment_status == 'Seeking Employment':
+            if self.employment_status == 'No':
                 regional_employment_importance = int(self.regional_employment_importance)
                 employment_percentage = zipcode_data['Employment_Percentage']
                 employment_score = 1 * regional_employment_importance if employment_percentage == 'Well Above Average' else 0.75 * regional_employment_importance if employment_percentage == 'Above Average' else 0.5 * regional_employment_importance if employment_percentage == 'Average' else 0.25 * regional_employment_importance if employment_percentage == 'Below Average' else 0
@@ -381,7 +381,7 @@ class IdealHomeDataAnalysis():
 
         state = region_name[-2:]
 
-        region_name = f'{region_name.title()[:-3]}, {state}'
+        region_name = f'{region_name.title()[:-3]}, {states_abbreviation_list[state]}'
         
         return {'Result_City': f"{result_city[0].split(',')[0]}, {state}",'Result_City_Coordinates': city_coordinates_dictionary[result_city[0]],'Match_Percentage':match_percentage,'Region_Name':region_name, 'Zipcode_Prefix_Boundary': zipcode_prefix_boundary, 'Afforability_Warning': raise_affordability_warning}
 
