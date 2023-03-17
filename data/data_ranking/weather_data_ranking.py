@@ -12,10 +12,10 @@ from math_functions.ranking_functions import rank_value
 """
 
 # Import Processed Weather Data
-with open('./data_processors/processed_data/Zipcode_Prefix_Weather_Data.json', newline='') as f: 
+with open('./data/data_collection/processed_data/Zipcode_Prefix_Weather_Data.json', newline='') as f: 
     zipcode_weather_data = json.load(f)
 
-with open('./data_processors/processed_data/All_Weather_Data.json', newline='') as f: 
+with open('./data/data_collection/processed_data/All_Weather_Data.json', newline='') as f: 
     all_weather_data = json.load(f)
 
 
@@ -60,7 +60,7 @@ for zipcode_prefix, weather_data in zipcode_weather_data.items():
 # ---------------------------------------------------------------------------
 
 # Save Results Dictionary as JSON File
-with open(f"data_ranking/ranked_data/Weather_Ranked_Data.json", 'w') as f:
+with open(f"data/data_ranking/ranked_data/Weather_Ranked_Data.json", 'w') as f:
     json.dump(zip_code_weather_results, f)
 
 

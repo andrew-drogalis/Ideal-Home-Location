@@ -7,7 +7,7 @@ from constants.usa_states import states_dict
 """
 
 # Import Raw Natural Disaster Data
-with open('./data_source/EMDAT_1900-2021_NatDis_USA.csv', newline='') as f: 
+with open('./data/data_sources/EMDAT_1900-2021_NatDis_USA.csv', newline='') as f: 
     natural_disaster_data = list(csv.reader(f))
 
 """
@@ -59,13 +59,13 @@ for event in natural_disaster_data:
 states_dict.update({'District of Columbia':states_dict['Maryland']})
 
 # Save Results Dictionary as JSON File
-with open(f"data_processors/processed_data/State_Natural_Disaster_Data.json", 'w') as f:
+with open(f"data/data_collection/processed_data/State_Natural_Disaster_Data.json", 'w') as f:
     json.dump(states_dict, f)
 
-with open(f"data_processors/processed_data/All_Natural_Disaster_Data.json", 'w') as f:
+with open(f"data/data_collection/processed_data/All_Natural_Disaster_Data.json", 'w') as f:
     json.dump(all_disaster_data, f)
 
-with open(f"data_processors/processed_data/Type_Natural_Disaster_Data.json", 'w') as f:
+with open(f"data/data_collection/processed_data/Type_Natural_Disaster_Data.json", 'w') as f:
     json.dump(disaster_by_type_data, f)
 
 

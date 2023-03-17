@@ -4,6 +4,7 @@ from tkintermapview import TkinterMapView
 import os, sys, pathlib, webbrowser
 from PIL import Image
 from runtime.data_analysis import IdealHomeDataAnalysis
+from runtime.utilities.instructions import instructions_text
 from version import current_version
 current_path = str(pathlib.Path(__file__).parent.parent)
 
@@ -20,10 +21,12 @@ class App(customtkinter.CTk):
         self.after(1, self.load_data_analysis)
 
         # Window Title
-        self.title("Ideal Home Location Matcher")
+        self.title(" Ideal Home Location Matcher")
 
         # Add Ideal Home Icon
         self.iconbitmap(self.resource_path("assets/icon/Ideal_Home.ico"))
+        self._windows_set_titlebar_color('dark')
+        self.update()
 
         # Default Window Size
         self.geometry(f"{1200}x{1000}")
@@ -82,7 +85,7 @@ class App(customtkinter.CTk):
         github_button.grid(row=0, column=1, padx=15, pady=10, sticky='e')
         # Version label
         version_label = customtkinter.CTkLabel(self.header_frame, text=f'Version: {current_version}', font=customtkinter.CTkFont(family='Telex', size=12, weight="normal"))
-        version_label.grid(row=0, column=1, padx=17, pady=10, sticky='se')
+        version_label.grid(row=0, column=1, padx=19, pady=10, sticky='se')
 
         """ 
             Sidebar Frame 
@@ -129,21 +132,23 @@ class App(customtkinter.CTk):
         instructions_title = customtkinter.CTkLabel(self.intro_frame, text="Instructions", font=self.title_font, fg_color=self.label_color)
         instructions_title.grid(row=0, column=0, columnspan=3, ipady=1, ipadx=20, padx=20, pady=15, sticky='')
         # App Instructions
-        instructions_textbox = customtkinter.CTkTextbox(self.intro_frame, border_width=1, fg_color=self.label_color, height=400, font=self.regular_font)
-        instructions_textbox.grid(row=1, column=0, columnspan=3, padx=30, pady=15, sticky="nsew")
-        instructions_textbox.insert("0.0", "Hello, Welcome to the Ideal Home Location Matcher! \n Today")
+        instructions_textbox = customtkinter.CTkTextbox(self.intro_frame, border_width=1, fg_color=self.label_color, height=650, font=self.regular_font, wrap='word')
+        instructions_textbox.grid(row=1, column=0, columnspan=3, padx=20, pady=15, sticky="nsew")
+        instructions_textbox.insert("0.0", instructions_text)
         instructions_textbox.configure(state="disabled")
         # Navigation Button
         instruction_get_started_button = customtkinter.CTkButton(master=self.intro_frame, width=120, height=30, border_width=1, text='Get Started', text_color="#DCE4EE", font=self.regular_font, command=self.instruction_button_event)
         instruction_get_started_button.grid(row=3, column=2, padx=20, pady=20, sticky="s")
 
-        # Initalize Work Frame
-        self.build_work_frame_2()
 
     def build_family_location_frame_1(self):
         self.family_location_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color=('#e1e5eb',"gray17"), border_width=1, border_color=('#217bd7','#1b66b3'))
         self.family_location_frame.grid_rowconfigure((3,5,8,10,13), weight=1)
         self.family_location_frame.grid_columnconfigure(0, weight=1)
+
+        # Initalize Work Frame
+        if not self.work_frame:
+            self.build_work_frame_2()
     
         family_location_title = customtkinter.CTkLabel(self.family_location_frame, text="Ideal Family Preferences", font=self.title_font, fg_color=self.label_color)
         family_location_title.grid(row=0, column=0, columnspan=3, padx=20, ipady=1, ipadx=20, pady=15, sticky='')
@@ -301,7 +306,7 @@ class App(customtkinter.CTk):
         self.family_details_seg_button_4.set("3")
 
         # Family Details Question #5
-        family_details_label5 = customtkinter.CTkLabel(self.family_details_frame, text="How important is it to be in a school district with a high percentage of student enrollment?", font=self.large_font, fg_color=self.label_color)
+        family_details_label5 = customtkinter.CTkLabel(self.family_details_frame, text="How important is it to be in a high ranking school district?", font=self.large_font, fg_color=self.label_color)
         family_details_label5.grid(row=13, column=0, columnspan=4, padx=40, pady=(20, 15), sticky='')
 
         self.family_details_seg_button_5 = customtkinter.CTkSegmentedButton(self.family_details_frame, font=self.regular_font, fg_color=self.seg_button_unselected, unselected_color=self.seg_button_unselected, unselected_hover_color=self.seg_button_unselected_hover)
@@ -395,7 +400,7 @@ class App(customtkinter.CTk):
         # Work Question #5
         self.work_label5 = customtkinter.CTkLabel(self.work_frame, text="What's your ideal transportation method for commuting to work?", font=self.large_font, fg_color=self.label_color)
 
-        self.work_seg_button_5 = customtkinter.CTkSegmentedButton(self.work_frame, font=self.regular_font, fg_color=self.seg_button_unselected, unselected_color=self.seg_button_unselected, unselected_hover_color=self.seg_button_unselected_hover)
+        self.work_seg_button_5 = customtkinter.CTkSegmentedButton(self.work_frame, command=self.seg_button_work_4, font=self.regular_font, fg_color=self.seg_button_unselected, unselected_color=self.seg_button_unselected, unselected_hover_color=self.seg_button_unselected_hover)
         self.work_seg_button_5.configure(values=["Personal Vehicle", "Public Transportation", "Walking or Biking", "Work From Home"])
         self.work_seg_button_5.set("Personal Vehicle")
 
@@ -562,7 +567,7 @@ class App(customtkinter.CTk):
         weather_title.grid(row=0, column=0, padx=20, columnspan=3, ipady=1, ipadx=20, pady=15, sticky='')
 
         # Weather Question #1
-        weather_label_1 = customtkinter.CTkLabel(self.weather_frame, text="What's your ideal number of seasons?", font=self.large_font, fg_color=self.label_color)
+        weather_label_1 = customtkinter.CTkLabel(self.weather_frame, text="What type of weather seasonality is preferable?", font=self.large_font, fg_color=self.label_color)
         weather_label_1.grid(row=1, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
 
         self.weather_seg_button_1 = customtkinter.CTkSegmentedButton(self.weather_frame, font=self.regular_font, command=self.seg_button_weather_1, fg_color=self.seg_button_unselected, unselected_color=self.seg_button_unselected, unselected_hover_color=self.seg_button_unselected_hover)
@@ -586,11 +591,11 @@ class App(customtkinter.CTk):
         self.weather_entry1.grid(row=0, column=0, padx=40, pady=12, sticky='e')
         self.weather_entry1.bind("<Return>", self.weather_button_1)
 
-        self.weather_submit_button1 = customtkinter.CTkButton(master=self.weather_entry_frame1, text='Submit', width=120, height=30, border_width=1, text_color="#DCE4EE", font=self.regular_font, command=self.weather_button_1)
-        self.weather_submit_button1.grid(row=0, column=1, padx=20, pady=12, sticky="w")
+        weather_submit_button1 = customtkinter.CTkButton(master=self.weather_entry_frame1, text='Submit', width=120, height=30, border_width=1, text_color="#DCE4EE", font=self.regular_font, command=self.weather_button_1)
+        weather_submit_button1.grid(row=0, column=1, padx=20, pady=12, sticky="w")
         # --------------------------------------------
         # Weather Question #3
-        self.weather_label3 = customtkinter.CTkLabel(self.weather_frame, text="What's your ideal spring / fall temperature?", font=self.large_font, fg_color=self.label_color)          
+        self.weather_label4 = customtkinter.CTkLabel(self.weather_frame, text="What's your ideal winter temperature?", font=self.large_font, fg_color=self.label_color)
 
         self.weather_entry_frame2 = customtkinter.CTkFrame(self.weather_frame, corner_radius=0, fg_color=('#d1d7e1',"gray22"))
         self.weather_entry_frame2.grid_rowconfigure(0, weight=1)
@@ -603,28 +608,11 @@ class App(customtkinter.CTk):
         self.weather_entry2.grid(row=0, column=0, padx=40, pady=12, sticky='e')
         self.weather_entry2.bind("<Return>", self.weather_button_1)
 
-        self.weather_submit_button2 = customtkinter.CTkButton(master=self.weather_entry_frame2, text='Submit', width=120, height=30, border_width=1, text_color="#DCE4EE", font=self.regular_font, command=self.weather_button_1)
-        self.weather_submit_button2.grid(row=0, column=1, padx=20, pady=12, sticky="w")
+        weather_submit_button2 = customtkinter.CTkButton(master=self.weather_entry_frame2, text='Submit', width=120, height=30, border_width=1, text_color="#DCE4EE", font=self.regular_font, command=self.weather_button_1)
+        weather_submit_button2.grid(row=0, column=1, padx=20, pady=12, sticky="w")
         # --------------------------------------------
         # Weather Question #4
-        self.weather_label4 = customtkinter.CTkLabel(self.weather_frame, text="What's your ideal winter temperature?", font=self.large_font, fg_color=self.label_color)
-
-        self.weather_entry_frame3 = customtkinter.CTkFrame(self.weather_frame, corner_radius=0, fg_color=('#d1d7e1',"gray22"))
-        self.weather_entry_frame3.grid_rowconfigure(0, weight=1)
-        self.weather_entry_frame3.grid_columnconfigure((0, 1), weight=1)
-
-        units = customtkinter.CTkLabel(self.weather_entry_frame3, text="°F", font=self.large_font)
-        units.grid(row=0, column=0, padx=(150, 0), pady=12, sticky='e')
-
-        self.weather_entry3 = customtkinter.CTkEntry(self.weather_entry_frame3, font=self.large_font)
-        self.weather_entry3.grid(row=0, column=0, padx=40, pady=12, sticky='e')
-        self.weather_entry3.bind("<Return>", self.weather_button_1)
-
-        self.weather_submit_button3 = customtkinter.CTkButton(master=self.weather_entry_frame3, text='Submit', width=120, height=30, border_width=1, text_color="#DCE4EE", font=self.regular_font, command=self.weather_button_1)
-        self.weather_submit_button3.grid(row=0, column=1, padx=20, pady=12, sticky="w")
-        # --------------------------------------------
-        # Weather Question #5
-        self.weather_label5 = customtkinter.CTkLabel(self.weather_frame, text="What is your ideal level of precipitation?", font=self.large_font, fg_color=self.label_color)
+        self.weather_label5 = customtkinter.CTkLabel(self.weather_frame, text="What level of precipitation is most ideal?", font=self.large_font, fg_color=self.label_color)
         self.weather_label5.grid(row=13, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
 
         self.weather_seg_button_2 = customtkinter.CTkSegmentedButton(self.weather_frame, font=self.regular_font, fg_color=self.seg_button_unselected, unselected_color=self.seg_button_unselected, unselected_hover_color=self.seg_button_unselected_hover)
@@ -633,7 +621,7 @@ class App(customtkinter.CTk):
         self.weather_seg_button_2.set("Average")
         # --------------------------------------------
         # Weather Question #5
-        self.weather_label6 = customtkinter.CTkLabel(self.weather_frame, text="What is your ideal level of sunshine?", font=self.large_font, fg_color=self.label_color)
+        self.weather_label6 = customtkinter.CTkLabel(self.weather_frame, text="What level of sunshine is most ideal?", font=self.large_font, fg_color=self.label_color)
         self.weather_label6.grid(row=16, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
 
         self.weather_seg_button_3 = customtkinter.CTkSegmentedButton(self.weather_frame, font=self.regular_font, fg_color=self.seg_button_unselected, unselected_color=self.seg_button_unselected, unselected_hover_color=self.seg_button_unselected_hover)
@@ -868,11 +856,9 @@ class App(customtkinter.CTk):
         self.total_weather_entry_valid = False
         weather_entry1_valid = False
         weather_entry2_valid = False
-        weather_entry3_valid = False
 
         weather_entry_value1 = self.weather_entry1.get()
         weather_entry_value2 = self.weather_entry2.get()
-        weather_entry_value3 = self.weather_entry3.get()
         seasons_param = self.weather_seg_button_1.get()
         
         try:
@@ -883,10 +869,6 @@ class App(customtkinter.CTk):
             weather_entry_float2 = float(weather_entry_value2)
         except:
             weather_entry_float2 = -100
-        try:
-            weather_entry_float3 = float(weather_entry_value3)
-        except:
-            weather_entry_float3 = -100
 
         if weather_entry_value1 and -40 < weather_entry_float1 <= 100:
             self.weather_entry1.configure(border_color='green', border_width=2)
@@ -895,23 +877,14 @@ class App(customtkinter.CTk):
             self.weather_entry1.configure(border_color='red', border_width=2)
             weather_entry1_valid = False
 
-        if weather_entry_value2 and -40 < weather_entry_float2 <= 100:
+        if weather_entry_value2 and -40 < weather_entry_float2 <= 100 and weather_entry_float2 < weather_entry_float1:
             self.weather_entry2.configure(border_color='green', border_width=2)
             weather_entry2_valid = True
-        elif weather_entry_value2 and (weather_entry_float2 <= -40 or weather_entry_float2 > 100):
+        elif weather_entry_value2 and (weather_entry_float2 <= -40 or weather_entry_float2 > 100 or weather_entry_float2 >= weather_entry_float1):
             self.weather_entry2.configure(border_color='red', border_width=2)
             weather_entry2_valid = False
 
-        if weather_entry_value3 and -40 < weather_entry_float3 <= 100:
-            self.weather_entry3.configure(border_color='green', border_width=2)
-            weather_entry3_valid = True
-        elif weather_entry_value3 and (weather_entry_float3 <= -40 or weather_entry_float3 > 100):
-            self.weather_entry3.configure(border_color='red', border_width=2)
-            weather_entry3_valid = False
-
-        if seasons_param == '4 Seasons' and weather_entry1_valid and weather_entry2_valid and weather_entry3_valid:
-            self.total_weather_entry_valid = True
-        elif seasons_param == '2 Seasons' and weather_entry1_valid and weather_entry3_valid:
+        if (seasons_param == '4 Seasons' or seasons_param == '2 Seasons') and weather_entry1_valid and weather_entry2_valid:
             self.total_weather_entry_valid = True
         elif seasons_param == '1 Season' and weather_entry1_valid:
             self.total_weather_entry_valid = True
@@ -937,10 +910,7 @@ class App(customtkinter.CTk):
             # Clear Saved Location
             self.family_location_confirmation_output_1.configure(border_width=0)
             self.family_location_valid1 = False
-            try:
-                self.IdealHomeDataAnalysis.saved_coordinates_list[0] = []
-            except: 
-                pass
+            self.IdealHomeDataAnalysis.saved_coordinates_list[0] = []
 
     def seg_button_family_location_2(self, param: str):
         if param == "Yes":
@@ -957,10 +927,8 @@ class App(customtkinter.CTk):
             # Clear Saved Location
             self.family_location_confirmation_output_2.configure(border_width=0)
             self.family_location_valid2 = False
-            try:
-                self.IdealHomeDataAnalysis.saved_coordinates_list[1] = [] 
-            except:
-                pass
+            self.IdealHomeDataAnalysis.saved_coordinates_list[1] = [] 
+    
 
     def seg_button_family_location3(self, param: str):
         self.work_seg_button_4.set(param)
@@ -985,14 +953,13 @@ class App(customtkinter.CTk):
             self.work_frame.grid_rowconfigure((7,10), weight=0)
             self.work_label5.grid(row=7, column=0, columnspan=4, padx=40, pady=(20, 15), sticky='')
             self.work_seg_button_5.grid(row=8, column=0, columnspan=4, padx=20, pady=10, sticky="ew")
-            self.work_label6.grid(row=10, column=0, columnspan=4, padx=40, pady=(20, 15), sticky='')
-            self.work_seg_button_6.grid(row=11, column=0, columnspan=4, padx=20, pady=10, sticky="ew")
 
             self.work_label3.grid(row=4, column=0, columnspan=3, pady=10, padx=20, sticky="")
             self.work_seg_button_3.grid(row=5, column=0, columnspan=3, padx=20, pady=10, sticky="ew")
             self.work_label2.grid_forget()
             self.work_seg_button_2.grid_forget()
             self.seg_button_work_2(param='No')
+            self.seg_button_work_4(param=self.work_seg_button_5.get())
 
     def seg_button_work_2(self, param: str):
         if param == 'Yes':
@@ -1006,15 +973,21 @@ class App(customtkinter.CTk):
             # Clear Saved Location
             self.work_location_confirmation_output_1.configure(border_width=0)
             self.work_valid1 = False
-            try:
-                self.IdealHomeDataAnalysis.saved_coordinates_list[2] = []
-            except:
-                pass
+            self.IdealHomeDataAnalysis.saved_coordinates_list[2] = []
+            
 
     def seg_button_work_3(self, param: str):
         self.family_location_seg_button_3.set(param)
         location_options = self.work_seg_button_4.cget('values')
         self.radius_index = location_options.index(param)
+
+    def seg_button_work_4(self, param: str):
+        if param == 'Work From Home':
+            self.work_label6.grid_forget()
+            self.work_seg_button_6.grid_forget()
+        else:
+            self.work_label6.grid(row=10, column=0, columnspan=4, padx=40, pady=(20, 15), sticky='')
+            self.work_seg_button_6.grid(row=11, column=0, columnspan=4, padx=20, pady=10, sticky="ew")
 
     def seg_button_income(self, param: str):
         if param == '30 Years' or param == '15 Years':
@@ -1036,15 +1009,11 @@ class App(customtkinter.CTk):
         self.income_button_1()
 
     def seg_button_weather_1(self, param: str):
-
-        if param == "4 Seasons":
+        if param == "4 Seasons" or param == "2 Seasons":
             self.weather_label2.configure(text="What's your ideal summer temperature?")
 
-            self.weather_label3.grid(row=7, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
-            self.weather_entry_frame2.grid(row=8, column=0, columnspan=3, padx=4, pady=10, sticky="nsew")
-
             self.weather_label4.grid(row=10, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
-            self.weather_entry_frame3.grid(row=11, column=0, columnspan=3, padx=4, pady=10, sticky="nsew")
+            self.weather_entry_frame2.grid(row=11, column=0, columnspan=3, padx=4, pady=10, sticky="nsew")
 
             self.weather_frame.grid_rowconfigure((15,18), weight=1)
             self.weather_label5.grid(row=13, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
@@ -1053,27 +1022,6 @@ class App(customtkinter.CTk):
             self.weather_seg_button_3.grid(row=17, column=0, columnspan=3, padx=20, pady=10, sticky="ew")
             self.weather_next_button.grid(row=19, column=2, padx=20, pady=20, sticky="s")
             self.weather_previous_button.grid(row=19, column=0, padx=20, pady=20, sticky="sw")
-
-        elif param == "2 Seasons":
-            self.weather_label2.configure(text="What's your ideal summer temperature?")
-
-            self.weather_label4.grid(row=7, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
-            self.weather_entry_frame3.grid(row=8, column=0, columnspan=3, padx=4, pady=10, sticky="nsew")
-
-            self.weather_frame.grid_rowconfigure(15, weight=1)
-            self.weather_frame.grid_rowconfigure(18, weight=0)
-            self.weather_label5.grid(row=10, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
-            self.weather_seg_button_2.grid(row=11, column=0, columnspan=3, padx=20, pady=10, sticky="ew")
-            self.weather_label6.grid(row=13, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
-            self.weather_seg_button_3.grid(row=14, column=0, columnspan=3, padx=20, pady=10, sticky="ew")
-            self.weather_next_button.grid(row=16, column=2, padx=20, pady=20, sticky="s")
-            self.weather_previous_button.grid(row=16, column=0, padx=20, pady=20, sticky="sw")
-            try:
-                self.weather_label3.grid_forget()
-                self.weather_entry_frame2.grid_forget()
-            except:
-                pass
-
         else:
             self.weather_label2.configure(text="What's your ideal outside temperature?")
 
@@ -1084,16 +1032,9 @@ class App(customtkinter.CTk):
             self.weather_seg_button_3.grid(row=11, column=0, columnspan=3, padx=20, pady=10, sticky="ew")
             self.weather_next_button.grid(row=13, column=2, padx=20, pady=20, sticky="s")
             self.weather_previous_button.grid(row=13, column=0, padx=20, pady=20, sticky="sw")
-            try:
-                self.weather_label4.grid_forget()
-                self.weather_entry_frame3.grid_forget()
-            except:
-                pass
-            try:
-                self.weather_label3.grid_forget()
-                self.weather_entry_frame2.grid_forget()
-            except:
-                pass
+            self.weather_label4.grid_forget()
+            self.weather_entry_frame2.grid_forget()
+          
 
     def seg_button_area_classification_3(self, param: str):
         area_classification_list = [*self.area_classification_list]
@@ -1107,21 +1048,27 @@ class App(customtkinter.CTk):
     def seg_button_natural_disaster_2(self, param: str):
         self.natural_disaster_list_2 = [*self.natural_disaster_list]
         self.natural_disaster_list_2.remove(param)
+        current_value = self.natural_disaster_seg_button_3.get()
+        if not current_value or current_value == param:
+            current_value = self.natural_disaster_list_2[0]
 
         # Segmented Button #3
         self.natural_disaster_seg_button_3.grid(row=8, column=0, columnspan=4, padx=20, pady=10, sticky="ew")
         self.natural_disaster_seg_button_3.configure(values=self.natural_disaster_list_2)
-        self.natural_disaster_seg_button_3.set(self.natural_disaster_list_2[0])
-        self.seg_button_natural_disaster_3(param=self.natural_disaster_list_2[0])
+        self.natural_disaster_seg_button_3.set(current_value)
+        self.seg_button_natural_disaster_3(param=current_value)
 
     def seg_button_natural_disaster_3(self, param: str):
         natural_disaster_list = [*self.natural_disaster_list_2]
         natural_disaster_list.remove(param)
+        current_value = self.natural_disaster_seg_button_4.get()
+        if not current_value or current_value == param or current_value == self.natural_disaster_seg_button_2.get():
+            current_value = natural_disaster_list[0]
 
         # Segmented Button #4
         self.natural_disaster_seg_button_4.grid(row=11, column=0, columnspan=4, padx=20, pady=10, sticky="ew")
         self.natural_disaster_seg_button_4.configure(values=natural_disaster_list)
-        self.natural_disaster_seg_button_4.set(natural_disaster_list[0])
+        self.natural_disaster_seg_button_4.set(current_value)
 
     # ---------------------------- Navigation Buttons ----------------------------
 
@@ -1248,8 +1195,7 @@ class App(customtkinter.CTk):
             self.progressbar.set(.875)
             self.IdealHomeDataAnalysis.weather_frame_5(seasons=self.weather_seg_button_1.get(),
                 summer_temperature=self.weather_entry1.get(),
-                winter_temperature=self.weather_entry3.get(),
-                transition_temperature=self.weather_entry2.get(),
+                winter_temperature=self.weather_entry2.get(),
                 precipitation_level=self.weather_seg_button_2.get(),
                 sunshine_level=self.weather_seg_button_3.get()
             )
@@ -1281,6 +1227,8 @@ class App(customtkinter.CTk):
         self.after(100, self.set_map_results)
         self.results_frame.grid(row=1, column=0, rowspan=3, columnspan=3, sticky="nsew")
         self.progressbar.set(1)
+        if  self.final_results['Afforability_Warning']:
+            self.error_message('Afforability_Warning')
 
     def frame_6_backward_event(self):
         self.natural_disaster_frame.grid_forget()
@@ -1331,18 +1279,19 @@ class App(customtkinter.CTk):
             self.family_location_label3.configure(text="What is the maximum preferable travel distance from the location(s)?")
             self.work_label4.configure(text="What is the maximum preferable travel distance from the location(s)?")
 
+        location_options = self.work_seg_button_4.cget('values')
+        self.radius_index = location_options.index(self.family_location_seg_button_3.get())
         self.family_location_seg_button_3.configure(values=display_options_list)
-        self.family_location_seg_button_3.set(display_options_list[0])
+        self.family_location_seg_button_3.set(display_options_list[self.radius_index])
         self.work_seg_button_4.configure(values=display_options_list)
-        self.work_seg_button_4.set(display_options_list[0])
-        self.radius_index = 0
+        self.work_seg_button_4.set(display_options_list[self.radius_index])
 
     def load_data_analysis(self):
         self.IdealHomeDataAnalysis = IdealHomeDataAnalysis()
 
     def set_map_position(self):
         self.map_widget = TkinterMapView(self.results_frame, corner_radius=0)
-        self.map_widget.grid(row=10, column=0, columnspan=3, sticky="nswe", padx=10, pady=10)
+        self.map_widget.grid(row=10, column=0, columnspan=3, sticky="nswe", padx=6, pady=(10,5))
         self.map_widget.set_tile_server("https://a.tile.openstreetmap.org/{z}/{x}/{y}.png", max_zoom=22)
         self.map_position = self.map_widget.set_position(self.city_coordinates[0], self.city_coordinates[1]) 
         self.map_widget.fit_bounding_box((self.zipcode_prefix_boundary['North_Boundary']+0.1, self.zipcode_prefix_boundary['West_Boundary']-0.1), (self.zipcode_prefix_boundary['South_Boundary']-0.1, self.zipcode_prefix_boundary['East_Boundary']+0.1))
@@ -1377,12 +1326,16 @@ class App(customtkinter.CTk):
             messagebox.showerror('Entry Field Invalid Submission', 'Please fill in all fields with valid input.')
         elif message_type == 'Segmented_Button':
             messagebox.showerror('Incomplete Submission', 'Please complete submission fields or deselect the location requirement.')
+        elif message_type == 'Afforability_Warning':
+            messagebox.showerror('Warning', 'The result shown is outside of an afforable range for your home value.')
 
     def github_more_information(self):
         webbrowser.open_new('https://github.com/andrew-drogalis/Ideal-Home-Location-Matcher')
 
     def change_appearance_mode_event(self, new_appearance_mode: str):
         customtkinter.set_appearance_mode(new_appearance_mode)
+        self._windows_set_titlebar_color('dark')
+        self.update()
 
     def change_scaling_event(self, new_scaling: str):
         new_scaling_float = int(new_scaling.replace("%", "")) / 100

@@ -11,7 +11,7 @@ from runtime.utilities.state_abbreviations import states_abbreviation_list
 """
 
 # Import Raw Zipcode Prefix Data
-with open('./data_source/USA_Zipcode_3_Digits.csv', newline='') as f: 
+with open('./data/data_sources/USA_Zipcode_3_Digits.csv', newline='') as f: 
     zipcode_prefix_data = list(csv.reader(f))
 
 # Initalize Search Engine
@@ -450,14 +450,14 @@ for cities_list in [*city_metric_data.values()]:
         zipcode_metric_data.update({city['Zipcode']:city})
 
 # Save Results Dictionary as JSON File
-with open(f"data_processors/processed_data/All_Zipcode_Metrics_Data.json", 'w') as f:
+with open(f"data/data_collection/processed_data/All_Zipcode_Metrics_Data.json", 'w') as f:
     json.dump(all_zipcode_data, f)
 
-with open(f"data_processors/processed_data/Zipcode_Metrics_Data.json", 'w') as f:
+with open(f"data/data_collection/processed_data/Zipcode_Metrics_Data.json", 'w') as f:
     json.dump(zipcode_metric_data, f)
 
-with open(f"data_ranking/ranked_data/Zipcode_Coordinates_Data.json", 'w') as f:
+with open(f"data/data_ranking/ranked_data/Zipcode_Coordinates_Data.json", 'w') as f:
     json.dump(zipcode_coordinate_data, f)
 
-with open('data_ranking/ranked_data/Zipcode_Prefix_Boundary_Data.json', 'w') as f: 
+with open('data/data_collection/ranked_data/Zipcode_Prefix_Boundary_Data.json', 'w') as f: 
     json.dump(zipcode_prefix_boundary_data, f)

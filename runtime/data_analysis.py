@@ -11,27 +11,27 @@ class IdealHomeDataAnalysis():
     def __init__(self):
         
         # Import Natural Disaster Ranked Data
-        with open('./data_ranking/ranked_data/State_Natural_Disaster_Ranked_Data.json', newline='') as f: 
+        with open('./data/data_ranking/ranked_data/State_Natural_Disaster_Ranked_Data.json', newline='') as f: 
             self.state_natural_disaster_data = json.load(f)
 
         # Import Weather Ranked Data
-        with open('./data_ranking/ranked_data/Weather_Ranked_Data.json', newline='') as f: 
+        with open('./data/data_ranking/ranked_data/Weather_Ranked_Data.json', newline='') as f: 
             self.zipcode_prefix_weather_data = json.load(f)
 
         # Import Zipcode Ranked Data
-        with open('./data_ranking/ranked_data/Zipcode_Ranked_Data.json', newline='') as f: 
+        with open('./data/data_ranking/ranked_data/Zipcode_Ranked_Data.json', newline='') as f: 
             self.zipcode_data = json.load(f)
 
         # Import Zipcode Coordinate Data
-        with open('./data_ranking/ranked_data/Zipcode_Coordinates_Data.json', newline='') as f: 
+        with open('./data/data_ranking/ranked_data/Zipcode_Coordinates_Data.json', newline='') as f: 
             self.zipcode_coordinate_data = json.load(f)
 
         # Import Zipcode Prefix Boundary Data
-        with open('./data_ranking/ranked_data/Zipcode_Prefix_Boundary_Data.json', newline='') as f: 
+        with open('./data/data_ranking/ranked_data/Zipcode_Prefix_Boundary_Data.json', newline='') as f: 
             self.zipcode_prefix_boundary_data = json.load(f)
 
         # Import Zipcode Prefix Region Name
-        with open('./data_source/USA_Zipcode_3_Digits.csv', newline='') as f: 
+        with open('./data/data_sources/USA_Zipcode_3_Digits.csv', newline='') as f: 
             self.zipcode_prefix_region_names = list(csv.reader(f))
 
         # Initalize Errors List
@@ -79,8 +79,8 @@ class IdealHomeDataAnalysis():
         # Save User Selections to Local Variables
         seasons = kwargs['seasons']
         summer_temperature = float(kwargs['summer_temperature'])
-        transition_temperature = float(kwargs['transition_temperature'] or 0)
         winter_temperature = float(kwargs['winter_temperature'] or 0)
+        transition_temperature = (summer_temperature + winter_temperature) / 2
         precipitation_level = kwargs['precipitation_level']
         sunshine_level = kwargs['sunshine_level']
 
@@ -128,31 +128,31 @@ class IdealHomeDataAnalysis():
 
             # Precipitation
             if precipitation_level[:4] == 'Well':
-                precipitation_score = 2 if precipitation_level == zipcode_precipitation else 1 if precipitation_level[5:11] == zipcode_precipitation[5:11] else 0
+                precipitation_score = 4 if precipitation_level == zipcode_precipitation else 2 if precipitation_level[5:11] == zipcode_precipitation[5:11] else 0
             elif precipitation_level == 'Below Average':
-                precipitation_score = 2 if zipcode_precipitation == 'Below Average' else 1 if zipcode_precipitation == 'Well Below Average' or zipcode_precipitation == 'Average' else 0
+                precipitation_score = 4 if zipcode_precipitation == 'Below Average' else 2 if zipcode_precipitation == 'Well Below Average' or zipcode_precipitation == 'Average' else 0
             elif precipitation_level == 'Above Average':
-                precipitation_score = 2 if zipcode_precipitation == 'Above Average' else 1 if zipcode_precipitation == 'Well Above Average' or zipcode_precipitation == 'Average' else 0
+                precipitation_score = 4 if zipcode_precipitation == 'Above Average' else 2 if zipcode_precipitation == 'Well Above Average' or zipcode_precipitation == 'Average' else 0
             else:
-                precipitation_score = 2 if zipcode_precipitation == 'Average' else 1 if zipcode_precipitation == 'Below Average' or zipcode_precipitation == 'Above Average' else 0
+                precipitation_score = 4 if zipcode_precipitation == 'Average' else 2 if zipcode_precipitation == 'Below Average' or zipcode_precipitation == 'Above Average' else 0
 
             # Sunshine
             if sunshine_level[:4] == 'Well':
-                sunshine_score = 2 if sunshine_level == zipcode_sunshine else 1 if sunshine_level[5:11] == zipcode_sunshine[5:11] else 0
+                sunshine_score = 4 if sunshine_level == zipcode_sunshine else 2 if sunshine_level[5:11] == zipcode_sunshine[5:11] else 0
             elif sunshine_level == 'Below Average':
-                sunshine_score = 2 if zipcode_sunshine == 'Below Average' else 1 if zipcode_sunshine == 'Well Below Average' or zipcode_sunshine == 'Average' else 0
+                sunshine_score = 4 if zipcode_sunshine == 'Below Average' else 2 if zipcode_sunshine == 'Well Below Average' or zipcode_sunshine == 'Average' else 0
             elif sunshine_level == 'Above Average':
-                sunshine_score = 2 if zipcode_sunshine == 'Above Average' else 1 if zipcode_sunshine == 'Well Above Average' or zipcode_sunshine == 'Average' else 0
+                sunshine_score = 4 if zipcode_sunshine == 'Above Average' else 2 if zipcode_sunshine == 'Well Above Average' or zipcode_sunshine == 'Average' else 0
             else:
-                sunshine_score = 2 if zipcode_sunshine == 'Average' else 1 if zipcode_sunshine == 'Below Average' or zipcode_sunshine == 'Above Average' else 0
+                sunshine_score = 4 if zipcode_sunshine == 'Average' else 2 if zipcode_sunshine == 'Below Average' or zipcode_sunshine == 'Above Average' else 0
 
             total_score = season_score + precipitation_score + sunshine_score
 
             self.zipcode_prefix_weather_score.update({zipcode_prefix:total_score})
 
         max_season_score = 13 if seasons == '4 Seasons' else 10 if seasons == '2 Seasons' else 7
-        max_precipitation_score = 2
-        max_sunshine_score = 2
+        max_precipitation_score = 4
+        max_sunshine_score = 4
         self.max_possible_weather_score = max_season_score + max_precipitation_score + max_sunshine_score
 
 
@@ -182,7 +182,7 @@ class IdealHomeDataAnalysis():
                 disaster_1_frequency_number = 0 if disaster_1_frequency == 'Well Above Average' else 0.25 if disaster_1_frequency == 'Above Average' else 0.5 if disaster_1_frequency == 'Average' else 0.75 if disaster_1_frequency == 'Below Average' else 1
                 disaster_1_score = (disaster_1_severity_number + disaster_1_frequency_number) * natural_disaster_risk
             except:
-                disaster_1_score = 0
+                disaster_1_score = 2 * natural_disaster_risk
 
             try:
                 disaster_2_severity = disaster_data[f'{disaster_to_avoid2}_Severity_Rank']
@@ -191,7 +191,7 @@ class IdealHomeDataAnalysis():
                 disaster_2_frequency_number = 0 if disaster_2_frequency == 'Well Above Average' else 0.25 if disaster_2_frequency == 'Above Average' else 0.5 if disaster_2_frequency == 'Average' else 0.75
                 disaster_2_score = (disaster_2_severity_number + disaster_2_frequency_number) * natural_disaster_risk
             except:
-                disaster_2_score = 0
+                disaster_2_score = 1.41 * natural_disaster_risk
 
             try:
                 disaster_3_severity = disaster_data[f'{disaster_to_avoid3}_Severity_Rank']
@@ -200,7 +200,7 @@ class IdealHomeDataAnalysis():
                 disaster_3_frequency_number = 0 if disaster_3_frequency == 'Well Above Average' else 0.25 if disaster_3_frequency == 'Above Average' else 0.5
                 disaster_3_score = (disaster_3_severity_number + disaster_3_frequency_number) * natural_disaster_risk
             except:
-                disaster_3_score = 0
+                disaster_3_score = 0.83 * natural_disaster_risk
 
             total_state_score = total_disaster_score + disaster_1_score + disaster_2_score + disaster_3_score
 
@@ -255,8 +255,8 @@ class IdealHomeDataAnalysis():
 
             if median_home_value and mad_home_value:
                 # Most Importance
-                if self.user_home_price >= median_home_value - mad_home_value * 1.5:
-                    unlikely_to_afford_warning.append(city)
+                if self.user_home_price < median_home_value - mad_home_value:
+                    unlikely_to_afford_warning.append(city_name)
 
                 # Preferance Toward the Median
                 whole_mad_home_value_positive = median_home_value + mad_home_value
@@ -311,8 +311,8 @@ class IdealHomeDataAnalysis():
                 city_commute_time = zipcode_data["Travel_Time_To_Work"]
                 if city_commute_time and self.transportation_method != 'Work From Home':
                     commute_time_difference = user_commute_time - city_commute_time
-                    commute_score = 5 if commute_time_difference <= 0 else 4 if commute_time_difference <= 5 else 3 if commute_time_difference <= 10 else 2 if commute_time_difference <= 15 else 1 if commute_time_difference <= 20 else 0
-                    max_commute_score = 5
+                    commute_score = 4 if commute_time_difference <= 0 else 3 if commute_time_difference <= 10 else 2 if commute_time_difference <= 15 else 1 if commute_time_difference <= 20 else 0
+                    max_commute_score = 4
                 else:
                     commute_score = 0
                     max_commute_score = 0 if self.transportation_method != 'Work From Home' else 5
@@ -339,7 +339,7 @@ class IdealHomeDataAnalysis():
             natural_disaster_score = self.state_natural_disaster_score[states_abbreviation_list[state]]
 
             total_city_score = home_afforability_score + household_income_score + married_score + families_with_children_score + school_enrollment_score + work_score + education_score + area_classification_score + weather_score + natural_disaster_score
-            final_city_score.append((city_name,total_city_score))
+            final_city_score.append((city_name,total_city_score,zipcode_prefix))
 
             if final_zipcode_prefix_score[zipcode_prefix]:
                 final_zipcode_prefix_score[zipcode_prefix]['Score'] += total_city_score
@@ -353,37 +353,28 @@ class IdealHomeDataAnalysis():
         max_area_classification_score = max(living_enviornment_scoring_order1) + max(living_enviornment_scoring_order2)
         max_possible_score = max_home_afforabilty + max_household_income + max(married_scoring_order) + max(children_scoring_order) + max(school_enrollment_scoring_order) + max_work_score + max_education_score + max_area_classification_score + self.max_possible_weather_score + self.max_possible_state_disaster_score
 
-        final_zipcode_prefix_score = sorted([(zipcode_prefix, score_data['Score'] / score_data['Qty']) for zipcode_prefix, score_data in final_zipcode_prefix_score.items()], key=lambda x: x[1], reverse=True)
-        max_score_zipcode_prefix_list = [zipcode_prefix_data[0] for zipcode_prefix_data in final_zipcode_prefix_score if zipcode_prefix_data[1] == final_zipcode_prefix_score[0][1]]
+        final_zipcode_prefix_score = {zipcode_prefix: score_data['Score'] / score_data['Qty'] for zipcode_prefix, score_data in final_zipcode_prefix_score.items()}
+ 
+        # Add [3] Tuple with Combined City Score and Zipcode Prefix Score
+        final_city_score = [(city_data[0], round(city_data[1] * 100 / max_possible_score), city_data[2], city_data[1] + final_zipcode_prefix_score[city_data[2]]) for city_data in final_city_score]
+           
+        # Utilize in Later Versions*
+        top10 = sorted(final_city_score, key=lambda x: x[3], reverse=True)[:10]
 
-        # Top 5 Matches
-        final_city_score = sorted(final_city_score, key=lambda x: x[1], reverse=True)[:5]
-
-        for city in final_city_score:
-            zipcode = city[0][-5:]
-            zipcode_prefix = zipcode[:3]
-            if zipcode_prefix in max_score_zipcode_prefix_list:
-                result_city = city
-                result_zipcode_prefix = zipcode_prefix
-                break
-        else:
-            result_city = final_city_score[0]
-            zipcode = result_city[0][-5:]
-            result_zipcode_prefix = zipcode[:3]
-
-        match_percentage = round(result_city[1] * 100 / max_possible_score)
+        # Top Match
+        final_city_results = top10[0]
         
-        raise_affordability_warning = True if result_city[0] in unlikely_to_afford_warning else False
+        raise_affordability_warning = True if final_city_results[0] in unlikely_to_afford_warning else False
 
-        zipcode_prefix_boundary = self.zipcode_prefix_boundary_data[result_zipcode_prefix]
+        zipcode_prefix_boundary = self.zipcode_prefix_boundary_data[final_city_results[2]]
 
-        region_name = self.zipcode_prefix_region_names[result_zipcode_prefix]
+        region_name = self.zipcode_prefix_region_names[final_city_results[2]]
 
         state = region_name[-2:]
 
         region_name = f'{region_name.title()[:-3]}, {states_abbreviation_list[state]}'
         
-        return {'Result_City': f"{result_city[0].split(',')[0]}, {state}",'Result_City_Coordinates': city_coordinates_dictionary[result_city[0]],'Match_Percentage':match_percentage,'Region_Name':region_name, 'Zipcode_Prefix_Boundary': zipcode_prefix_boundary, 'Afforability_Warning': raise_affordability_warning}
+        return {'Result_City': f"{final_city_results[0].split(',')[0]}, {state}",'Result_City_Coordinates': city_coordinates_dictionary[final_city_results[0]],'Match_Percentage':final_city_results[1],'Region_Name':region_name, 'Zipcode_Prefix_Boundary': zipcode_prefix_boundary, 'Afforability_Warning': raise_affordability_warning}
 
     def find_distance_to_center(self):
         # Order Does Not Matter

@@ -12,10 +12,10 @@ from math_functions.ranking_functions import rank_value, rank_value_skewed
 """
 
 # Import Processed Zipcode Data
-with open('./data_processors/processed_data/All_Zipcode_Metrics_Data.json', newline='') as f: 
+with open('./data/data_collection/processed_data/All_Zipcode_Metrics_Data.json', newline='') as f: 
     all_zipcode_metrics_data = json.load(f)
 
-with open('./data_processors/processed_data/Zipcode_Metrics_Data.json', newline='') as f: 
+with open('./data/data_collection/processed_data/Zipcode_Metrics_Data.json', newline='') as f: 
     city_metrics_data = json.load(f)
 
 
@@ -114,7 +114,7 @@ for city, city_metrics in city_metrics_data.items():
 # ---------------------------------------------------------------------------
 
 # Save Results Dictionary as JSON File
-with open(f"data_ranking/ranked_data/Zipcode_Ranked_Data.json", 'w') as f:
+with open(f"data/data_ranking/ranked_data/Zipcode_Ranked_Data.json", 'w') as f:
     json.dump(zipcode_metrics_results, f)
 
 

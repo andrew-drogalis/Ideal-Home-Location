@@ -16,7 +16,7 @@ start_time = datetime(1993, 1, 1)
 end_time = datetime(2023, 1, 1)
 
 # Import Raw Zipcode Prefix Data
-with open('./data_source/USA_Zipcode_3_Digits.csv', newline='') as f: 
+with open('./data/data_sources/USA_Zipcode_3_Digits.csv', newline='') as f: 
     zipcode_prefix_data = list(csv.reader(f))
 
 # Initalize Search Engine & Results Dictionary
@@ -211,8 +211,8 @@ for zip_prefix in zipcode_prefix_data:
 # ------------------------------------------------------
 
 # Save Results Dictionary as JSON File
-with open(f"data_processors/processed_data/Zipcode_Prefix_Weather_Data.json", 'w') as f:
+with open(f"data/data_collection/processed_data/Zipcode_Prefix_Weather_Data.json", 'w') as f:
     json.dump(zip_code_weather_data, f)
 
-with open(f"data_processors/processed_data/All_Weather_Data.json", 'w') as f:
+with open(f"data/data_collection/processed_data/All_Weather_Data.json", 'w') as f:
     json.dump(all_weather_data, f)

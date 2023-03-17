@@ -28,13 +28,13 @@ from math_functions.ranking_functions import rank_value, rank_value_skewed
 """
 
 # Import Processed Natural Disaster Data
-with open('./data_processors/processed_data/State_Natural_Disaster_Data.json', newline='') as f: 
+with open('./data/data_collection/processed_data/State_Natural_Disaster_Data.json', newline='') as f: 
     state_disaster_data = json.load(f)
 
-with open('./data_processors/processed_data/All_Natural_Disaster_Data.json', newline='') as f: 
+with open('./data/data_collection/processed_data/All_Natural_Disaster_Data.json', newline='') as f: 
     all_disaster_data = json.load(f)
 
-with open('./data_processors/processed_data/Type_Natural_Disaster_Data.json', newline='') as f: 
+with open('./data/data_collection/processed_data/Type_Natural_Disaster_Data.json', newline='') as f: 
     disaster_by_type_data = json.load(f)
 
 
@@ -173,7 +173,7 @@ for state, disaster_events in state_disaster_data.items():
 # ---------------------------------------------------------------------------   
 
 # Save Results Dictionary as JSON File
-with open(f"data_ranking/ranked_data/State_Natural_Disaster_Ranked_Data.json", 'w') as f:
+with open(f"data/data_ranking/ranked_data/State_Natural_Disaster_Ranked_Data.json", 'w') as f:
     json.dump(state_disaster_results, f)
 
 
