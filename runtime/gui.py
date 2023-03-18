@@ -65,6 +65,7 @@ class App(customtkinter.CTk):
         self.natural_disaster_frame = None
         self.results_frame = None
         self.map_marker = None
+        self.map_marker_region = None
         self.results_polygon = None
         self.radius_index = 0
 
@@ -698,9 +699,11 @@ class App(customtkinter.CTk):
         results_title = customtkinter.CTkLabel(self.results_frame, text="Congratulations!", font=self.title_font, fg_color=self.label_color)
         results_title.grid(row=0, column=0, padx=20, columnspan=3, ipady=1, ipadx=20, pady=15, sticky='')
 
+        # Results City Match
         self.results_label_1 = customtkinter.CTkLabel(self.results_frame, text="You have a 100% Match with City Name", font=self.large_bold, fg_color=self.label_color)
         self.results_label_1.grid(row=1, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
 
+        # Results Region
         self.results_label_2 = customtkinter.CTkLabel(self.results_frame, text="It's recommended to look for a home in the greater Area.", font=self.large_font, fg_color=self.label_color)
         self.results_label_2.grid(row=2, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
 
@@ -842,8 +845,8 @@ class App(customtkinter.CTk):
                 percent_income_allocated=self.income_seg_button_2.get(),
                 interest_rate=income_entry_float2,
                 morgage_term=self.income_seg_button_1.get(),
-                adjustments=self.income_seg_button_3.get()
-            )
+                adjustments=self.income_seg_button_3.get())
+
             affordable_home_price_label = ''.join(reversed([digit + ',' if index % 3 == 0 and index != 0 else digit for index, digit in enumerate(reversed(str(self.affordable_home_price)))]))
             
             self.income_label5.configure(text=f"Your affordable home price is ${affordable_home_price_label}. Do you want to increase or decrease?")
@@ -928,7 +931,6 @@ class App(customtkinter.CTk):
             self.family_location_confirmation_output_2.configure(border_width=0)
             self.family_location_valid2 = False
             self.IdealHomeDataAnalysis.saved_coordinates_list[1] = [] 
-    
 
     def seg_button_family_location3(self, param: str):
         self.work_seg_button_4.set(param)
@@ -953,7 +955,6 @@ class App(customtkinter.CTk):
             self.work_frame.grid_rowconfigure((7,10), weight=0)
             self.work_label5.grid(row=7, column=0, columnspan=4, padx=40, pady=(20, 15), sticky='')
             self.work_seg_button_5.grid(row=8, column=0, columnspan=4, padx=20, pady=10, sticky="ew")
-
             self.work_label3.grid(row=4, column=0, columnspan=3, pady=10, padx=20, sticky="")
             self.work_seg_button_3.grid(row=5, column=0, columnspan=3, padx=20, pady=10, sticky="ew")
             self.work_label2.grid_forget()
@@ -974,7 +975,6 @@ class App(customtkinter.CTk):
             self.work_location_confirmation_output_1.configure(border_width=0)
             self.work_valid1 = False
             self.IdealHomeDataAnalysis.saved_coordinates_list[2] = []
-            
 
     def seg_button_work_3(self, param: str):
         self.family_location_seg_button_3.set(param)
@@ -1012,10 +1012,9 @@ class App(customtkinter.CTk):
         if param == "4 Seasons" or param == "2 Seasons":
             self.weather_label2.configure(text="What's your ideal summer temperature?")
 
+            self.weather_frame.grid_rowconfigure((15,18), weight=1)
             self.weather_label4.grid(row=10, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
             self.weather_entry_frame2.grid(row=11, column=0, columnspan=3, padx=4, pady=10, sticky="nsew")
-
-            self.weather_frame.grid_rowconfigure((15,18), weight=1)
             self.weather_label5.grid(row=13, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
             self.weather_seg_button_2.grid(row=14, column=0, columnspan=3, padx=20, pady=10, sticky="ew")
             self.weather_label6.grid(row=16, column=0, columnspan=3, padx=40, pady=(20, 15), sticky='')
@@ -1298,6 +1297,7 @@ class App(customtkinter.CTk):
 
     def set_map_results(self, **kwargs):
         if self.map_marker:
+            self.map_marker_region.delete()
             self.map_marker.delete()
             self.results_polygon.delete()
 
@@ -1308,8 +1308,11 @@ class App(customtkinter.CTk):
             (self.zipcode_prefix_boundary['South_Boundary'], self.zipcode_prefix_boundary['West_Boundary'])],
             fill_color=None,
             outline_color="green",
-            border_width=4,
-            name=self.final_results['Region_Name'])
+            border_width=4)
+        self.map_marker_region = self.map_widget.set_marker(self.zipcode_prefix_boundary['North_Boundary'], (self.zipcode_prefix_boundary['East_Boundary'] + self.zipcode_prefix_boundary['West_Boundary']) / 2,
+            marker_color_circle='green',
+            marker_color_outside='green',
+            text=f"{self.final_results['Region_Name']}")
     
     def resource_path(self, relative_path):
         """ Get absolute path to resource, works for dev and for PyInstaller """
