@@ -4,9 +4,9 @@
 
 ## Getting Started
 
-To download the project executable navigate to the [Latest Release](https://github.com/andrew-drogalis/Ideal-Home-Location-Matcher/releases). For a step by step usage guide see the [Usage Overview](#Usage-Overview) tutorial.
+To download a single executable file navigate to the [Release](https://github.com/andrew-drogalis/Ideal-Home-Location-Matcher/releases) page. 
 
-Alternatively, download the zip file or clone the repository to run the program from source. Navigate to the project folder and use the setup.py file to download the required dependancies. Finally, intialize the application through the main.py file.
+Alternatively, download the source code from the release page or clone the repository to your local machine. Once downloaded, navigate to the project folder and type cmd in the directory to open the command line. Run the setup.py file  and download the required dependencies. The Ideal Home Location Matcher.py will initalize the GUI and start the application.
 
 
 ## Table of Contents
@@ -20,10 +20,23 @@ Alternatively, download the zip file or clone the repository to run the program 
 
 ## Usage Overview
 
-The project comes pre-packaged in an executable file. To get started, double click the icon and the application window will open.
+Once the application has started the instructions page will  will have similar details as outlined below.
 
-The introduction page
+<div>
+    <img src="https://raw.githubusercontent.com/andrew-drogalis/Ideal-Home-Location-Matcher/main/assets/documentation_images/Family_Preferences.JPG" alt="Family-Preferences" style="width: 850px">
+</div>
 
+<div>
+    <img src="https://raw.githubusercontent.com/andrew-drogalis/Ideal-Home-Location-Matcher/main/assets/documentation_images/Income_Information.JPG" alt="Income-Information" style="width: 850px">
+</div>
+
+<div>
+    <img src="https://raw.githubusercontent.com/andrew-drogalis/Ideal-Home-Location-Matcher/main/assets/documentation_images/Weather_Temperature.JPG" alt="Weather-Temperature" style="width: 850px">
+</div>
+
+<div>
+    <img src="https://raw.githubusercontent.com/andrew-drogalis/Ideal-Home-Location-Matcher/main/assets/documentation_images/Results.JPG" alt="Results" style="width: 850px">
+</div>
 
 ## Methodology
 
@@ -34,6 +47,7 @@ The methodology can be found in the [GitHub Wiki](https://github.com/andrew-drog
 
 * Include FEMA Flood Map Data
 * Provide Downloadable Data Sheet with Results
+* Review Top 10 Home Location Matches
 
 ## License
 
