@@ -12,30 +12,55 @@ Alternatively, download the source code from the release page or clone the repos
 ## Table of Contents
 
 
-* [Usage Overview](#Usage-Overview)
+* [Instructions](#Instructions)
 * [Methodology](#Methodology)
 * [Future Improvements](#Future-Improvements)
 * [License](#License)
 * [Contributing](#Contribution)
 
-## Usage Overview
+## Instructions
 
-Once the application has started the instructions page will  will have similar details as outlined below.
+Once the application has started the instructions page will appear with a summary of the steps outlined below.
+
+- The progress bar on the right hand side will give you an understanding of how much of the information has been completed. 
+
+- The application supports both light mode and dark mode.
+
+- The zoom percent is shown in the bottom right and can be adjusted for user accessibility.
+       
+### Segmented Buttons
+
+Click the button that closest matches your ideal conditions. Remember that each selection limits your results so choose carefully.
 
 <div>
-    <img src="https://raw.githubusercontent.com/andrew-drogalis/Ideal-Home-Location-Matcher/main/assets/documentation_images/Family_Preferences.JPG" alt="Family-Preferences" style="width: 850px">
+    <img src="https://raw.githubusercontent.com/andrew-drogalis/Ideal-Home-Location-Matcher/main/assets/documentation_images/Family_Preferences.JPG" alt="Family-Preferences" style="width: 850px; padding-top: 10px;">
 </div>
 
-<div>
-    <img src="https://raw.githubusercontent.com/andrew-drogalis/Ideal-Home-Location-Matcher/main/assets/documentation_images/Income_Information.JPG" alt="Income-Information" style="width: 850px">
-</div>
+### Input Fields
+
+Input your specific information when prompted. Remember that the more accurate the better. The calculator will automatically provide a reasonable margin for each criteria.
 
 <div>
-    <img src="https://raw.githubusercontent.com/andrew-drogalis/Ideal-Home-Location-Matcher/main/assets/documentation_images/Weather_Temperature.JPG" alt="Weather-Temperature" style="width: 850px">
+    <img src="https://raw.githubusercontent.com/andrew-drogalis/Ideal-Home-Location-Matcher/main/assets/documentation_images/Weather_Temperature.JPG" alt="Weather-Temperature" style="width: 850px; padding-top: 10px;">
 </div>
 
+
+### Interest Rate Approximation
+
+Calculate your approximate interest rate based on your credit score.  Remember that the interest rates will vary based on current market conditions.
+
+
 <div>
-    <img src="https://raw.githubusercontent.com/andrew-drogalis/Ideal-Home-Location-Matcher/main/assets/documentation_images/Results.JPG" alt="Results" style="width: 850px">
+    <img src="https://raw.githubusercontent.com/andrew-drogalis/Ideal-Home-Location-Matcher/main/assets/documentation_images/Income_Information.JPG" alt="Income-Information" style="width: 850px; padding-top: 10px;">
+</div>
+
+
+### Final Location Results
+
+The final result will provide a city and region of the United States. Remember that the map will show the city marked in red and the region marked in green.  
+
+<div>
+    <img src="https://raw.githubusercontent.com/andrew-drogalis/Ideal-Home-Location-Matcher/main/assets/documentation_images/Results.JPG" alt="Results" style="width: 850px; padding-top: 10px;">
 </div>
 
 ## Methodology
