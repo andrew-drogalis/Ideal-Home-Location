@@ -30,7 +30,7 @@ setup(
 	version=current_version,
 	author='Andrew Drogalis',
     author_email='andrew.drogalis2@gmail.com',
-    description="A collection of weather, natural disaster, and US Census data stored and analyzed to find the optimal living location for each individual's requirements.",
+    description="A collection of weather, natural disaster, and US Census data processed and ranked to find the ideal home location for each individual's preferences.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url='https://github.com/andrew-drogalis/Ideal-Home-Location-Matcher',

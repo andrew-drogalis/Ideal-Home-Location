@@ -81,18 +81,20 @@ class IdealHomeDataAnalysis():
         seasons = kwargs['seasons']
         summer_temperature = float(kwargs['summer_temperature'])
         winter_temperature = float(kwargs['winter_temperature'] or 0)
-        transition_temperature = (summer_temperature + winter_temperature) / 2
         precipitation_level = kwargs['precipitation_level']
         sunshine_level = kwargs['sunshine_level']
+
+        # Average Summer & Winter Selection for Spring / Fall Transition Setpoint
+        transition_temperature = (summer_temperature + winter_temperature) / 2
 
         # Convert Values From User Friendly to Search Friendly
         precipitation_level = 'Well Below Average' if precipitation_level == 'Very Low' else 'Below Average' if precipitation_level == 'Low' else 'Above Average' if precipitation_level == 'High' else 'Well Above Average' if precipitation_level == 'Very High' else precipitation_level
         sunshine_level = 'Well Below Average' if sunshine_level == 'Very Low' else 'Below Average' if sunshine_level == 'Low' else 'Above Average' if sunshine_level == 'High' else 'Well Above Average' if sunshine_level == 'Very High' else sunshine_level
         
-        # 
         self.zipcode_prefix_weather_score = {}
-
+        # Search through Each Zipcode Prefix and Find the Weather Score
         for zipcode_prefix, weather_data in self.zipcode_prefix_weather_data.items():
+            # Zipcode Prefix Data
             zipcode_seasons = weather_data['Seasons']
             zipcode_avg_temp = weather_data['Average_Temperature']
             zipcode_min_temp = weather_data['Min_Temperature']
@@ -100,39 +102,36 @@ class IdealHomeDataAnalysis():
             zipcode_precipitation = weather_data['Yearly_Precipitation']
             zipcode_sunshine = weather_data['Yearly_Sunshine']
 
+            # Seasons & Temperature Scores
             if seasons == '4 Seasons':
                 season_score = 4 if zipcode_seasons == 4 else 2 if zipcode_seasons == 2 else 0
-
+                # Differences
                 summer_difference = abs(zipcode_max_temp - summer_temperature)
                 transition_difference = abs(zipcode_avg_temp - transition_temperature)
                 winter_difference = abs(zipcode_min_temp - winter_temperature)
-
+                # Scores
                 summer_score = 3 if summer_difference <= 5 else 2 if 5 < summer_difference <= 10 else 1 if 10 < summer_difference <= 15 else 0
                 transition_score = 3 if transition_difference <= 5 else 2 if 5 < transition_difference <= 10 else 1 if 10 < transition_difference <= 15 else 0
                 winter_score = 3 if winter_difference <= 5 else 2 if 5 < winter_difference <= 10 else 1 if 10 < winter_difference <= 15 else 0
-
-                season_score = season_score + summer_score + transition_score + winter_score
+                temperature_score = summer_score + transition_score + winter_score
 
             elif seasons == '2 Seasons':
                 season_score = 4 if zipcode_seasons == 2 else 2
-
+                # Differences
                 summer_difference = abs(zipcode_max_temp - summer_temperature)
                 winter_difference = abs(zipcode_min_temp - winter_temperature)
-
+                # Scores
                 summer_score = 3 if summer_difference <= 5 else 2 if 5 < summer_difference <= 10 else 1 if 10 < summer_difference <= 15 else 0
                 winter_score = 3 if winter_difference <= 5 else 2 if 5 < winter_difference <= 10 else 1 if 10 < winter_difference <= 15 else 0
+                temperature_score = summer_score + winter_score
 
-                season_score = season_score + summer_score + winter_score
             else:
+                # 1 Season
                 season_score = 4 if zipcode_seasons == 1 else 2 if zipcode_seasons == 2 else 0
-
                 outside_difference = abs(zipcode_avg_temp - summer_temperature)
-
                 temperature_score = 3 if outside_difference <= 5 else 2 if 5 < outside_difference <= 10 else 1 if 10 < outside_difference <= 15 else 0
 
-                season_score = season_score + temperature_score
-
-            # Precipitation
+            # Precipitation Score
             if precipitation_level[:4] == 'Well':
                 precipitation_score = 4 if precipitation_level == zipcode_precipitation else 2 if precipitation_level[5:11] == zipcode_precipitation[5:11] else 0
             elif precipitation_level == 'Below Average':
@@ -142,7 +141,7 @@ class IdealHomeDataAnalysis():
             else:
                 precipitation_score = 4 if zipcode_precipitation == 'Average' else 2 if zipcode_precipitation == 'Below Average' or zipcode_precipitation == 'Above Average' else 0
 
-            # Sunshine
+            # Sunshine Score
             if sunshine_level[:4] == 'Well':
                 sunshine_score = 4 if sunshine_level == zipcode_sunshine else 2 if sunshine_level[5:11] == zipcode_sunshine[5:11] else 0
             elif sunshine_level == 'Below Average':
@@ -152,19 +151,23 @@ class IdealHomeDataAnalysis():
             else:
                 sunshine_score = 4 if zipcode_sunshine == 'Average' else 2 if zipcode_sunshine == 'Below Average' or zipcode_sunshine == 'Above Average' else 0
 
-            total_score = season_score + precipitation_score + sunshine_score
+            # Total Score & Save to Class Variable Dictionary
+            total_score = season_score + temperature_score +  precipitation_score + sunshine_score
 
-            self.zipcode_prefix_weather_score.update({zipcode_prefix:total_score})
+            self.zipcode_prefix_weather_score.update({
+                zipcode_prefix:total_score
+            })
 
-        max_season_score = 13 if seasons == '4 Seasons' else 10 if seasons == '2 Seasons' else 7
-        max_precipitation_score = max_sunshine_score = 4
+        # Find Max Possible Score for Match Percentage
+        max_temperature_score = 9 if seasons == '4 Seasons' else 6 if seasons == '2 Seasons' else 3
+        max_precipitation_score = max_sunshine_score = max_season_score = 4
 
-        self.max_possible_weather_score = max_season_score + max_precipitation_score + max_sunshine_score
-
+        self.max_possible_weather_score = max_season_score + max_temperature_score + max_precipitation_score + max_sunshine_score
 
     def natural_disaster_risk_frame_6(self, **kwargs):
         # Save User Selections to Local Variables
         natural_disaster_risk = int(kwargs['natural_disaster_risk'])
+        # Convert Values From User Friendly to Search Friendly
         disaster_to_avoid = kwargs['disaster_to_avoid'].replace('Thunderstorm','Lightning/Thunderstorms').replace('Hurricane', 'Tropical cyclone')
         disaster_to_avoid2 = kwargs['disaster_to_avoid2'].replace('Thunderstorm','Lightning/Thunderstorms').replace('Hurricane', 'Tropical cyclone')
         disaster_to_avoid3 = kwargs['disaster_to_avoid3'].replace('Thunderstorm','Lightning/Thunderstorms').replace('Hurricane', 'Tropical cyclone')
@@ -218,8 +221,7 @@ class IdealHomeDataAnalysis():
 
             self.state_natural_disaster_score.update({state: total_state_score})
 
-        max_total_disaster_score = 2 * natural_disaster_risk
-        max_disaster_1_score = 2 * natural_disaster_risk
+        max_total_disaster_score = max_disaster_1_score = 2 * natural_disaster_risk
         max_disaster_2_score = 1.41 * natural_disaster_risk
         max_disaster_3_score = 0.83 * natural_disaster_risk
 
