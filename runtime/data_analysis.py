@@ -173,21 +173,26 @@ class IdealHomeDataAnalysis():
         disaster_to_avoid3 = kwargs['disaster_to_avoid3'].replace('Thunderstorm','Lightning/Thunderstorms').replace('Hurricane', 'Tropical cyclone')
         
         self.state_natural_disaster_score = {}
-
+        # Search through Each State and Find the Natural Disaster Score
         for state, disaster_data in self.state_natural_disaster_data.items():
+            # State Combined Natural Disaster Data
             disaster_data = disaster_data[0]
             total_severity = disaster_data['All_Severity_Rank']
             total_frequency = disaster_data['All_Frequency_Rank']
 
+            # State Combined Natural Disaster Score
             total_severity_number = 0 if total_severity == 'High' else 0.33 if total_severity == 'Moderate' else 0.66 if total_severity == 'Low' else 1
             total_frequency_number = 0 if total_frequency == 'Well Above Average' else 0.25 if total_frequency == 'Above Average' else 0.5 if total_frequency == 'Average' else 0.75 if total_frequency == 'Below Average' else 1
 
             total_disaster_score = (total_severity_number + total_frequency_number) * natural_disaster_risk
 
+            # Selected Disaster #1
             try:
+                # State Data
                 disaster_1_severity = disaster_data[f'{disaster_to_avoid}_Severity_Rank']
                 disaster_1_frequency = disaster_data[f'{disaster_to_avoid}_Frequency_Rank']
 
+                # Disaster #1 Score
                 disaster_1_severity_number = 0 if disaster_1_severity == 'High' else 0.33 if disaster_1_severity == 'Moderate' else 0.66 if disaster_1_severity == 'Low' else 1
                 disaster_1_frequency_number = 0 if disaster_1_frequency == 'Well Above Average' else 0.25 if disaster_1_frequency == 'Above Average' else 0.5 if disaster_1_frequency == 'Average' else 0.75 if disaster_1_frequency == 'Below Average' else 1
                 
@@ -195,10 +200,13 @@ class IdealHomeDataAnalysis():
             except:
                 disaster_1_score = 2 * natural_disaster_risk
 
+            # Selected Disaster #2
             try:
+                # State Data
                 disaster_2_severity = disaster_data[f'{disaster_to_avoid2}_Severity_Rank']
                 disaster_2_frequency = disaster_data[f'{disaster_to_avoid2}_Frequency_Rank']
                 
+                # Disaster #2 Score
                 disaster_2_severity_number = 0 if disaster_2_severity == 'High' else 0.33 if disaster_2_severity == 'Moderate' else 0.66
                 disaster_2_frequency_number = 0 if disaster_2_frequency == 'Well Above Average' else 0.25 if disaster_2_frequency == 'Above Average' else 0.5 if disaster_2_frequency == 'Average' else 0.75
                 
@@ -206,10 +214,13 @@ class IdealHomeDataAnalysis():
             except:
                 disaster_2_score = 1.41 * natural_disaster_risk
 
+            # Selected Disaster #3
             try:
+                # State Data
                 disaster_3_severity = disaster_data[f'{disaster_to_avoid3}_Severity_Rank']
                 disaster_3_frequency = disaster_data[f'{disaster_to_avoid3}_Frequency_Rank']
                 
+                # Disaster #3 Score
                 disaster_3_severity_number = 0 if disaster_3_severity == 'High' else 0.33
                 disaster_3_frequency_number = 0 if disaster_3_frequency == 'Well Above Average' else 0.25 if disaster_3_frequency == 'Above Average' else 0.5
                 
@@ -217,10 +228,14 @@ class IdealHomeDataAnalysis():
             except:
                 disaster_3_score = 0.83 * natural_disaster_risk
 
+            # Total Score & Save to Class Variable Dictionary
             total_state_score = total_disaster_score + disaster_1_score + disaster_2_score + disaster_3_score
 
-            self.state_natural_disaster_score.update({state: total_state_score})
+            self.state_natural_disaster_score.update({
+                state: total_state_score
+            })
 
+        # Find Max Possible Score for Match Percentage
         max_total_disaster_score = max_disaster_1_score = 2 * natural_disaster_risk
         max_disaster_2_score = 1.41 * natural_disaster_risk
         max_disaster_3_score = 0.83 * natural_disaster_risk
@@ -228,7 +243,9 @@ class IdealHomeDataAnalysis():
         self.max_possible_state_disaster_score = max_total_disaster_score + max_disaster_1_score + max_disaster_2_score + max_disaster_3_score
 
     def results_frame_7(self):
-
+        """ 
+            Combine All Scores into Final Result
+        """
         # Are you Married
         married_importance = int(self.married_importance)
         if self.married_state == 'No':
