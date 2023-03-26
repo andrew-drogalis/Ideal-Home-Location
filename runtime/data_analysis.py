@@ -228,7 +228,7 @@ class IdealHomeDataAnalysis():
             except:
                 disaster_3_score = 0.83 * natural_disaster_risk
 
-            # Total Score & Save to Class Variable Dictionary
+            # Total Score & Save to Class Variable Dictionary 
             total_state_score = total_disaster_score + disaster_1_score + disaster_2_score + disaster_3_score
 
             self.state_natural_disaster_score.update({
@@ -246,27 +246,31 @@ class IdealHomeDataAnalysis():
         """ 
             Combine All Scores into Final Result
         """
-        # Are you Married
+        # ---- Married Score ----
         married_importance = int(self.married_importance)
         if self.married_state == 'No':
             married_scoring_order = [1 * married_importance, 0.75 * married_importance, 0.5 * married_importance, 0.25 * married_importance, 0]
         else:
             married_scoring_order = [0, 0.25 * married_importance, 0.5 * married_importance, 0.75 * married_importance, 1 * married_importance]
 
-        # Do you have children
+        # ---- Children Score ----
         children_importance = int(self.children_importance )
         if self.children_state == 'No':
             children_scoring_order = [1 * children_importance, 0.75 * children_importance, 0.5 * children_importance, 0.25 * children_importance, 0]
         else:
             children_scoring_order = [0, 0.25 * children_importance, 0.5 * children_importance, 0.75 * children_importance, 1 * children_importance]
 
+        # ---- School Enrollment Score ----
         school_enrollment_scoring_order = [0, 0.25, 0.5, 0.75, 1] if self.school_enrollment_importance == '1' else [0, 0.5, 1, 1.5, 2] if self.school_enrollment_importance == '2' else [0, 0.75, 1.5, 2.25, 3] if self.school_enrollment_importance == '3' else [0, 1, 2, 3, 4] if self.school_enrollment_importance == '4' else [0, 1.25, 2.5, 3.75, 5]
 
+        # ---- Commute Score ----
         user_commute_time = int(self.commute_time[6:8])
-        # What's your education level:
+        
+        # ---- Education Level Score ----
         education_importance = int(self.education_level_importance)
         user_education_number = 0 if self.education_level == 'Less than High School' else 1 if self.education_level == 'High School' else 2 if self.education_level == "Associate's" else 3 if self.education_level == "Bachelor's" else 4 if self.education_level == "Master's" else 5
 
+        # ---- Living Enviornment Score ----
         living_enviornment_scoring_order1 = [4,2,1,0,0] if self.living_enviornment == 'Hyper Rural' else [2,4,2,1,0] if self.living_enviornment == 'Rural' else [1,2,4,2,1] if self.living_enviornment == 'Suburban' else [0,1,2,4,2] if self.living_enviornment == 'Urban' else [0,0,1,2,4]
         living_enviornment_scoring_order2 = [2,1,0,0,0] if self.living_enviornment2 == 'Hyper Rural' else [1,2,1,0,0] if self.living_enviornment2 == 'Rural' else [0,1,2,1,0] if self.living_enviornment2 == 'Suburban' else [0,0,1,2,1] if self.living_enviornment2 == 'Urban' else [0,0,0,1,2]
 
@@ -274,8 +278,9 @@ class IdealHomeDataAnalysis():
         unlikely_to_afford_warning = []
         final_zipcode_prefix_score = defaultdict(dict)
         city_coordinates_dictionary = {}
-
+        # Search through Each City and Find the City and Zipcode Prefix Score
         for city in self.city_radius_results:
+            # City Data
             city_name = [*city.keys()][0]
             zipcode = city_name[-5:]
             zipcode_prefix = zipcode[:3]
@@ -283,15 +288,14 @@ class IdealHomeDataAnalysis():
             state = zipcode_data["City"][-2:]
             city_coordinates_dictionary.update(city)
 
+            # ---- Home Value Score ----
             median_home_value = zipcode_data['Median_Home_Value']
             mad_home_value = zipcode_data['MAD_Home_Value']
 
             if median_home_value and mad_home_value:
-                # Most Importance
                 if self.user_home_price < median_home_value - mad_home_value:
                     unlikely_to_afford_warning.append(city_name)
 
-                # Preferance Toward the Median
                 whole_mad_home_value_positive = median_home_value + mad_home_value
                 half_mad_home_value_positive = median_home_value + mad_home_value * 0.5
                 half_mad_home_value_negative = median_home_value - mad_home_value * 0.5
@@ -301,6 +305,7 @@ class IdealHomeDataAnalysis():
             else:
                 home_afforability_score = 0
 
+            # ---- Household Income Score ----
             median_household_income = zipcode_data['Median_Household_Income']
             mad_household_income = zipcode_data['MAD_Household_Income']
 
@@ -314,20 +319,27 @@ class IdealHomeDataAnalysis():
             else:
                 household_income_score = 0
 
+            # ---- Married Score ----
             married_percentage = zipcode_data["Married_Percentage"]
             married_score = married_scoring_order[0] if married_percentage == 'Well Below Average' else married_scoring_order[1] if married_percentage == 'Below Average' else married_scoring_order[2] if married_percentage == 'Average' else married_scoring_order[3] if married_percentage == 'Above Average' else married_scoring_order[4]
             
+            # ---- Children Score ----
             families_with_children = zipcode_data["Families_with_Children"]
             families_with_children_score = children_scoring_order[0] if families_with_children == 'Well Below Average' else children_scoring_order[1] if families_with_children == 'Below Average' else children_scoring_order[2] if families_with_children == 'Average' else children_scoring_order[3] if families_with_children == 'Above Average' else children_scoring_order[4]
-                
+
+            # ---- School Enrollment Score ----
             school_enrollment_percentage = zipcode_data["School_Enrollment_Percentage"]
             school_enrollment_score = school_enrollment_scoring_order[0] if school_enrollment_percentage == 'Well Below Average' else school_enrollment_scoring_order[1] if school_enrollment_percentage == 'Below Average' else school_enrollment_scoring_order[2] if school_enrollment_percentage == 'Average' else school_enrollment_scoring_order[3] if school_enrollment_percentage == 'Above Average' else school_enrollment_scoring_order[4]
 
+            # User Selected Employment Status
             if self.employment_status == 'No':
+                # ---- Regional Employment Score ----
                 regional_employment_importance = int(self.regional_employment_importance)
                 employment_percentage = zipcode_data['Employment_Percentage']
                 employment_score = 1 * regional_employment_importance if employment_percentage == 'Well Above Average' else 0.75 * regional_employment_importance if employment_percentage == 'Above Average' else 0.5 * regional_employment_importance if employment_percentage == 'Average' else 0.25 * regional_employment_importance if employment_percentage == 'Below Average' else 0
+                max_employment_score = regional_employment_importance
 
+                # ---- Transportation Method Score ----
                 if self.transportation_method == "Personal Vehicle":
                     transportation_method = zipcode_data['Motor_Vehicle_Work_Percentage']
                     transportation_score = 4 if transportation_method == 'Well Above Average' else 3 if transportation_method == 'Above Average' else 2 if transportation_method == 'Average' else 1 if transportation_method == 'Below Average' else 0 
@@ -341,6 +353,7 @@ class IdealHomeDataAnalysis():
                     transportation_score = 0
                     max_transportation_score = 0
 
+                # ---- Commute Score ----
                 city_commute_time = zipcode_data["Travel_Time_To_Work"]
                 if city_commute_time and self.transportation_method != 'Work From Home':
                     commute_time_difference = user_commute_time - city_commute_time
@@ -350,26 +363,32 @@ class IdealHomeDataAnalysis():
                     commute_score = 0
                     max_commute_score = 0 if self.transportation_method != 'Work From Home' else 5
 
+                # Total Work Score & Max Possible Work Score
                 work_score = employment_score + transportation_score + commute_score
-                max_employment_score = regional_employment_importance
                 max_work_score = max_employment_score + max_transportation_score + max_commute_score
             else:
                 work_score = 0
                 max_work_score = 0
-            
+
+            # ---- Education Level Score ----
             if zipcode_data["Education_Score"]:
                 education_level_difference = abs(zipcode_data["Education_Score"] - user_education_number)
                 education_score = 1 * education_importance if education_level_difference < 0.5 else 0.75 * education_importance if education_level_difference < 1 else 0.5 * education_importance if education_level_difference < 1.5 else 0.25 * education_importance if education_level_difference < 2 else 0
             else:
                 education_score = 0
 
+            # ---- Area Classification Score ----
             area_classification = zipcode_data["Area_Classification"]
             area_classification_list_key = 0 if area_classification == 'Hyper Rural' else 1 if area_classification == 'Rural' else 2 if area_classification == 'Suburban' else 3 if area_classification == 'Urban' else 4
             area_classification_score = living_enviornment_scoring_order1[area_classification_list_key] + living_enviornment_scoring_order2[area_classification_list_key]
             
+            # ---- Weather Score ----
             weather_score = self.zipcode_prefix_weather_score[zipcode_prefix]
+
+            # ---- Natural Disaster Score ----
             natural_disaster_score = self.state_natural_disaster_score[states_abbreviation_list[state]]
 
+            # Total City Score & Save to Dictionary 
             total_city_score = home_afforability_score + household_income_score + married_score + families_with_children_score + school_enrollment_score + work_score + education_score + area_classification_score + weather_score + natural_disaster_score
             final_city_score.append((city_name,total_city_score,zipcode_prefix))
 
@@ -379,47 +398,56 @@ class IdealHomeDataAnalysis():
             else:
                 final_zipcode_prefix_score[zipcode_prefix].update({'Score': total_city_score, 'Qty': 1})
 
-        
+        # Find Max Possible Score for Match Percentage
         max_household_income = max_home_afforabilty = 10
         max_education_score = education_importance
         max_area_classification_score = max(living_enviornment_scoring_order1) + max(living_enviornment_scoring_order2)
         max_possible_score = max_home_afforabilty + max_household_income + max(married_scoring_order) + max(children_scoring_order) + max(school_enrollment_scoring_order) + max_work_score + max_education_score + max_area_classification_score + self.max_possible_weather_score + self.max_possible_state_disaster_score
 
+        # Average Data to Find Zipcode Prefix Score
         final_zipcode_prefix_score = {zipcode_prefix: score_data['Score'] / score_data['Qty'] for zipcode_prefix, score_data in final_zipcode_prefix_score.items()}
  
-        # Add [3] Tuple with Combined City Score and Zipcode Prefix Score
+        # Combined City Score and Zipcode Prefix Score
         final_city_score = [(city_data[0], round(city_data[1] * 100 / max_possible_score), city_data[2], city_data[1] + final_zipcode_prefix_score[city_data[2]]) for city_data in final_city_score]
            
         # Utilize in Later Versions*
         top10 = sorted(final_city_score, key=lambda x: x[3], reverse=True)[:10]
 
-        # Top Match
+        # Top Matching City
         final_city_results = top10[0]
-        
-        raise_affordability_warning = True if final_city_results[0] in unlikely_to_afford_warning else False
 
-        zipcode_prefix_boundary = self.zipcode_prefix_boundary_data[final_city_results[2]]
-
+        # Top Matching Region
         region_name = self.zipcode_prefix_region_names[final_city_results[2]]
 
+        # Resulting State
         state = region_name[-2:]
 
-        region_name = f'{region_name.title()[:-3]}, {states_abbreviation_list[state]}'
-        
-        return {'Result_City': f"{final_city_results[0].split(',')[0]}, {state}",'Result_City_Coordinates': city_coordinates_dictionary[final_city_results[0]],'Match_Percentage':final_city_results[1],'Region_Name':region_name, 'Zipcode_Prefix_Boundary': zipcode_prefix_boundary, 'Afforability_Warning': raise_affordability_warning}
+        return {
+            'Result_City': f"{final_city_results[0].split(',')[0]}, {state}",
+
+            'Result_City_Coordinates': city_coordinates_dictionary[final_city_results[0]],
+            
+            'Match_Percentage':final_city_results[1],
+
+            'Region_Name': f'{region_name.title()[:-3]}, {states_abbreviation_list[state]}',
+
+            'Zipcode_Prefix_Boundary': self.zipcode_prefix_boundary_data[final_city_results[2]],
+
+            'Afforability_Warning': True if final_city_results[0] in unlikely_to_afford_warning else False
+        }
 
     def find_distance_to_center(self):
-        # Order Does Not Matter
+        # List of Saved Coordinates
         args_list = [coordinate for coordinate in self.saved_coordinates_list if coordinate]
-        
+
         # Return for 2 or 3 Coordinates
         if len(args_list) >= 2:
             return check_coordinates_distance_to_center(*args_list)
-
-        # No Distance if 1 or Zero Coordinates
+        # No Distance if 0 or 1 Coordinate
         return 0
 
     def run_location_radius_search(self, radius_index: int):
+        # List of Saved Coordinates
         args_list = [coordinate for coordinate in self.saved_coordinates_list if coordinate]
 
         # List of all Zipcode Coordinates - Not State Specific
@@ -436,15 +464,10 @@ class IdealHomeDataAnalysis():
         else:
             self.city_radius_results = self.merged_zipcode_coordinate_data
 
-    def calculate_affordable_home_price(self, income: float, percent_income_allocated: str, interest_rate: float, morgage_term: str, adjustments: str):
-        
-        monthly_income = income / 12
-        monthly_interest_rate = interest_rate / (12 * 100)
+    def calculate_affordable_home_price(self, income: float, percent_income_allocated: str, interest_rate: float, mortgage_term: str, adjustments: str):
+        # Approximately 80% of Monthly Payment Goes to Mortgage & 20% Goes to Tax & Insurance
         percent_income_allocated = int(percent_income_allocated[:2]) / 100
-        total_months = int(morgage_term[:2]) * 12
-
-        # Approximately 80% of Monthly Payment Goes to Morgage & 20% Goes to Tax & Insurance
-        monthly_allowable_morgage_payment = monthly_income * percent_income_allocated * 0.8
+        monthly_allowable_mortgage_payment = (income / 12) * percent_income_allocated * 0.8
 
         """
             M = P [ i(1 + i)^n ] / [ (1 + i)^n – 1]
@@ -457,22 +480,23 @@ class IdealHomeDataAnalysis():
             Re-written solving for P
             P = M [ (1 + i)^n – 1] / [ i(1 + i)^n ]
         """
-        loan_amount = monthly_allowable_morgage_payment * ((1 + monthly_interest_rate) ** total_months - 1) / (monthly_interest_rate * (1 + monthly_interest_rate) ** total_months)
+        monthly_interest_rate = interest_rate / (12 * 100)
+        
+        total_months = int(mortgage_term[:2]) * 12
 
-        # Assuming the Standard 20% Down Payment
-        total_morgage = loan_amount / 0.8
+        loan_amount = monthly_allowable_mortgage_payment * ((1 + monthly_interest_rate) ** total_months - 1) / (monthly_interest_rate * (1 + monthly_interest_rate) ** total_months)
 
         adjustment_percent = int(adjustments[:3].replace('%','').replace('+','')) / 100 if adjustments != 'No Change' else 0
 
-        total_morgage = int(round(total_morgage * (1 + adjustment_percent), -3))
+        # Assuming the Standard 20% Down Payment
+        total_mortgage = round(int((loan_amount / 0.8) * (1 + adjustment_percent)), -3)
 
-        return total_morgage
+        return total_mortgage
 
     def city_name_zipcode_matcher(self, state: str = '', city: str = '', zipcode: str = '', index: int = 0):
-        # Catch Errors
+        # Return if Data Missing
         if not state:
             return 'Provide State'
-
         if not city and not zipcode:
             return 'Provide City or Zipcode'
 
@@ -495,6 +519,7 @@ class IdealHomeDataAnalysis():
         # List of All Cities in State
         state_city_names = [[*city.keys()][0] for city in state_coordinate_list]
 
+        # Prioritize Zipcode Due to Less Likely Typo
         if zipcode:
             if len(zipcode) != 5:
                 return 'Please Provide Valid Zipcode'
@@ -509,11 +534,9 @@ class IdealHomeDataAnalysis():
         elif city:
             # Fuzzy Match City 
             city_result = process.extract(city, state_city_names)
-            primary_city_list = []
-            for city_str in city_result:
-                common_city_names = city_str[0].split(', ')
-                primary_city_list.append(common_city_names[0])
+            primary_city_list = [city_str[0].split(', ')[0] for city_str in city_result]
             primary_city_result = process.extract(city, primary_city_list)
+
             # Compare Primary City with Common City Names
             if city_result[0][1] >= primary_city_result[0][1]:
                 state_city_name = city_result[0][0]
@@ -522,8 +545,11 @@ class IdealHomeDataAnalysis():
             else:
                 primary_city_result = primary_city_result[0][0]
                 state_city_name = city_result[primary_city_list.index(primary_city_result)][0]
+
+            # Matched City Zipcode
             zipcode = state_city_name.split(', ')[-1]
-        
+
+        # Save to Class Variable        
         self.saved_coordinates_list[index] = state_coordinate_list[state_city_names.index(state_city_name)][state_city_name]
 
         return f'{primary_city_result}, {state} {zipcode}'

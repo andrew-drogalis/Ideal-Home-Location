@@ -17,7 +17,7 @@
     * [Weather Selections](#Weather-Selections)
     * [Dynamic Importance Selections](#Dynamic-Importance-Selections)
     * [Fixed Score Metrics](#Fixed-Score-Metrics)
-* [Final Results](#Final-Results)
+* [Final Result](#Final-Result)
 
 ## Data Source
 
@@ -47,7 +47,7 @@ The data is ranked for ease of use and to reduce the CPU overhead during runtime
 
 ### Finding Skewness
 
-The rank compares each region of the united states against each other and provideds a method for sorting based on the dataset distribution. Highly skewed datasets tend to over exaggerate the mean relative to the median. 
+The ranking compares each region of the united states against one another. The method of comparison is based on the skewness of the dataset distribution and the deviation ratio. 
 
 ### Median Ranking
 
@@ -61,7 +61,7 @@ rank = 'Well Above Average' if deviation_ratio > 2 else 'Above Average' if 2 >= 
 
 ### Mean Ranking
 
-The mean ranking was used when it was appropriate to isolate the extreme values for highly skewed datasets. Only the right tail values are included in the final analysis, while the left tail values are disregarded. The deviation ratio in this case is the measure of how many standard deviations a data point is away from the mean.
+The mean ranking was used when it was appropriate to isolate the extreme values for highly skewed datasets. Only the right tail values are included in the final analysis, and the left tail values are disregarded. The deviation ratio in this case is the measure of how many standard deviations a data point is away from the mean.
 
 ```python
 deviation_ratio = (value[x] - Yearly_Mean) / Yearly_Standard_Deviation
@@ -71,32 +71,28 @@ rank = 'Very Good' if deviation_ratio > 2 else 'Good' if 2 >= deviation_ratio > 
 
 ## Scoring Prioritization
 
-The 
+The scoring system is organized into categories based on order of importance. The most important categories have the highest score value and influence the final result with a higher weighting.
 
 ### Location Search Results
 
-The location search results takes first priority over all other metrics. The location radius selected will limit the results to only show the cities within the radius of the submitted city. If more than one cities is input the results will be from the center distance of the cities. 
+The location search results takes first priority over all other metrics. The location radius selected will limit the results to only show the cities within the radius of the user selected city. If more than one cities is selected the results will be from the center point coordinates between all of the cities. 
 
 ### Home Affordability & Household Income
 
-T
+The affordability of the home and household income is the second most important category. The score is based on how closely the user calculated home price and user input income are to the city median values. The median absolute deviation in the home price and income of the city is used to gauge the relative distance from the median.
 
 ### Weather Selections
 
-T
+The weather selections are the third most important criteria. The seasonality of the region accounts for the majority of the weather score. The next most important factors are the temperature, precipitation, and sunshine scores. These are all based on how closely the matching city meets the user selected values.
 
 ### Dynamic Importance Selections
 
-T
+The selections with options for importance inputs have a dynamic score based on the user selected numerical value. Any categories without an implied importance need to account for differing personal priorities. To calculate the score, the matching city values are compared to the user selected values, and then they're multiplied by the user selected numerical importance.
 
 ### Fixed Score Metrics
 
-T
+The lowest priority scoring metrics are the options without a user selected importance input. These are calculated in a similar method to the dynamic importance selection, with the only difference being no multiplication of a user selected value.
 
-## Final Results
+## Final Result
 
-The final result is the city with the highest score and the final region is the three digit zipcode prefix for the associated city. 
-
-
-
-The final result is calcuated by using the sum of the city score and the region score. 
+The final result is calculated by using the sum of the city score and the region score. The region score is the average score of all the cities within the region's boundaries. The city with the highest score and the associated final three digit zipcode region are output to the OpenStreetMap and the results page.

@@ -844,7 +844,7 @@ class App(customtkinter.CTk):
             self.affordable_home_price = self.IdealHomeDataAnalysis.calculate_affordable_home_price(income=income_entry_float1,
                 percent_income_allocated=self.income_seg_button_2.get(),
                 interest_rate=income_entry_float2,
-                morgage_term=self.income_seg_button_1.get(),
+                mortgage_term=self.income_seg_button_1.get(),
                 adjustments=self.income_seg_button_3.get())
 
             affordable_home_price_label = ''.join(reversed([digit + ',' if index % 3 == 0 and index != 0 else digit for index, digit in enumerate(reversed(str(self.affordable_home_price)))]))

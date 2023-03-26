@@ -1,4 +1,4 @@
-# Ideal Home Location Matcher Wiki
+# Home
 
 Welcome to the official Ideal Home Location Matcher wiki. This is the source of detailed information on the methodology used to match your ideal home results with the selected user preferences. 
 
