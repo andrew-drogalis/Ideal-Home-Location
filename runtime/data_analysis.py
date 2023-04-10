@@ -465,11 +465,8 @@ class IdealHomeDataAnalysis():
             self.city_radius_results = self.merged_zipcode_coordinate_data
 
     def calculate_affordable_home_price(self, income: float, percent_income_allocated: str, interest_rate: float, mortgage_term: str, adjustments: str):
-        # Approximately 80% of Monthly Payment Goes to Mortgage & 20% Goes to Tax & Insurance
-        percent_income_allocated = int(percent_income_allocated[:2]) / 100
-        monthly_allowable_mortgage_payment = (income / 12) * percent_income_allocated * 0.8
-
         """
+            Equations Used:
             M = P [ i(1 + i)^n ] / [ (1 + i)^n – 1]
 
             M = Total monthly payment
@@ -480,12 +477,19 @@ class IdealHomeDataAnalysis():
             Re-written solving for P
             P = M [ (1 + i)^n – 1] / [ i(1 + i)^n ]
         """
+
+        percent_income_allocated = int(percent_income_allocated[:2]) / 100
+        # Approximately 80% of Monthly Payment Goes to Mortgage & 20% Goes to Tax & Insurance
+        monthly_allowable_mortgage_payment = (income / 12) * percent_income_allocated * 0.8
+
+        # Units Conversion
         monthly_interest_rate = interest_rate / (12 * 100)
-        
         total_months = int(mortgage_term[:2]) * 12
 
+        # Based on Equation Above
         loan_amount = monthly_allowable_mortgage_payment * ((1 + monthly_interest_rate) ** total_months - 1) / (monthly_interest_rate * (1 + monthly_interest_rate) ** total_months)
 
+        # User Selected Adjustment Amount
         adjustment_percent = int(adjustments[:3].replace('%','').replace('+','')) / 100 if adjustments != 'No Change' else 0
 
         # Assuming the Standard 20% Down Payment

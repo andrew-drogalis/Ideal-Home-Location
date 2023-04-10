@@ -15,7 +15,7 @@
     * [Location Search Results](#Location-Search-Results)
     * [Home Affordability & Household Income](#Home-Affordability-&-Household-Income)
     * [Weather Selections](#Weather-Selections)
-    * [Dynamic Importance Selections](#Dynamic-Importance-Selections)
+    * [Dynamic Selections](#Dynamic-Selections)
     * [Fixed Score Metrics](#Fixed-Score-Metrics)
 * [Final Result](#Final-Result)
 
@@ -85,7 +85,7 @@ The affordability of the home and household income is the second most important 
 
 The weather selections are the third most important criteria. The seasonality of the region accounts for the majority of the weather score. The next most important factors are the temperature, precipitation, and sunshine scores. These are all based on how closely the matching city meets the user selected values.
 
-### Dynamic Importance Selections
+### Dynamic Selections
 
 The selections with options for importance inputs have a dynamic score based on the user selected numerical value. Any categories without an implied importance need to account for differing personal priorities. To calculate the score, the matching city values are compared to the user selected values, and then they're multiplied by the user selected numerical importance.
 
